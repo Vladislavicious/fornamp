@@ -14,6 +14,9 @@ class Product:
         self.__steps = steps
         self.__isDone = isDone
     
+    def changeName(self, name : str):
+        self.__name = name
+
     def GetName(self) -> str:
         return self.__name
 
@@ -26,7 +29,7 @@ class Product:
     def ChangeCommentary(self, new_commentary: str):
         self.__commentary = new_commentary
     
-    def addStep(self, step_name):
+    def addStep(self, step_name: str):
         self.__steps.append(Step(step_name))
     
     def CheckIfDone(self) -> bool:
@@ -35,6 +38,9 @@ class Product:
                 return False
         self.__isDone = True
         return True
+
+    def GetSellingCost(self) -> int:
+        return self.__selling_cost
 
     def GetProfit(self) -> int:
         return self.__selling_cost - self.__production_cost
@@ -56,3 +62,28 @@ class Product:
 
         return Product(info["_Product__name"], info["_Product__selling_cost"], info["_Product__production_cost"], \
                             info["_Product__commentary"], step_list, info["_Product__isDone"])            
+
+    @classmethod
+    def fromDICT(cls, info):
+        """Возвращает объект класса Product из словаря"""
+        
+        step_list = list(Step.fromDict(step) for step in info["_Product__steps"])
+
+        return Product(info["_Product__name"], info["_Product__selling_cost"], info["_Product__production_cost"], \
+                            info["_Product__commentary"], step_list, info["_Product__isDone"])
+    
+
+#enc = simpleEncoder()
+#new_dict = enc.default(prod)
+
+#new_dict["_Product__data"] = new_dict["_Product__data"].isoformat()
+
+#print(enc.default(prod))
+"""
+with open("test.json", "r", encoding="utf-8") as json_text:
+    new_prod = Product.fromJSON(json_text.read())
+
+for step in new_prod.GetSteps():
+    step.MarkAsDone("lela")
+"""
+
