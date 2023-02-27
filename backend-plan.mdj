@@ -1446,7 +1446,8 @@
 									"_parent": {
 										"$ref": "AAAAAAGGblKLSsQABOE="
 									},
-									"name": "string"
+									"name": "string",
+									"type": ""
 								}
 							]
 						},
@@ -1545,7 +1546,8 @@
 								"$ref": "AAAAAAGGbknXuMOBs4A="
 							},
 							"name": "DateOfOrder",
-							"visibility": "private"
+							"visibility": "private",
+							"type": ""
 						},
 						{
 							"_type": "UMLAttribute",
@@ -1554,7 +1556,8 @@
 								"$ref": "AAAAAAGGbknXuMOBs4A="
 							},
 							"name": "DateOfVidacha",
-							"visibility": "private"
+							"visibility": "private",
+							"type": ""
 						},
 						{
 							"_type": "UMLAttribute",
@@ -1665,7 +1668,8 @@
 									"_parent": {
 										"$ref": "AAAAAAGGblL1ycQLAAE="
 									},
-									"name": "string"
+									"name": "string",
+									"type": ""
 								}
 							]
 						},
@@ -1809,7 +1813,8 @@
 									"_parent": {
 										"$ref": "AAAAAAGGbmDYbcSrjCI="
 									},
-									"name": "string"
+									"name": "string",
+									"type": ""
 								},
 								{
 									"_type": "UMLParameter",
