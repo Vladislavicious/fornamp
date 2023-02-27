@@ -1,19 +1,37 @@
 import json
+from datetime import date
 
 class simpleEncoder(json.JSONEncoder):
     """Нужен для нормального перевода класса в JSON"""
     def default(self, o):
-        return o.__dict__
+        slovar = o.__dict__
+        try:
+            slovar['_Step__date_of_creation'] = slovar['_Step__date_of_creation'].isoformat()
+            slovar['_Order__date_of_creation'] = slovar['_Order__date_of_creation'].isoformat()
+            slovar['_Order__date_of_vidacha'] = slovar['_Order__date_of_vidacha'].isoformat()
+        except KeyError:
+            pass
+        return slovar
 
 class Step:
-    def __init__(self, name: str, isDone=False, contributor="No-one", \
-                    complexity = 1, koef_value = 1) -> None:
+    def __init__(self, name: str, data = date.today().isoformat(), isDone=False,  \
+                    contributor="No-one", complexity = 1, koef_value = 1) -> None:
         self.isDone = isDone
         self.contributor = contributor
         self.name = name
         self.complexity = complexity
         self.koef_value = koef_value
+        self.date_of_creation = data
     
+    @property
+    def date_of_creation(self) -> date:
+        """Дата в iso формате"""
+        return self.__date_of_creation
+    
+    @date_of_creation.setter
+    def date_of_creation(self, isoformatted_value : str):
+        self.__date_of_creation = date.fromisoformat(isoformatted_value)
+
     @property
     def isDone(self):
         return self.__isDone
@@ -87,6 +105,17 @@ class Step:
     def fromDict(cls, info : dict):
         """Возвращает объект класса Step из словаря"""
         
-        return Step(info["_Step__name"], info["_Step__isDone"], info["_Step__contributor"], \
-                        info["_Step__complexity"], info["_Step__koef_value"])
 
+        return Step(name=info["_Step__name"],isDone=info["_Step__isDone"],contributor=info["_Step__contributor"], \
+                        complexity=info["_Step__complexity"], koef_value=info["_Step__koef_value"], data=info["_Step__date_of_creation"])
+
+
+#aboba = Step("Выпечь", data=date(year=2003, month=7, day=18).isoformat())
+
+#print(aboba.toJSON())
+
+#print(Step.fromJSON(aboba.toJSON()))
+
+with open("step.json", "r", encoding="utf-8") as file:
+    aboba = Step.fromJSON(file.read())
+    print(type(aboba.toJSON()))

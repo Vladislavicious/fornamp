@@ -135,11 +135,13 @@ class Product:
         return Product(info["_Product__name"], info["_Product__selling_cost"], step_list, info["_Product__production_cost"], \
                             info["_Product__commentary"], info["_Product__isDone"])
     
-"""
+
 with open("test.json", "r", encoding="utf-8") as opened_json:
     json_txt = json.load(opened_json)
     prod = Product.fromDICT(json_txt)
     prod.AddStep(Step("Высушить", complexity=1))
     prod.EvaluateSteps()
     print(prod.toJSON())
-"""
+
+    for step in prod.GetSteps():
+        print(type(step.date_of_creation))

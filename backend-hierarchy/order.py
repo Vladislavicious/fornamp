@@ -7,26 +7,12 @@ from product import Product
 
 import copy
 
-
-class orderEncoder(json.JSONEncoder):
-    """Нужен для нормального перевода класса в JSON
-       исключения здесь нужны, потому что эта же функция рекурсивно применяется ко всем вложенным классам   
-    """
-    def default(self, o):
-        slovar = o.__dict__
-        try:
-            slovar['_Order__date_of_order'] = slovar['_Order__date_of_order'].isoformat()
-            slovar['_Order__date_of_vidacha'] = slovar['_Order__date_of_vidacha'].isoformat()
-        except KeyError:
-            pass
-        return slovar
-
 class Order:
-    def __init__(self, id : int, zakazchik : str, date_of_order : date, \
+    def __init__(self, id : int, zakazchik : str, date_of_creation : date, \
                     date_of_vidacha : date, commentary = "", isDone = False, isVidan = False, products = list()) -> None:
-        self.__id = id      # может какую хеш функцию использовать?
+        self.__id = id    
         self.__zakazchik = zakazchik
-        self.__date_of_order = date_of_order
+        self.__date_of_creation = date_of_creation
         self.__date_of_vidacha = date_of_vidacha
         self.__commentary = commentary
         self.__isDone = isDone
@@ -57,7 +43,7 @@ class Order:
         return self.__id
     
     def toJSON(self):
-        return json.dumps(self, cls=orderEncoder, sort_keys=True, indent=4, ensure_ascii=False)
+        return json.dumps(self, cls=simpleEncoder, sort_keys=True, indent=4, ensure_ascii=False)
 
 
 
