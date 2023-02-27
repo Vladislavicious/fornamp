@@ -7,7 +7,7 @@ from step import simpleEncoder
 
 class Product:
     def __init__(self, name : str, selling_cost : int, steps : List[Step], \
-                    production_cost = 0, commentary = "", \
+                    quantity = 1, production_cost = 0, commentary = "", \
                     isDone = False) -> None:
 
         self.name = name
@@ -62,6 +62,16 @@ class Product:
         return self.selling_cost - self.production_cost
     
     @property
+    def quantity(self):
+        return self.__quantity
+
+    @quantity.setter
+    def quantity(self, value : int):
+        if value < 0:
+            raise ValueError
+        self.__quantity = value
+    
+    @property
     def commentary(self):
         return self.__commentary
 
@@ -73,6 +83,7 @@ class Product:
         return self.__steps
 
     def AddStep(self, step: Step):
+        
         self.__steps.append(step)
 
 
@@ -86,13 +97,13 @@ class Product:
             self.__steps.remove(step_for_deletion)
 
     def __CountBaseVal(self) -> float:
-        """Считает сколько стоит самый простой шаг и возвращает значение между (0 , 1)"""
+        """Считает сколько стоит самый простой шаг в расчете на коичество единиц товара и возвращает значение между (0 , 1)"""
         total = 0.
         for step in self.__steps:
             total += step.complexity
         
         if total != 0:
-            return 1 / total
+            return self.quantity / total
         else:
             return None
                 
@@ -106,7 +117,8 @@ class Product:
     def CheckIfDone(self) -> bool:
         """проверяет Готовность всех шагов"""
         for step in self.__steps:
-            if step.CheckIfDone() == False:
+            if step.isDone == False:
+                self.isDone = False
                 return False
         self.isDone = True
         return True
@@ -114,7 +126,7 @@ class Product:
     def __str__(self) -> str:
         """вывод инф-и о классе для отладки"""
         step_str = "\n".join(list(step.__str__() for step in self.__steps))
-        return f"{self.name} стоит {self.selling_cost}. Для выполнения нужно выполнить следующие шаги: \n{step_str}"
+        return f"Товар {self.name} стоит {self.selling_cost}. Для выполнения {self.quantity} штук нужно выполнить следующие шаги: \n{step_str}"
 
     def toJSON(self):
         return json.dumps(self, cls=simpleEncoder, sort_keys=True, indent=4, ensure_ascii=False)
@@ -133,6 +145,6 @@ class Product:
         step_list = list(Step.fromDict(step) for step in info["_Product__steps"])
 
         return Product(info["_Product__name"], info["_Product__selling_cost"], step_list, info["_Product__production_cost"], \
-                            info["_Product__commentary"], info["_Product__isDone"])
+                            info["_Product__commentary"], info["_Product__isDone"], quantity=info["_Product__quantity"])
     
 
