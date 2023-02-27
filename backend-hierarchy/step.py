@@ -5,32 +5,27 @@ class simpleEncoder(json.JSONEncoder):
     """Нужен для нормального перевода класса в JSON"""
     def default(self, o):
         slovar = o.__dict__
-        try:
-            slovar['_Step__date_of_creation'] = slovar['_Step__date_of_creation'].isoformat()
-            slovar['_Order__date_of_creation'] = slovar['_Order__date_of_creation'].isoformat()
-            slovar['_Order__date_of_vidacha'] = slovar['_Order__date_of_vidacha'].isoformat()
-        except KeyError:
-            pass
+
         return slovar
 
 class Step:
-    def __init__(self, name: str, data = date.today().isoformat(), isDone=False,  \
+    def __init__(self, name: str, data = date.today(), isDone=False,  \
                     contributor="No-one", complexity = 1, koef_value = 1) -> None:
         self.isDone = isDone
         self.contributor = contributor
         self.name = name
         self.complexity = complexity
         self.koef_value = koef_value
-        self.date_of_creation = data
+        self.date_of_creation = data # на вход получаем в виде date, а храним всё в виде isoformat строки
     
     @property
     def date_of_creation(self) -> date:
         """Дата в iso формате"""
-        return self.__date_of_creation
+        return date.fromisoformat(self.__date_of_creation)
     
     @date_of_creation.setter
-    def date_of_creation(self, isoformatted_value : str):
-        self.__date_of_creation = date.fromisoformat(isoformatted_value)
+    def date_of_creation(self, value : date):
+        self.__date_of_creation = value.isoformat()
 
     @property
     def isDone(self):
@@ -87,9 +82,10 @@ class Step:
             return f"Шаг {self.name}. Исполнитель: {self.contributor}"
         return f"Шаг {self.name} не выполнен"
 
-    def MarkAsDone(self, contributor: str, done = True) -> None:
+    def MarkAsDone(self, contributor: str, data : date, done = True) -> None:
         self.isDone = done
         self.contributor = contributor 
+        self.date_of_creation = data
 
     def toJSON(self):
         return json.dumps(self, cls=simpleEncoder, sort_keys=True, indent=4, ensure_ascii=False)
@@ -104,18 +100,9 @@ class Step:
     @classmethod
     def fromDict(cls, info : dict):
         """Возвращает объект класса Step из словаря"""
-        
+        data_dat = date.fromisoformat(info["_Step__date_of_creation"])
 
         return Step(name=info["_Step__name"],isDone=info["_Step__isDone"],contributor=info["_Step__contributor"], \
-                        complexity=info["_Step__complexity"], koef_value=info["_Step__koef_value"], data=info["_Step__date_of_creation"])
+                        complexity=info["_Step__complexity"], koef_value=info["_Step__koef_value"], data=data_dat)
 
 
-#aboba = Step("Выпечь", data=date(year=2003, month=7, day=18).isoformat())
-
-#print(aboba.toJSON())
-
-#print(Step.fromJSON(aboba.toJSON()))
-
-with open("step.json", "r", encoding="utf-8") as file:
-    aboba = Step.fromJSON(file.read())
-    print(type(aboba.toJSON()))

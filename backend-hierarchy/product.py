@@ -8,7 +8,7 @@ from step import simpleEncoder
 class Product:
     def __init__(self, name : str, selling_cost : int, steps : List[Step], \
                     production_cost = 0, commentary = "", \
-                     isDone = False) -> None:
+                    isDone = False) -> None:
 
         self.name = name
         self.selling_cost = selling_cost
@@ -108,7 +108,7 @@ class Product:
         for step in self.__steps:
             if step.CheckIfDone() == False:
                 return False
-        self.__isDone = True
+        self.isDone = True
         return True
 
     def __str__(self) -> str:
@@ -124,10 +124,10 @@ class Product:
         """Возвращает объект класса Product из строки(формата JSON)"""
         info = json.loads(jsonString)
         
-        return Product.fromDICT(info)            
+        return Product.fromDict(info)            
 
     @classmethod
-    def fromDICT(cls, info : dict):
+    def fromDict(cls, info : dict):
         """Возвращает объект класса Product из словаря"""
         
         step_list = list(Step.fromDict(step) for step in info["_Product__steps"])
@@ -136,12 +136,3 @@ class Product:
                             info["_Product__commentary"], info["_Product__isDone"])
     
 
-with open("test.json", "r", encoding="utf-8") as opened_json:
-    json_txt = json.load(opened_json)
-    prod = Product.fromDICT(json_txt)
-    prod.AddStep(Step("Высушить", complexity=1))
-    prod.EvaluateSteps()
-    print(prod.toJSON())
-
-    for step in prod.GetSteps():
-        print(type(step.date_of_creation))
