@@ -75,6 +75,7 @@ class Product:
     def AddStep(self, step: Step):
         self.__steps.append(step)
 
+
     def DeleteStep(self, step_name: str):
         step_for_deletion = None
         for step in self.__steps:
@@ -83,7 +84,25 @@ class Product:
         
         if step_for_deletion != None:
             self.__steps.remove(step_for_deletion)
+
+    def __CountBaseVal(self) -> float:
+        """Считает сколько стоит самый простой шаг и возвращает значение между (0 , 1)"""
+        total = 0.
+        for step in self.__steps:
+            total += step.complexity
+        
+        if total != 0:
+            return 1 / total
+        else:
+            return None
                 
+    def EvaluateSteps(self) -> None:
+        base_value = self.__CountBaseVal()
+
+        if base_value != None:
+            for step in self.__steps:
+                step.koef_value = base_value * step.complexity
+
     def CheckIfDone(self) -> bool:
         """проверяет Готовность всех шагов"""
         for step in self.__steps:
@@ -116,4 +135,11 @@ class Product:
         return Product(info["_Product__name"], info["_Product__selling_cost"], step_list, info["_Product__production_cost"], \
                             info["_Product__commentary"], info["_Product__isDone"])
     
-
+"""
+with open("test.json", "r", encoding="utf-8") as opened_json:
+    json_txt = json.load(opened_json)
+    prod = Product.fromDICT(json_txt)
+    prod.AddStep(Step("Высушить", complexity=1))
+    prod.EvaluateSteps()
+    print(prod.toJSON())
+"""
