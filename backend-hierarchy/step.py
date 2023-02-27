@@ -90,11 +90,3 @@ class Step:
         return Step(info["_Step__name"], info["_Step__isDone"], info["_Step__contributor"], \
                         info["_Step__complexity"], info["_Step__koef_value"])
 
-
-aboba = Step("Шаг")
-aboba.isDone = True
-aboba.complexity = 2
-
-print(lol := Step.fromJSON(aboba.toJSON()))
-
-print(lol.toJSON())
