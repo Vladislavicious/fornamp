@@ -2,7 +2,8 @@ import json
 from typing import List #Типизированный список
 
 from step import Step
-from step import simpleEncoder
+from Contribution import simpleEncoder
+
 
 
 class Product:
@@ -15,6 +16,7 @@ class Product:
         self.production_cost = production_cost
         self.commentary = commentary
         self.isDone = isDone
+        self.quantity = quantity
 
         self.__steps = steps
     
@@ -84,6 +86,7 @@ class Product:
 
     def AddStep(self, step: Step):
         
+        step.quantity = self.quantity
         self.__steps.append(step)
 
 
@@ -144,7 +147,8 @@ class Product:
         
         step_list = list(Step.fromDict(step) for step in info["_Product__steps"])
 
-        return Product(info["_Product__name"], info["_Product__selling_cost"], step_list, info["_Product__production_cost"], \
-                            info["_Product__commentary"], info["_Product__isDone"], quantity=info["_Product__quantity"])
+        return Product(name=info["_Product__name"], selling_cost=info["_Product__selling_cost"], steps=step_list, \
+                        production_cost=info["_Product__production_cost"], commentary=info["_Product__commentary"], \
+                        isDone=info["_Product__isDone"], quantity=info["_Product__quantity"])
     
 

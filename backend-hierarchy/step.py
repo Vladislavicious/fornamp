@@ -1,34 +1,23 @@
 import json
 from datetime import date
+from typing import List
 
-class simpleEncoder(json.JSONEncoder):
-    """Нужен для нормального перевода класса в JSON"""
-    def default(self, o):
-        slovar = o.__dict__
+from Contribution import Contribution
+from Contribution import simpleEncoder
 
-        return slovar
+
+
 
 class Step:
-    def __init__(self, name: str, data = date.today(), isDone=False,  \
-                    contributor="No-one", complexity = 1, koef_value = 1, \
-                         quantity = 1, number_of_made = 0) -> None:
+    def __init__(self, name: str, isDone=False, complexity = 1, koef_value = 1, \
+                      contributions = List[Contribution] ,  quantity = 1) -> None:
         self.isDone = isDone
-        self.contributor = contributor
         self.name = name
         self.complexity = complexity
         self.koef_value = koef_value
-        self.date_of_creation = data # на вход получаем в виде date, а храним всё в виде isoformat строки
-        self.number_of_made = number_of_made
         self.quantity = quantity
-    
-    @property
-    def date_of_creation(self) -> date:
-        """Дата, когда был выполнен шаг в iso формате"""
-        return date.fromisoformat(self.__date_of_creation)
-    
-    @date_of_creation.setter
-    def date_of_creation(self, value : date):
-        self.__date_of_creation = value.isoformat()
+
+        self.__contributions = contributions
 
     @property
     def isDone(self):
@@ -40,14 +29,6 @@ class Step:
             self.isDone = True
         else:
             self.isDone = False
-
-    @property
-    def contributor(self):
-        return self.__contributor
-    
-    @contributor.setter
-    def contributor(self, contributor: str):
-        self.__contributor = contributor.capitalize() 
 
     @property
     def name(self):
@@ -70,18 +51,6 @@ class Step:
             self.__complexity = 1 # Easy
         if complexity > 5:
             self.__complexity = 5 # Hard
-    
-    @property
-    def number_of_made(self):
-        return self.__number_of_made
-    
-    @number_of_made.setter
-    def number_of_made(self, number: int):
-        if number > self.quantity:
-            number = self.quantity
-        if number < 0:
-            number = 0
-        self.__number_of_made = number
 
     @property
     def koef_value(self):
@@ -110,19 +79,26 @@ class Step:
             raise ValueError
         self.__quantity = value
 
+    @property
+    def number_of_made(self) -> int:
+        """То, сколько повторений уже выполнено"""
+        number = 0
+        for contr in self.__contributions:
+            number += contr.number_of_made
+        return number
+
     def __str__(self) -> str:
-        if self.__isDone:
+        if self.isDone:
             return f"Шаг {self.name} в количестве {self.quantity}. Исполнитель: {self.contributor}"
         return f"Шаг {self.name} не выполнен, текущий прогресс: {self.number_of_made} из {self.quantity}"
-
-    def MarkAsDone(self, contributor: str, data : date, number_of_made = 1) -> None:
-        """Шаг считается выполненным, когда все повторения выполнены"""
-        self.contributor = contributor 
-        self.date_of_creation = data
-        self.number_of_made = number_of_made
-
-        
-        self.isDone = True
+    
+    def addContribution(self, contributor: str, data = date.today, number_of_made = 1) -> bool:
+        if self.quantity - number_of_made >= 0 and self.quantity - (number_of_made + self.number_of_made) >= 0:
+            contr = Contribution(contributor=contributor, number_of_made=number_of_made, date_of_creation=data)
+            self.__contributions.append(contr)
+            self.isDone = True
+            return True
+        return False
 
     def toJSON(self):
         return json.dumps(self, cls=simpleEncoder, sort_keys=True, indent=4, ensure_ascii=False)
@@ -137,10 +113,11 @@ class Step:
     @classmethod
     def fromDict(cls, info : dict):
         """Возвращает объект класса Step из словаря"""
-        data_dat = date.fromisoformat(info["_Step__date_of_creation"])
 
-        return Step(name=info["_Step__name"],isDone=info["_Step__isDone"],contributor=info["_Step__contributor"], \
+        contr_list = list(Contribution.fromDict(contr) for contr in info["_Step__contributions"])
+
+        return Step(name=info["_Step__name"],isDone=info["_Step__isDone"], \
                         complexity=info["_Step__complexity"], koef_value=info["_Step__koef_value"], \
-                            data=data_dat, number_of_made=info["_Step__number_of_made"], quantity=info["_Step__quantity"])
+                           contributions=contr_list , quantity=info["_Step__quantity"])
 
 

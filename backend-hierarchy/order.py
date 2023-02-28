@@ -2,7 +2,7 @@ import json
 from datetime import date
 from typing import List #Типизированный список
 
-from step import simpleEncoder
+from Contribution import simpleEncoder
 from product import Product
 
 
