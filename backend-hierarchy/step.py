@@ -9,9 +9,8 @@ from Contribution import simpleEncoder
 
 
 class Step:
-    def __init__(self, name: str, isDone=False, complexity = 1, koef_value = 1, \
-                      contributions = List[Contribution] ,  quantity = 1) -> None:
-        self.isDone = isDone
+    def __init__(self, name: str, contributions : List[Contribution], \
+                 quantity : int = 1, isDone=False, complexity = 1, koef_value = 1) -> None:
         self.name = name
         self.complexity = complexity
         self.koef_value = koef_value
@@ -19,16 +18,18 @@ class Step:
 
         self.__contributions = contributions
 
+        self.isDone = isDone
+
     @property
     def isDone(self):
         return self.__isDone
 
     @isDone.setter
-    def isDone(self):
+    def isDone(self, value : bool): #value здесь "просто так"
         if self.number_of_made == self.quantity:
-            self.isDone = True
+            self.__isDone = True
         else:
-            self.isDone = False
+            self.__isDone = False
 
     @property
     def name(self):
@@ -80,25 +81,38 @@ class Step:
         self.__quantity = value
 
     @property
+    def contr_length(self) -> int:
+        num = 0
+        for item in self.__contributions:
+            num = num + 1
+        return num
+
+    @property
     def number_of_made(self) -> int:
         """То, сколько повторений уже выполнено"""
         number = 0
-        for contr in self.__contributions:
-            number += contr.number_of_made
+        if self.contr_length > 0:
+            for contr in self.__contributions:
+                number += contr.number_of_made
         return number
+    
+    def AddContr(self, contr : Contribution):
+        if self.contr_length == 0 and contr.number_of_made < self.quantity: 
+            self.__contributions.append(contr)
+        elif contr.number_of_made + self.number_of_made <= self.quantity:
+            self.__contributions.append(contr)
+        self.isDone = True #так мы запрашиваем проверку на готовность шага
+
+    def GetContr(self):
+        return self.__contributions
 
     def __str__(self) -> str:
+        contributors_str = "\n".join(list(contr.__str__() for contr in self.__contributions))
+
         if self.isDone:
-            return f"Шаг {self.name} в количестве {self.quantity}. Исполнитель: {self.contributor}"
+            return f"Шаг {self.name} в количестве {self.quantity} исполнен. Исполнители: \n{contributors_str}"
         return f"Шаг {self.name} не выполнен, текущий прогресс: {self.number_of_made} из {self.quantity}"
     
-    def addContribution(self, contributor: str, data = date.today, number_of_made = 1) -> bool:
-        if self.quantity - number_of_made >= 0 and self.quantity - (number_of_made + self.number_of_made) >= 0:
-            contr = Contribution(contributor=contributor, number_of_made=number_of_made, date_of_creation=data)
-            self.__contributions.append(contr)
-            self.isDone = True
-            return True
-        return False
 
     def toJSON(self):
         return json.dumps(self, cls=simpleEncoder, sort_keys=True, indent=4, ensure_ascii=False)
@@ -120,4 +134,17 @@ class Step:
                         complexity=info["_Step__complexity"], koef_value=info["_Step__koef_value"], \
                            contributions=contr_list , quantity=info["_Step__quantity"])
 
+boba = Step("Покрасить", list(), quantity=10, isDone=False)
 
+lena = Contribution("Лена", number_of_made=2)
+tol = Contribution("Толя", number_of_made=5)
+tola = Contribution("Тоlli", number_of_made=3)
+boba.AddContr(lena)
+boba.AddContr(tol)
+boba.AddContr(tola)
+
+
+
+
+with open("step.json", "w", encoding="utf-8") as opened_file:
+    opened_file.write(boba.toJSON())

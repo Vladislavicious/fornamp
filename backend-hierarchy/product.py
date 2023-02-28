@@ -7,7 +7,7 @@ from Contribution import simpleEncoder
 
 
 class Product:
-    def __init__(self, name : str, selling_cost : int, steps : List[Step], \
+    def __init__(self, name : str, selling_cost : int, steps = List[Step], \
                     quantity = 1, production_cost = 0, commentary = "", \
                     isDone = False) -> None:
 

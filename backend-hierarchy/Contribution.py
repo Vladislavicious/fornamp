@@ -38,8 +38,12 @@ class Contribution:
     @number_of_made.setter
     def number_of_made(self, number: int):
         if number < 0:
-            number = 0
-        self.__number_of_made = number
+            self.__number_of_made = 0
+        else:
+            self.__number_of_made = number
+
+    def __str__(self) -> str:
+        return f"{self.date_of_creation.isoformat()} {self.contributor} выполнил {self.number_of_made}"
 
     def toJSON(self):
         return json.dumps(self, cls=simpleEncoder, sort_keys=True, indent=4, ensure_ascii=False)
@@ -58,4 +62,6 @@ class Contribution:
 
         return Contribution(contributor=info["_Contribution__contributor"], \
                             number_of_made=info["_Contribution__number_of_made"], date_of_creation=data_dat)
+
+
     
