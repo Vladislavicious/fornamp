@@ -136,3 +136,6 @@ class Order:
                         date_of_vidacha=data_vid, commentary=info["_Order__commentary"], \
                         isDone=info["_Order__isDone"], isVidan=info["_Order__isVidan"], products=product_list)
     
+
+def listToJson(orders : List[Order]) -> List[dict]:
+    return json.dumps(orders, cls=simpleEncoder, sort_keys=True, indent=4, ensure_ascii=False)
