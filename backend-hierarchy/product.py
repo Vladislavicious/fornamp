@@ -175,24 +175,3 @@ class Product:
                         production_cost=info["_Product__production_cost"], commentary=info["_Product__commentary"], \
                         isDone=info["_Product__isDone"], quantity=info["_Product__quantity"])
     
-prod = Product("Пряник", 150, quantity=15)
-
-with open("step.json", "r", encoding="utf-8") as opened_file:
-
-    new_step = Step.fromJSON(opened_file.read())
-    #print(new_step)
-    prod.AddStep(new_step)
-
-    n_step = deepcopy(new_step)
-    n_step.GetContr().pop()
-    n_step.GetContr().pop()
-    n_step.name = "Выпечь"
-    n_step.complexity = 3
-    prod.AddStep(n_step)
-
-
-
-"""
-with open("product.json", "w", encoding="utf-8") as opened_file:
-    opened_file.write(prod.toJSON())
-"""

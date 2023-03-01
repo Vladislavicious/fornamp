@@ -139,17 +139,3 @@ class Step:
         return Step(name=info["_Step__name"], \
                         complexity=info["_Step__complexity"], koef_value=info["_Step__koef_value"], \
                            contributions=contr_list , quantity=info["_Step__quantity"], isDone=info["_Step__isDone"])
-"""
-boba = Step("Покрасить", list(), quantity=10, isDone=False)
-
-lena = Contribution("Лена", number_of_made=2)
-tol = Contribution("Толя", number_of_made=5)
-tola = Contribution("Тоlli", number_of_made=3)
-boba.AddContr(lena)
-boba.AddContr(tol)
-boba.AddContr(tola)
-
-
-with open("step.json", "w", encoding="utf-8") as opened_file:
-    opened_file.write(boba.toJSON())
-"""

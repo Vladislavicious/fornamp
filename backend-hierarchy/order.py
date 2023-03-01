@@ -2,6 +2,7 @@ import json
 from datetime import date
 from typing import List #Типизированный список
 from copy import deepcopy
+from random import Random
 
 from Contribution import simpleEncoder
 from product import Product
@@ -23,12 +24,15 @@ class Order:
 
     @property
     def id(self):
+        """Случайное одиннадцатизначное число, задаваемое seed'ом"""
         return self.__id
     
     @id.setter
     def id(self, id: int):
-        self.__id = id
-
+        rand = Random()
+        rand.seed(id)
+        self.__id = rand.randint(10000000000, 99999999999)
+        
     @property
     def zakazchik(self):
         return self.__zakazchik
@@ -132,22 +136,3 @@ class Order:
                         date_of_vidacha=data_vid, commentary=info["_Order__commentary"], \
                         isDone=info["_Order__isDone"], isVidan=info["_Order__isVidan"], products=product_list)
     
-
-ordr = Order(2112, "Баба Люся", date(year=2023, month=1, day=18), date.today(), commentary="Бантик не надо")
-"""
-with open("product.json", "r", encoding="utf-8") as opened_file:
-    prod = Product.fromJSON(opened_file.read())
-    ordr.AddProduct(prod)
-    prod.production_cost = 30
-    prod.quantity = 12
-    new_prod = deepcopy(prod)
-    new_prod.DeleteStep("выпечь")
-    new_prod.name = "Доска"
-    new_prod.selling_cost = 1500
-    new_prod.production_cost = 350
-    ordr.AddProduct(new_prod)
-
-with open("order.json", "w", encoding="utf-8") as opened_file:
-    opened_file.write(ordr.toJSON())
-  
-"""
