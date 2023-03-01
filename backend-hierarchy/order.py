@@ -8,8 +8,8 @@ from product import Product
 
 class Order:
     def __init__(self, id : int, zakazchik : str, date_of_creation : date, \
-                    date_of_vidacha : date, commentary = "", isDone = False, \
-                        isVidan = False, products = List[Product]) -> None:
+                    date_of_vidacha : date, products : List[Product] = list(), commentary = "", isDone = False, \
+                        isVidan = False) -> None:
         self.id = id    
         self.zakazchik = zakazchik
         self.date_of_creation = date_of_creation
@@ -81,7 +81,7 @@ class Order:
     @property
     def full_cost(self) -> float:
         sum = 0
-        for prod in self.__products:
+        for prod in self.GetProducts():
             sum += prod.selling_cost
         return sum
     
@@ -94,7 +94,7 @@ class Order:
 
     def DeleteProduct(self, product_name: str): # Скорее всего надо будет добавить и товарам айди, чтобы не удалить случайно чего лишнего
         product_for_deletion = None
-        for product in self.__products:
+        for product in self.GetProducts():
             if product.name == product_name.capitalize():
                 product_for_deletion = product
         
@@ -103,10 +103,10 @@ class Order:
 
     def __str__(self) -> str:
         """вывод инф-и о классе для отладки"""
-        prods_str = "\n".join(list(prod.__str__() for prod in self.__products))
+        prods_str = "\n".join(list(prod.__str__() for prod in self.GetProducts()))
+
         return f"Заказ {self.id} стоит {self.full_cost}, его надо выдать {self.date_of_vidacha}.\
                     \nОн состоит из следующих товаров: \n{prods_str}"
-    
     
     def toJSON(self):
         return json.dumps(self, cls=simpleEncoder, sort_keys=True, indent=4, ensure_ascii=False)
@@ -130,3 +130,9 @@ class Order:
         return Order(zakazchik=info["_Order__zakazchik"], id=info["_Order__id"], date_of_creation=data_creat, \
                         date_of_vidacha=data_vid, commentary=info["_Order__commentary"], \
                         isDone=info["_Order__isDone"], isVidan=info["_Order__isVidan"], products=product_list)
+    
+"""
+ordr = Order(2112, "Баба Люся", date(year=2023, month=1, day=18), date.today(), commentary="Бантик не надо")
+
+print(ordr)
+"""    

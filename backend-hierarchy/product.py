@@ -1,5 +1,6 @@
 import json
 from typing import List #Типизированный список
+from copy import deepcopy
 
 from step import Step
 from Contribution import simpleEncoder
@@ -7,7 +8,7 @@ from Contribution import simpleEncoder
 
 
 class Product:
-    def __init__(self, name : str, selling_cost : int, steps = List[Step], \
+    def __init__(self, name : str, selling_cost : int, steps : List[Step] = list(), \
                     quantity = 1, production_cost = 0, commentary = "", \
                     isDone = False) -> None:
 
@@ -88,6 +89,7 @@ class Product:
         
         step.quantity = self.quantity
         self.__steps.append(step)
+        self.EvaluateSteps()
 
 
     def DeleteStep(self, step_name: str):
@@ -106,7 +108,7 @@ class Product:
             total += step.complexity
         
         if total != 0:
-            return self.quantity / total
+            return 1 / total
         else:
             return None
                 
@@ -151,4 +153,25 @@ class Product:
                         production_cost=info["_Product__production_cost"], commentary=info["_Product__commentary"], \
                         isDone=info["_Product__isDone"], quantity=info["_Product__quantity"])
     
+"""
+prod = Product("Пряник", 150, quantity=15)
 
+with open("step.json", "r", encoding="utf-8") as opened_file:
+
+    new_step = Step.fromJSON(opened_file.read())
+    #print(new_step)
+    prod.AddStep(new_step)
+
+    n_step = deepcopy(new_step)
+    n_step.GetContr().pop()
+    n_step.GetContr().pop()
+    n_step.name = "Выпечь"
+    n_step.complexity = 3
+    prod.AddStep(n_step)
+
+    for steps in prod.GetSteps():
+        print(steps.name, steps.koef_value_done)
+
+with open("product.json", "w", encoding="utf-8") as opened_file:
+    opened_file.write(prod.toJSON())
+"""

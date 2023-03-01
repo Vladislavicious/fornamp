@@ -9,15 +9,15 @@ from Contribution import simpleEncoder
 
 
 class Step:
-    def __init__(self, name: str, contributions : List[Contribution], \
+    def __init__(self, name: str, contributions : List[Contribution] = list(), \
                  quantity : int = 1, isDone=False, complexity = 1, koef_value = 1) -> None:
         self.name = name
         self.complexity = complexity
         self.koef_value = koef_value
-        self.quantity = quantity
 
         self.__contributions = contributions
 
+        self.quantity = quantity
         self.isDone = isDone
 
     @property
@@ -79,6 +79,7 @@ class Step:
         if value < 0:
             raise ValueError
         self.__quantity = value
+        self.isDone = True # та же проверка
 
     @property
     def contr_length(self) -> int:
@@ -95,6 +96,11 @@ class Step:
             for contr in self.__contributions:
                 number += contr.number_of_made
         return number
+    
+    @property
+    def koef_value_done(self) -> float:
+        """То, сколько стоит шаг на данный момент"""
+        return self.number_of_made * self.koef_value
     
     def AddContr(self, contr : Contribution):
         if self.contr_length == 0 and contr.number_of_made < self.quantity: 
@@ -130,10 +136,10 @@ class Step:
 
         contr_list = list(Contribution.fromDict(contr) for contr in info["_Step__contributions"])
 
-        return Step(name=info["_Step__name"],isDone=info["_Step__isDone"], \
+        return Step(name=info["_Step__name"], \
                         complexity=info["_Step__complexity"], koef_value=info["_Step__koef_value"], \
-                           contributions=contr_list , quantity=info["_Step__quantity"])
-
+                           contributions=contr_list , quantity=info["_Step__quantity"], isDone=info["_Step__isDone"])
+"""
 boba = Step("Покрасить", list(), quantity=10, isDone=False)
 
 lena = Contribution("Лена", number_of_made=2)
@@ -144,7 +150,6 @@ boba.AddContr(tol)
 boba.AddContr(tola)
 
 
-
-
 with open("step.json", "w", encoding="utf-8") as opened_file:
     opened_file.write(boba.toJSON())
+"""
