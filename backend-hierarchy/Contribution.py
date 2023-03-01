@@ -49,9 +49,9 @@ class Contribution:
         return json.dumps(self, cls=simpleEncoder, sort_keys=True, indent=4, ensure_ascii=False)
 
     @classmethod
-    def fromJSON(cls, jsonString: str):
+    def fromJSON(cls, json_string: str):
         """Возвращает объект класса Contribution из строки(формата JSON)"""
-        info = json.loads(jsonString)
+        info = json.loads(json_string)
         
         return Contribution.fromDict(info)
     

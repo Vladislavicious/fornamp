@@ -135,11 +135,33 @@ class Product:
 
     def toJSON(self):
         return json.dumps(self, cls=simpleEncoder, sort_keys=True, indent=4, ensure_ascii=False)
+    
+    def SaveAsTemplate(self) -> None:
+        copy = deepcopy(self) # Чтобы не калечить нынешний товар
+
+        for step in copy.GetSteps():
+            step.GetContr().clear()
+
+        filename = copy.name.lower() + ".json"
+        with open(filename, "w", encoding="utf-8") as file:
+            file.write(copy.toJSON())
+        
+    @classmethod
+    def fromTemplate(cls, template_name : str):
+        """Возвращает объект по шаблону, не имеет каких-либо проверок на существование файла"""
+        filename = template_name.lower()
+        if not filename.endswith(".json"):
+            filename = filename + ".json"
+
+        with open(filename, "r", encoding="utf-8") as file:
+            obj = Product.fromJSON(file.read())
+        # если понадобится, то уже здесь можно будет кастомизировать Товар
+        return obj
 
     @classmethod
-    def fromJSON(cls, jsonString : str):
+    def fromJSON(cls, json_string : str):
         """Возвращает объект класса Product из строки(формата JSON)"""
-        info = json.loads(jsonString)
+        info = json.loads(json_string)
         
         return Product.fromDict(info)            
 
@@ -153,7 +175,6 @@ class Product:
                         production_cost=info["_Product__production_cost"], commentary=info["_Product__commentary"], \
                         isDone=info["_Product__isDone"], quantity=info["_Product__quantity"])
     
-"""
 prod = Product("Пряник", 150, quantity=15)
 
 with open("step.json", "r", encoding="utf-8") as opened_file:
@@ -169,9 +190,9 @@ with open("step.json", "r", encoding="utf-8") as opened_file:
     n_step.complexity = 3
     prod.AddStep(n_step)
 
-    for steps in prod.GetSteps():
-        print(steps.name, steps.koef_value_done)
 
+
+"""
 with open("product.json", "w", encoding="utf-8") as opened_file:
     opened_file.write(prod.toJSON())
 """
