@@ -1,4 +1,5 @@
 import json
+import datetime
 from datetime import date
 from typing import List #Типизированный список
 from copy import deepcopy
@@ -29,8 +30,10 @@ class Order:
     
     @id.setter
     def id(self, id: int):
+        today = datetime.datetime.today()
+        number = (today.year * today.day // today.month) + (today.hour * today.minute + today.second * id)
         rand = Random()
-        rand.seed(id)
+        rand.seed(number)
         self.__id = rand.randint(10000000000, 99999999999)
         
     @property
