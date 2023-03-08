@@ -93,6 +93,15 @@ class Order:
             sum += prod.selling_cost * prod.quantity
         return sum
     
+    def CheckIfDone(self) -> bool:
+        """проверяет Готовность всех товаров"""
+        for product in self.GetProducts():
+            if product.CheckIfDone() == False:
+                self.isDone = False
+                return False
+        self.isDone = True
+        return True
+    
     def GetProducts(self):
         return self.__products
 
@@ -109,12 +118,28 @@ class Order:
         if product_for_deletion != None:
             self.__products.remove(product_for_deletion)
 
+        self.CheckIfDone()
+
     def __str__(self) -> str:
         """вывод инф-и о классе для отладки"""
         prods_str = "\n".join(list(prod.__str__() for prod in self.GetProducts()))
 
         return f"Заказ {self.id} стоит {self.full_cost}, его надо выдать {self.date_of_vidacha}.\
                     \nОн состоит из следующих товаров: \n{prods_str}"
+    
+    def toHTML(self) -> str:
+        prod = "\n".join(list(prod.toHTML() for prod in self.GetProducts()))
+
+        prods_str = '<ol>\n' + prod + "\n</ol>"
+
+        if self.CheckIfDone():
+            beginning = '<em class="green">'
+        else:
+            beginning = '<em class="red">'
+        text = beginning + f"Заказ {self.id} стоит {self.full_cost}, его надо выдать {self.date_of_vidacha}.</em>\
+                    \n<br>Он состоит из следующих товаров: \n{prods_str}"
+        
+        return text
     
     def toJSON(self):
         return json.dumps(self, cls=simpleEncoder, sort_keys=True, indent=4, ensure_ascii=False)
