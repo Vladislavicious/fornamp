@@ -17,10 +17,10 @@ class Product:
         self.production_cost = production_cost
         self.commentary = commentary
         self.isDone = isDone
-        self.quantity = quantity
 
         self.__steps = steps
     
+        self.quantity = quantity
     @property
     def name(self):
         return self.__name
@@ -73,6 +73,8 @@ class Product:
         if value < 0:
             raise ValueError
         self.__quantity = value
+        for step in self.GetSteps():
+            step.quantity = value
     
     @property
     def commentary(self):
@@ -90,6 +92,7 @@ class Product:
         step.quantity = self.quantity
         self.__steps.append(step)
         self.EvaluateSteps()
+        self.CheckIfDone()
 
 
     def DeleteStep(self, step_name: str):
@@ -100,6 +103,7 @@ class Product:
         
         if step_for_deletion != None:
             self.__steps.remove(step_for_deletion)
+        self.CheckIfDone()
 
     def __CountBaseVal(self) -> float:
         """Считает сколько стоит самый простой шаг в расчете на коичество единиц товара и возвращает значение между (0 , 1)"""
@@ -121,7 +125,7 @@ class Product:
 
     def CheckIfDone(self) -> bool:
         """проверяет Готовность всех шагов"""
-        for step in self.__steps:
+        for step in self.GetSteps():
             if step.isDone == False:
                 self.isDone = False
                 return False
@@ -130,8 +134,26 @@ class Product:
 
     def __str__(self) -> str:
         """вывод инф-и о классе для отладки"""
-        step_str = "\n".join(list(step.__str__() for step in self.__steps))
+        step_str = "\n".join(list(step.__str__() for step in self.GetSteps()))
+
+        self.CheckIfDone()
+
         return f"Товар {self.name} стоит {self.selling_cost}. Для выполнения {self.quantity} штук нужно выполнить следующие шаги: \n{step_str}"
+
+    def toHTML(self) -> str:
+        steps = "\n".join(list(step.toHTML() for step in self.GetSteps()))
+        step_str = "<ul>\n" + steps + "\n</ul>"
+
+        if self.CheckIfDone():
+            beginning = f'<li class="green">Товар {self.name} выполнен. '
+        else:
+            beginning = f'<li class="red">Товар {self.name} не готов. '
+        
+        stroka = f"Стоимость {self.selling_cost}. <br>Для выполнения {self.quantity} штук нужно выполнить следующие шаги: \n{step_str}"
+
+        text = beginning + stroka + "\n</li>"
+        return text
+
 
     def toJSON(self):
         return json.dumps(self, cls=simpleEncoder, sort_keys=True, indent=4, ensure_ascii=False)
