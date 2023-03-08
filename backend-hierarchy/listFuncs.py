@@ -23,7 +23,7 @@ def listToHTML(orders : List[Order], title: str = "Отчёт") -> str:
     '<html lang="ru" dir="ltr">' + "\n\n"\
     '<head>' + "\n"\
     '<meta charset="utf-8" />' + "\n"\
-    '<link rel="stylesheet" type="text/css" href="Styles.css">' + "\n"\
+    '<link rel="stylesheet" type="text/css" href="https://raw.githack.com/Vladislavicious/factory-engine/d3ba80a8ff5b191ecb327a7b3c3ae146404b8fff/web/Styles.css">' + "\n"\
     f'<title>{title}</title>' + "\n\n"\
     '<body>' + "\n"\
     '<div class="flex-container">' + "\n"\
