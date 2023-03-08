@@ -30,16 +30,16 @@ section {
   font: 900 15px "Roboto", sans-serif;
   color: #fdfafa;
   text-align: center;
-  text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.2);
+  text-shadow: 2px 1px 0 rgba(0, 0, 0, 0.2);
 }
 
 
 .green-container .container{
-  background-color: #43e97b;
+  background-color: #69fc9a;
 }
 
 .red-container .container{
-  background-color: #e94349;
+  background-color: #f86d72;
 }
 
 .container{
@@ -48,9 +48,12 @@ section {
   padding: 5px;
 }
 
-.text {
-  font-style: normal;
-  font-size: 15px;
+.green{
+  color: rgb(0, 108, 0);
+}
+
+.red{
+  color: rgb(210, 2, 2);
 }
 
 ol {
