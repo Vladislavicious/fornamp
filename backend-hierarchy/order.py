@@ -165,23 +165,4 @@ class Order:
                         isDone=info["_Order__isDone"], isVidan=info["_Order__isVidan"], products=product_list)
     
 
-def listToJSON(orders : List[Order]) -> str:
-    return json.dumps(orders, cls=simpleEncoder, sort_keys=True, indent=4, ensure_ascii=False)
-"""
-"""
-def listFromJSON(filename : str) -> List[Order]:
-    filepath = filename.lower()
-    if not filename.endswith(".json"):
-        filepath += ".json"
-    
-    with open(filepath, "r", encoding="utf-8") as opened_file:
-        loaded_list = json.load(opened_file)
-        
-    return listFromJSONlist(loaded_list)
 
-def listFromJSONlist(info : list) -> List[Order]:
-    list_of_orders = list()
-    for order in info:
-        list_of_orders.append(Order.fromDict(order))
-        
-    return list_of_orders
