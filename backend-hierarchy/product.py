@@ -191,9 +191,9 @@ class Product:
     def fromDict(cls, info : dict):
         """Возвращает объект класса Product из словаря"""
         
-        step_list = list(Step.fromDict(step) for step in info["_Product__steps"])
+        step_list = list(Step.fromDict(step) for step in info["steps"])
 
-        return Product(name=info["_Product__name"], selling_cost=info["_Product__selling_cost"], steps=step_list, \
-                        production_cost=info["_Product__production_cost"], commentary=info["_Product__commentary"], \
-                        isDone=info["_Product__isDone"], quantity=info["_Product__quantity"])
+        return Product(name=info["name"], selling_cost=info["selling_cost"], steps=step_list, \
+                        production_cost=info["production_cost"], commentary=info["commentary"], \
+                        isDone=info["isDone"], quantity=info["quantity"])
     

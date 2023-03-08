@@ -140,8 +140,8 @@ class Step:
     def fromDict(cls, info : dict):
         """Возвращает объект класса Step из словаря"""
 
-        contr_list = list(Contribution.fromDict(contr) for contr in info["_Step__contributions"])
+        contr_list = list(Contribution.fromDict(contr) for contr in info["contributions"])
 
-        return Step(name=info["_Step__name"], \
-                        complexity=info["_Step__complexity"], koef_value=info["_Step__koef_value"], \
-                           contributions=contr_list , quantity=info["_Step__quantity"], isDone=info["_Step__isDone"])
+        return Step(name=info["name"], \
+                        complexity=info["complexity"], koef_value=info["koef_value"], \
+                           contributions=contr_list , quantity=info["quantity"], isDone=info["isDone"])

@@ -155,14 +155,14 @@ class Order:
     def fromDict(cls, info : dict):
         """Возвращает объект класса Order из словаря"""
 
-        product_list = list(Product.fromDict(prod) for prod in info["_Order__products"])
+        product_list = list(Product.fromDict(prod) for prod in info["products"])
 
-        data_creat = date.fromisoformat(info["_Order__date_of_creation"])
-        data_vid = date.fromisoformat(info["_Order__date_of_vidacha"])
+        data_creat = date.fromisoformat(info["date_of_creation"])
+        data_vid = date.fromisoformat(info["date_of_vidacha"])
 
-        return Order(zakazchik=info["_Order__zakazchik"], id=info["_Order__id"], date_of_creation=data_creat, \
-                        date_of_vidacha=data_vid, commentary=info["_Order__commentary"], \
-                        isDone=info["_Order__isDone"], isVidan=info["_Order__isVidan"], products=product_list)
+        return Order(zakazchik=info["zakazchik"], id=info["id"], date_of_creation=data_creat, \
+                        date_of_vidacha=data_vid, commentary=info["commentary"], \
+                        isDone=info["isDone"], isVidan=info["isVidan"], products=product_list)
     
 
 

@@ -5,6 +5,13 @@ class simpleEncoder(json.JSONEncoder):
     """Нужен для нормального перевода класса в JSON"""
     def default(self, o):
         slovar = o.__dict__
+        className = "_" + type(o).__name__ + "__"
+
+        slovarKeys = list(slovar.keys())
+        properNames = list(name.replace(className, "") for name in slovarKeys)
+
+        for i in properNames:
+            slovar[i] = slovar.pop(className + i)
 
         return slovar
 
@@ -58,10 +65,10 @@ class Contribution:
     @classmethod
     def fromDict(cls, info : dict):
         """Возвращает объект класса Contribution из словаря"""
-        data_dat = date.fromisoformat(info["_Contribution__date_of_creation"])
+        data_dat = date.fromisoformat(info["date_of_creation"])
 
-        return Contribution(contributor=info["_Contribution__contributor"], \
-                            number_of_made=info["_Contribution__number_of_made"], date_of_creation=data_dat)
+        return Contribution(contributor=info["contributor"], \
+                            number_of_made=info["number_of_made"], date_of_creation=data_dat)
 
 
     
