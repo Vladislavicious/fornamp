@@ -121,7 +121,7 @@ class Product:
 
     def CheckIfDone(self) -> bool:
         """проверяет Готовность всех шагов"""
-        for step in self.__steps:
+        for step in self.GetSteps():
             if step.isDone == False:
                 self.isDone = False
                 return False
@@ -130,8 +130,22 @@ class Product:
 
     def __str__(self) -> str:
         """вывод инф-и о классе для отладки"""
-        step_str = "\n".join(list(step.__str__() for step in self.__steps))
+        step_str = "\n".join(list(step.__str__() for step in self.GetSteps()))
         return f"Товар {self.name} стоит {self.selling_cost}. Для выполнения {self.quantity} штук нужно выполнить следующие шаги: \n{step_str}"
+
+    def toHTML(self) -> str:
+        steps = "\n".join(list(step.toHTML() for step in self.GetSteps()))
+        step_str = "<ul>\n" + steps + "\n</ul>"
+        if self.isDone:
+            begining = f'<li class="green">Товар {self.name} выполнен. '
+        else:
+            begining = f'<li class="red">Товар {self.name} не готов. '
+        
+        stroka = f"Стоимость {self.selling_cost}. <br>Для выполнения {self.quantity} штук нужно выполнить следующие шаги: \n{step_str}"
+
+        text = begining + stroka + "\n</li>"
+        return text
+
 
     def toJSON(self):
         return json.dumps(self, cls=simpleEncoder, sort_keys=True, indent=4, ensure_ascii=False)

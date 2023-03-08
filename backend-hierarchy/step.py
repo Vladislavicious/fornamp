@@ -119,8 +119,14 @@ class Step:
             return f"Шаг {self.name} в количестве {self.quantity} исполнен. Исполнители: \n{contributors_str}"
         return f"Шаг {self.name} не выполнен, текущий прогресс: {self.number_of_made} из {self.quantity}"
     
+    def toHTML(self) -> str:
+        if self.isDone:
+            return '<li class="green">' + f"Шаг {self.name} в количестве "\
+            f"{self.quantity} исполнен." + '</li>'
+        return '<li class="red">' + f"Шаг {self.name} не выполнен, " \
+        f"текущий прогресс: {self.number_of_made} из {self.quantity}" + '</li>'
 
-    def toJSON(self):
+    def toJSON(self) -> str:
         return json.dumps(self, cls=simpleEncoder, sort_keys=True, indent=4, ensure_ascii=False)
 
     @classmethod
