@@ -48,6 +48,20 @@ section {
   padding: 5px;
 }
 
+.text {
+  font-style: normal;
+  font-size: 15px;
+}
+
+ol {
+  text-align: left;
+  margin-left: 20px;
+  margin-top: 1em;
+}
+
+ol ul {
+  margin-left: 20px;
+}
 
 
 
