@@ -13,7 +13,7 @@ def listToHTML(orders : List[Order], title: str = "Отчёт") -> str:
 
     for order in orders:
         txt = beggining + order.toHTML() + ending
-        if order.isDone:
+        if order.isDone and (not order.isVidan):
             greentext = greentext + txt
         else:
             redtext = redtext + txt

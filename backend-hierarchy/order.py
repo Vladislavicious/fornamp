@@ -82,7 +82,7 @@ class Order:
     def isVidan(self):
         return self.__isVidan
 
-    @isDone.setter
+    @isVidan.setter
     def isVidan(self, value : bool):
         self.__isVidan = value 
 
@@ -107,6 +107,7 @@ class Order:
 
     def AddProduct(self, step: Product):
         self.__products.append(step)
+        self.CheckIfDone()
 
 
     def DeleteProduct(self, product_name: str): # Скорее всего надо будет добавить и товарам айди, чтобы не удалить случайно чего лишнего

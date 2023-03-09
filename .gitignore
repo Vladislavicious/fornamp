@@ -133,3 +133,6 @@ dmypy.json
 
 # JSON files
 *.json
+
+# file for local tests
+*localTest.py
