@@ -1,8 +1,10 @@
 import smtplib
-import email.message
+from email import encoders
+from email.mime.multipart import MIMEMultipart 
+from email.mime.text import MIMEText 
+from email.mime.base import MIMEBase
 from typing import Tuple
 
-import listFuncs
   
 def authentificate(login: str, password: str) -> Tuple[bool, str, smtplib.SMTP]:
     """
@@ -33,37 +35,25 @@ def authentificate(login: str, password: str) -> Tuple[bool, str, smtplib.SMTP]:
         
         return (False, f"{error_code}: " + error_message, smtpObj)
         
-def createMessage(FROM: str, TO: str, content: str, Subject: str = "Отчёт") -> email.message.Message:
-    message = email.message.Message()
-    message["Subject"] = Subject
-    message["From"] = FROM
-    message["To"] = TO
+def createMessage(FROM: str, TO: str, message: str, filepath: str = "", Subject: str = "Отчёт") -> MIMEMultipart:
+    msg = MIMEMultipart()
+    msg["Subject"] = Subject
+    msg["From"] = FROM
+    msg["To"] = TO
 
-    if content.startswith("<!DOCTYPE html>"):
-        message.add_header('Content-Type', 'text/html')
-    else:
-        message.add_header('content-disposition', 'attachment')
-    
-    message.set_payload(content, charset="utf-8")
+    msg.attach(MIMEText(message, 'plain', 'utf-8'))
 
-    return message
+    if filepath != "":
+        with open(filepath, "rb") as attachment:
+            part = MIMEBase("application", "octet-stream")
+            part.set_payload(attachment.read())
+        encoders.encode_base64(part)
+        part.add_header("Content-Disposition", f"attachment; filename= {filepath}")
 
-def sendMessage(SMTP: smtplib.SMTP, message: email.message.Message):
+        msg.attach(part)
 
-    SMTP.sendmail(message['From'], [message['To']], message.as_string())
+    return msg
 
-
-login = "vladshilov03@mail.ru"
-password = "g1FHGGDk3CAs82TjUh8q"
-
-(_, _, SMTP) = authentificate(login, password)
-content = listFuncs.listToHTML(listFuncs.listFromJSONfile("orderList.json"), "Отчётик")
-msg = createMessage(login, login, content)
-
-sendMessage(SMTP, msg)
-
-#authentificate("aboba@gmail.com", "asd")
-#authentificate("aboba@mail.ru", "asd")
-#authentificate("aboba@yandex.ru", "asd")
-#smtpObj.sendmail("vladshilov03@mail.ru", "vladshilov03@mail.ru","looks alive")
+def sendMessage(SMTP: smtplib.SMTP, message: MIMEMultipart):
+    SMTP.sendmail(message["From"], message["To"], message.as_string())
 

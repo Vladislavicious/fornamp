@@ -136,3 +136,6 @@ dmypy.json
 
 # file for local tests
 *localTest.py
+
+# Jupyter notebook files
+*.ipynb 
