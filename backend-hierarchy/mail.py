@@ -1,14 +1,14 @@
 import smtplib
+import email.message
 from typing import Tuple
 
-
-def bla():
-    smtpObj = smtplib.SMTP('smtp.mail.ru', 587)
-
-    print(smtpObj.starttls())
-    
+import listFuncs
   
-def authentificate(login: str, password: str) -> None:#Tuple[bool, str]:
+def authentificate(login: str, password: str) -> Tuple[bool, str, smtplib.SMTP]:
+    """
+    Возвращает False и строку ошибки, если не удалось подключиться к почте
+    При успешном подключении возвращает True и объект SMTP
+    """
     if login.endswith("mail.ru"):
         smtpObj = smtplib.SMTP('smtp.mail.ru', 587)
     elif login.endswith("gmail.com"):
@@ -21,8 +21,8 @@ def authentificate(login: str, password: str) -> None:#Tuple[bool, str]:
     smtpObj.starttls()
 
     try:
-        smtpObj.login('vladshiov03@mail.ru','NAV60PWGuRpWkux79fjY')
-        return (True, "Успешно")
+        smtpObj.login(login, password)
+        return (True, "Успешно", smtpObj)
     except smtplib.SMTPResponseException as e:
         error_code = e.smtp_code
         error_message = e.smtp_error
@@ -31,11 +31,37 @@ def authentificate(login: str, password: str) -> None:#Tuple[bool, str]:
         elif(error_code==553):
             error_message = "Проверь все адреса в Кому, CC и BCC полях. Где-то должна быть ошибка или неправильное написание"
         
-        return (False, f"{error_code}: " + error_message)
+        return (False, f"{error_code}: " + error_message, smtpObj)
         
+def createMessage(FROM: str, TO: str, content: str, Subject: str = "Отчёт") -> email.message.Message:
+    message = email.message.Message()
+    message["Subject"] = Subject
+    message["From"] = FROM
+    message["To"] = TO
+
+    if content.startswith("<!DOCTYPE html>"):
+        message.add_header('Content-Type', 'text/html')
+    else:
+        message.add_header('content-disposition', 'attachment')
+    
+    message.set_payload(content, charset="utf-8")
+
+    return message
+
+def sendMessage(SMTP: smtplib.SMTP, message: email.message.Message):
+
+    SMTP.sendmail(message['From'], [message['To']], message.as_string())
 
 
-print(authentificate("aboba@inbox.ru", "asd"))
+login = "vladshilov03@mail.ru"
+password = "g1FHGGDk3CAs82TjUh8q"
+
+(_, _, SMTP) = authentificate(login, password)
+content = listFuncs.listToHTML(listFuncs.listFromJSONfile("orderList.json"), "Отчётик")
+msg = createMessage(login, login, content)
+
+sendMessage(SMTP, msg)
+
 #authentificate("aboba@gmail.com", "asd")
 #authentificate("aboba@mail.ru", "asd")
 #authentificate("aboba@yandex.ru", "asd")
