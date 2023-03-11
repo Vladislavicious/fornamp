@@ -1,6 +1,8 @@
 from typing import List
+from typing import Dict
 from datetime import date
 from dataclasses import dataclass
+from collections import defaultdict
 
 from step import *
 from order import *
@@ -29,3 +31,11 @@ def getContributionsByContributor(contributor: str, orderList: List[Order]):
                         dictionary[contr] = ContributionID(order.id, product.name, step.name, step.koef_value_done)
     
     return dictionary
+
+def getKoefSum(dictionary: Dict[Contribution, ContributionID]) -> Dict[date, float]:
+    """Возвращает словарь Дата : выполненные коэф-ты"""
+    koef_dict = defaultdict(lambda: 0.)
+    for index in dictionary.keys():
+        koef_dict[index.date_of_creation] += dictionary[index].koef_value
+
+    return koef_dict 
