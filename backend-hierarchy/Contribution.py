@@ -1,10 +1,11 @@
 import json
 from datetime import date
+from copy import deepcopy
 
 class simpleEncoder(json.JSONEncoder):
     """Нужен для нормального перевода класса в JSON"""
     def default(self, o):
-        slovar = o.__dict__
+        slovar = deepcopy(o.__dict__)
         className = "_" + type(o).__name__ + "__"
 
         slovarKeys = list(slovar.keys())
@@ -53,7 +54,7 @@ class Contribution:
         return f"{self.date_of_creation.isoformat()} {self.contributor} выполнил {self.number_of_made}"
 
     def toJSON(self):
-        return json.dumps(self, cls=simpleEncoder, sort_keys=True, indent=4, ensure_ascii=False)
+        return json.dumps(self, cls=simpleEncoder, indent=4, ensure_ascii=False)
 
     @classmethod
     def fromJSON(cls, json_string: str):
@@ -71,4 +72,6 @@ class Contribution:
                             number_of_made=info["number_of_made"], date_of_creation=data_dat)
 
 
-    
+def getValidData(data: date) -> str:
+    """Возвращает дату в удобочитаемом виде (ДД-ММ-ГГГГ)"""
+    return data.strftime("%d-%m-%Y")

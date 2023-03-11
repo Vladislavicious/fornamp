@@ -156,7 +156,7 @@ class Product:
 
 
     def toJSON(self):
-        return json.dumps(self, cls=simpleEncoder, sort_keys=True, indent=4, ensure_ascii=False)
+        return json.dumps(self, cls=simpleEncoder, indent=4, ensure_ascii=False)
     
     def SaveAsTemplate(self) -> None:
         copy = deepcopy(self) # Чтобы не калечить нынешний товар

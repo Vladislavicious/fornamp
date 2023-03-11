@@ -6,6 +6,7 @@ from copy import deepcopy
 from random import Random
 
 from Contribution import simpleEncoder
+from Contribution import getValidData
 from product import Product
 
 
@@ -140,13 +141,13 @@ class Order:
             beginning = '<em class="green">'
         else:
             beginning = '<em class="red">'
-        text = beginning + f"Заказ {self.id} стоит {self.full_cost}, его надо выдать {self.date_of_vidacha}.</em>\
+        text = beginning + f"Заказ {self.id} стоит {self.full_cost}, его надо выдать {getValidData(self.date_of_vidacha)}</em>\
                     \n<br>Он состоит из следующих товаров: \n{prods_str}"
         
         return text
     
     def toJSON(self):
-        return json.dumps(self, cls=simpleEncoder, sort_keys=True, indent=4, ensure_ascii=False)
+        return json.dumps(self, cls=simpleEncoder, indent=4, ensure_ascii=False)
 
     @classmethod
     def fromJSON(cls, json_string: str):

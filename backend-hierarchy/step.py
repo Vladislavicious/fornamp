@@ -127,7 +127,7 @@ class Step:
         f"текущий прогресс: {self.number_of_made} из {self.quantity}" + '</li>'
 
     def toJSON(self) -> str:
-        return json.dumps(self, cls=simpleEncoder, sort_keys=True, indent=4, ensure_ascii=False)
+        return json.dumps(self, cls=simpleEncoder, indent=4, ensure_ascii=False)
 
     @classmethod
     def fromJSON(cls, json_string: str):
