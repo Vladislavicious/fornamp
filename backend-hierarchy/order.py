@@ -30,11 +30,14 @@ class Order:
     
     @id.setter
     def id(self, id: int):
-        today = datetime.datetime.today()
-        number = (today.year * today.day // today.month) + (today.hour * today.minute + today.second * id)
-        rand = Random()
-        rand.seed(number)
-        self.__id = rand.randint(10000000000, 99999999999)
+        if id <= 10000000000 or id >= 99999999999:
+            today = datetime.datetime.today()
+            number = (today.year * today.day // today.month) + (today.hour * today.minute + today.second * id)
+            rand = Random()
+            rand.seed(number)
+            self.__id = rand.randint(10000000000, 99999999999)
+        else:
+            self.__id = id
         
     @property
     def zakazchik(self):
