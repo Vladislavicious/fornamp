@@ -52,6 +52,40 @@ class Contribution:
 
     def __str__(self) -> str:
         return f"{self.date_of_creation.isoformat()} {self.contributor} выполнил {self.number_of_made}"
+    
+    def __hash__(self) -> int:
+        return id(self)*self.date_of_creation.day*(self.number_of_made**len(self.contributor))
+
+    def __eq__(self, other):
+        sc = self.__verify_data(other)
+        return self.number_of_made == sc.number_of_made and self.contributor == sc.contributor and self.date_of_creation == sc.date_of_creation
+    
+    def __lt__(self, other):
+        sc = self.__verify_data(other)
+        return self.date_of_creation < sc.date_of_creation
+    
+    def __gt__(self, other):
+        sc = self.__verify_data(other)
+        return self.date_of_creation > sc.date_of_creation
+    
+    def __le__(self, other):
+        sc = self.__verify_data(other)
+        if self.date_of_creation < sc.date_of_creation or self==sc:
+            return True
+        return False
+    
+    def __ge__(self, other):
+        sc = self.__verify_data(other)
+        if self.date_of_creation > sc.date_of_creation or self==sc:
+            return True
+        return False
+    
+    @classmethod
+    def __verify_data(cls, other):
+        if not isinstance(other, Contribution):
+            raise TypeError("Операнд справа должен иметь тип Contribution")
+        
+        return other
 
     def toJSON(self):
         return json.dumps(self, cls=simpleEncoder, indent=4, ensure_ascii=False)
