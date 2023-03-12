@@ -51,7 +51,7 @@ class Contribution:
             self.__number_of_made = number
 
     def __str__(self) -> str:
-        return f"{self.date_of_creation.isoformat()} {self.contributor} выполнил {self.number_of_made}"
+        return f"{getValidData(self.date_of_creation)} {self.contributor} выполнил {self.number_of_made}"
     
     def __hash__(self) -> int:
         return id(self)*self.date_of_creation.day*(self.number_of_made**len(self.contributor))
@@ -62,28 +62,36 @@ class Contribution:
     
     def __lt__(self, other):
         sc = self.__verify_data(other)
+        if self.date_of_creation == sc.date_of_creation:
+            if self.number_of_made == sc.number_of_made:
+                if len(self.contributor) == len(sc.contributor):
+                    return False
+                return len(self.contributor) < len(sc.contributor)
+            return self.number_of_made < sc.number_of_made
         return self.date_of_creation < sc.date_of_creation
     
     def __gt__(self, other):
         sc = self.__verify_data(other)
+        if self.date_of_creation == sc.date_of_creation:
+            if self.number_of_made == sc.number_of_made:
+                if len(self.contributor) == len(sc.contributor):
+                    return False
+                return len(self.contributor) > len(sc.contributor)
+            return self.number_of_made > sc.number_of_made
         return self.date_of_creation > sc.date_of_creation
     
     def __le__(self, other):
         sc = self.__verify_data(other)
-        if self.date_of_creation < sc.date_of_creation or self==sc:
-            return True
-        return False
+        return self < sc or self==sc
     
     def __ge__(self, other):
         sc = self.__verify_data(other)
-        if self.date_of_creation > sc.date_of_creation or self==sc:
-            return True
-        return False
+        return self > sc or self==sc
     
     @classmethod
     def __verify_data(cls, other):
-        if not isinstance(other, Contribution):
-            raise TypeError("Операнд справа должен иметь тип Contribution")
+        if not isinstance(other, cls):
+            raise TypeError(f"Операнд справа должен иметь тип {type(cls)}")
         
         return other
 
