@@ -5,10 +5,8 @@ from typing import List #Типизированный список
 from copy import deepcopy
 from random import Random
 
-from Contribution import simpleEncoder
-from Contribution import getValidData
-from product import Product
-
+from BaH.Contribution import *
+from BaH.product import *
 
 class Order:
     def __init__(self, id : int, zakazchik : str, date_of_creation : date, \

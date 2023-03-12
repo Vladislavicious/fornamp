@@ -4,11 +4,11 @@ from datetime import date
 from dataclasses import dataclass
 from collections import defaultdict
 
-from step import *
-from order import *
+from BaH.step import *
+from BaH.order import *
 from listFuncs import *
 from mail import *
-from Contribution import *
+from BaH.Contribution import *
 
 
 @dataclass

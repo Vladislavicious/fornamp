@@ -2,8 +2,7 @@ import json
 from datetime import date
 from typing import List
 
-from Contribution import Contribution
-from Contribution import simpleEncoder
+from BaH.Contribution import *
 
 
 

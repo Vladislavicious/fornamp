@@ -1,8 +1,8 @@
 import json
 from typing import List
 
-from order import Order
-from order import simpleEncoder
+from BaH.order import Order
+from BaH.order import simpleEncoder
 
 def listToHTML(orders : List[Order], title: str = "Отчёт") -> str:
     """Возвращает текст в формате HTML"""

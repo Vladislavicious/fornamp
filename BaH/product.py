@@ -2,8 +2,8 @@ import json
 from typing import List #Типизированный список
 from copy import deepcopy
 
-from step import Step
-from Contribution import simpleEncoder
+from BaH.step import Step
+from BaH.Contribution import simpleEncoder
 
 
 
