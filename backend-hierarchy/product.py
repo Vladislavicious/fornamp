@@ -147,7 +147,7 @@ class Product:
     def __hash__(self) -> int:
         return id(self)*self.selling_cost*self.quantity
 
-    def __eq__(self, other):#total_cost sellong_cost quantity production_cost 
+    def __eq__(self, other):
         sc = self.__verify_data(other)
         return self.total_cost == sc.total_cost and self.quantity == sc.quantity and self.selling_cost == sc.selling_cost and self.production_cost == sc.production_cost
     

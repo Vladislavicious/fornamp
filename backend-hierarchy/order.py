@@ -91,10 +91,10 @@ class Order:
         self.__isVidan = value 
 
     @property
-    def full_cost(self) -> float:
+    def total_cost(self) -> float:
         sum = 0
         for prod in self.GetProducts():
-            sum += prod.selling_cost * prod.quantity
+            sum += prod.total_cost
         return sum
     
     def CheckIfDone(self) -> bool:
@@ -114,7 +114,7 @@ class Order:
         self.CheckIfDone()
 
 
-    def DeleteProduct(self, product_name: str): # Скорее всего надо будет добавить и товарам айди, чтобы не удалить случайно чего лишнего
+    def DeleteProduct(self, product_name: str):
         product_for_deletion = None
         for product in self.GetProducts():
             if product.name == product_name.capitalize():
@@ -129,8 +129,50 @@ class Order:
         """вывод инф-и о классе для отладки"""
         prods_str = "\n".join(list(prod.__str__() for prod in self.GetProducts()))
 
-        return f"Заказ {self.id} стоит {self.full_cost}, его надо выдать {self.date_of_vidacha}.\
+        return f"Заказ {self.id} стоит {self.total_cost}, его надо выдать {getValidData(self.date_of_vidacha)}.\
                     \nОн состоит из следующих товаров: \n{prods_str}"
+    
+    def __hash__(self) -> int:
+        return id(self)*self.date_of_vidacha.day + self.id
+
+    def __eq__(self, other):
+        sc = self.__verify_data(other)
+        return self.total_cost == sc.total_cost and self.date_of_vidacha == sc.date_of_vidacha and self.date_of_creation == sc.date_of_creation
+    
+    def __lt__(self, other):
+        sc = self.__verify_data(other)
+        if self.date_of_vidacha == sc.date_of_vidacha:
+            if self.total_cost == sc.total_cost:
+                if self.date_of_creation == sc.date_of_creation:
+                    return False
+                return self.date_of_creation < sc.date_of_creation
+            return self.total_cost < sc.total_cost
+        return self.date_of_vidacha < sc.date_of_vidacha
+    
+    def __gt__(self, other):
+        sc = self.__verify_data(other)
+        if self.date_of_vidacha == sc.date_of_vidacha:
+            if self.total_cost == sc.total_cost:
+                if self.date_of_creation == sc.date_of_creation:
+                    return False
+                return self.date_of_creation > sc.date_of_creation
+            return self.total_cost > sc.total_cost
+        return self.date_of_vidacha > sc.date_of_vidacha
+    
+    def __le__(self, other):
+        sc = self.__verify_data(other)
+        return self < sc or self==sc
+    
+    def __ge__(self, other):
+        sc = self.__verify_data(other)
+        return self > sc or self==sc
+    
+    @classmethod
+    def __verify_data(cls, other):
+        if not isinstance(other, cls):
+            raise TypeError(f"Операнд справа должен иметь тип {cls}")
+        
+        return other
     
     def toHTML(self) -> str:
         prod = "\n".join(list(prod.toHTML() for prod in self.GetProducts()))
@@ -141,7 +183,7 @@ class Order:
             beginning = '<em class="green">'
         else:
             beginning = '<em class="red">'
-        text = beginning + f"Заказ {self.id} стоит {self.full_cost}, его надо выдать {getValidData(self.date_of_vidacha)}</em>\
+        text = beginning + f"Заказ {self.id} стоит {self.total_cost}, его надо выдать {getValidData(self.date_of_vidacha)}</em>\
                     \n<br>Он состоит из следующих товаров: \n{prods_str}"
         
         return text

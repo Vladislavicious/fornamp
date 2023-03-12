@@ -99,6 +99,14 @@ def listToPlainHTML(orders : List[Order], title: str = "Отчёт") -> str:
 def listToJSON(orders : List[Order]) -> str:
     return json.dumps(orders, cls=simpleEncoder, sort_keys=True, indent=4, ensure_ascii=False)
 
+def listToJSONfile(orders : List[Order], filename : str):
+    filepath = filename.lower()
+    if not filename.endswith(".json"):
+        filepath += ".json"
+    
+    with open(filepath, "w", encoding="utf-8") as opened_file:
+        opened_file.write(listToJSON(orders))
+
 def listFromJSONfile(filename : str) -> List[Order]:
     filepath = filename.lower()
     if not filename.endswith(".json"):
@@ -120,6 +128,17 @@ def createHTMLfromJSON(jsonPath: str, htmlPath: str, htmlTitle: str = "Отчё�
     content = listToPlainHTML(listFromJSONfile(jsonPath), htmlTitle)
 
     with open(htmlPath, "w", encoding="utf-8") as file:
+        file.write(content)
+
+def createHTMLfromList(orders: List[Order], htmlPath: str, htmlTitle: str = "Отчёт"):
+    """Сохраняет HTML файл по указанному пути"""
+    content = listToPlainHTML(orders, htmlTitle)
+
+    filepath = htmlPath.lower()
+    if not htmlPath.endswith(".html"):
+        filepath += ".html"
+
+    with open(filepath, "w", encoding="utf-8") as file:
         file.write(content)
 
 def ContributionsFromOrdersList(orders: List[Order]):
