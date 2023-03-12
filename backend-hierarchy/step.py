@@ -122,7 +122,7 @@ class Step:
     def __hash__(self) -> int:
         return id(self)*self.complexity*self.quantity
 
-    def __eq__(self, other): #koef_value quantity complexity name
+    def __eq__(self, other): 
         sc = self.__verify_data(other)
         return self.koef_value == sc.koef_value and self.quantity == sc.quantity and self.complexity == sc.complexity and self.name == sc.name
     
@@ -130,7 +130,7 @@ class Step:
         sc = self.__verify_data(other)
         if self.koef_value == sc.koef_value:
             if self.quantity == sc.quantity:
-                if self.complexity == self.complexity:
+                if self.complexity == sc.complexity:
                     if self.name == sc.name:
                         return False
                     return self.name < sc.name
@@ -142,7 +142,7 @@ class Step:
         sc = self.__verify_data(other)
         if self.koef_value == sc.koef_value:
             if self.quantity == sc.quantity:
-                if self.complexity == self.complexity:
+                if self.complexity == sc.complexity:
                     if self.name == sc.name:
                         return False
                     return self.name > sc.name

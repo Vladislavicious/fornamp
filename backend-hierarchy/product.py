@@ -17,10 +17,11 @@ class Product:
         self.production_cost = production_cost
         self.commentary = commentary
         self.isDone = isDone
-
+        
         self.__steps = steps
     
         self.quantity = quantity
+
     @property
     def name(self):
         return self.__name
@@ -65,6 +66,10 @@ class Product:
         return self.selling_cost - self.production_cost
     
     @property
+    def total_cost(self):
+        return self.selling_cost * self.quantity
+    
+    @property
     def quantity(self):
         return self.__quantity
 
@@ -94,7 +99,6 @@ class Product:
         self.EvaluateSteps()
         self.CheckIfDone()
 
-
     def DeleteStep(self, step_name: str):
         step_for_deletion = None
         for step in self.__steps:
@@ -105,17 +109,6 @@ class Product:
             self.__steps.remove(step_for_deletion)
         self.CheckIfDone()
 
-    def __CountBaseVal(self) -> float:
-        """Считает сколько стоит самый простой шаг в расчете на коичество единиц товара и возвращает значение между (0 , 1)"""
-        total = 0.
-        for step in self.__steps:
-            total += step.complexity
-        
-        if total != 0:
-            return 1 / total
-        else:
-            return None
-                
     def EvaluateSteps(self) -> None:
         base_value = self.__CountBaseVal()
 
@@ -132,6 +125,17 @@ class Product:
         self.isDone = True
         return True
 
+    def __CountBaseVal(self) -> float:
+        """Считает сколько стоит самый простой шаг в расчете на коичество единиц товара и возвращает значение между (0 , 1)"""
+        total = 0.
+        for step in self.__steps:
+            total += step.complexity
+        
+        if total != 0:
+            return 1 / total
+        else:
+            return None
+                
     def __str__(self) -> str:
         """вывод инф-и о классе для отладки"""
         step_str = "\n".join(list(step.__str__() for step in self.GetSteps()))
@@ -139,6 +143,55 @@ class Product:
         self.CheckIfDone()
 
         return f"Товар {self.name} стоит {self.selling_cost}. Для выполнения {self.quantity} штук нужно выполнить следующие шаги: \n{step_str}"
+    
+    def __hash__(self) -> int:
+        return id(self)*self.selling_cost*self.quantity
+
+    def __eq__(self, other):#total_cost sellong_cost quantity production_cost 
+        sc = self.__verify_data(other)
+        return self.total_cost == sc.total_cost and self.quantity == sc.quantity and self.selling_cost == sc.selling_cost and self.production_cost == sc.production_cost
+    
+    def __lt__(self, other):
+        sc = self.__verify_data(other)
+        if self.total_cost == sc.total_cost:
+            if self.selling_cost == sc.selling_cost:
+                if self.production_cost == sc.production_cost:
+                    if self.quantity == sc.quantity:
+                        return False
+                    return self.quantity < sc.quantity
+                return self.production_cost < sc.production_cost
+            return self.selling_cost < sc.selling_cost
+        return self.total_cost < sc.total_cost
+    
+    def __gt__(self, other):
+        sc = self.__verify_data(other)
+        if self.total_cost == sc.total_cost:
+            if self.selling_cost == sc.selling_cost:
+                if self.production_cost == sc.production_cost:
+                    if self.quantity == sc.quantity:
+                        return False
+                    return self.quantity > sc.quantity
+                return self.production_cost > sc.production_cost
+            return self.selling_cost > sc.selling_cost
+        return self.total_cost > sc.total_cost
+    
+    def __le__(self, other):
+        sc = self.__verify_data(other)
+        return self < sc or self==sc
+    
+    def __ge__(self, other):
+        sc = self.__verify_data(other)
+        return self > sc or self==sc
+    
+    @classmethod
+    def __verify_data(cls, other):
+        if not isinstance(other, cls):
+            raise TypeError(f"Операнд справа должен иметь тип {cls}")
+        
+        return other
+
+    
+
 
     def toHTML(self) -> str:
         steps = "\n".join(list(step.toHTML() for step in self.GetSteps()))
@@ -153,7 +206,6 @@ class Product:
 
         text = beginning + stroka + "\n</li>"
         return text
-
 
     def toJSON(self):
         return json.dumps(self, cls=simpleEncoder, indent=4, ensure_ascii=False)

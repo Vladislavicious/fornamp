@@ -121,3 +121,27 @@ def createHTMLfromJSON(jsonPath: str, htmlPath: str, htmlTitle: str = "Отчё�
 
     with open(htmlPath, "w", encoding="utf-8") as file:
         file.write(content)
+
+def ContributionsFromOrdersList(orders: List[Order]):
+    Contrs = list()
+    for order in orders:
+        for product in order.GetProducts():
+            for step in product.GetSteps():
+                Contrs = Contrs + step.GetContr()
+    
+    return Contrs
+
+def StepsFromOrdersList(orders: List[Order]):
+    Steps = list()
+    for order in orders:
+        for product in order.GetProducts():
+            Steps = Steps + product.GetSteps()
+    
+    return Steps
+
+def ProductsFromOrdersList(orders: List[Order]):
+    Products = list()
+    for order in orders:
+        Products = Products + order.GetProducts()
+    
+    return Products
