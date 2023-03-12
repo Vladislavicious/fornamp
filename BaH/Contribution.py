@@ -1,10 +1,11 @@
 import json
 from datetime import date
+from copy import deepcopy
 
 class simpleEncoder(json.JSONEncoder):
     """Нужен для нормального перевода класса в JSON"""
     def default(self, o):
-        slovar = o.__dict__
+        slovar = deepcopy(o.__dict__)
         className = "_" + type(o).__name__ + "__"
 
         slovarKeys = list(slovar.keys())
@@ -50,10 +51,52 @@ class Contribution:
             self.__number_of_made = number
 
     def __str__(self) -> str:
-        return f"{self.date_of_creation.isoformat()} {self.contributor} выполнил {self.number_of_made}"
+        return f"{getValidData(self.date_of_creation)} {self.contributor} выполнил {self.number_of_made}"
+    
+    def __hash__(self) -> int:
+        return id(self)*self.date_of_creation.day*(self.number_of_made**len(self.contributor))
+
+    def __eq__(self, other):
+        sc = self.__verify_data(other)
+        return self.number_of_made == sc.number_of_made and self.contributor == sc.contributor and self.date_of_creation == sc.date_of_creation
+    
+    def __lt__(self, other):
+        sc = self.__verify_data(other)
+        if self.date_of_creation == sc.date_of_creation:
+            if self.number_of_made == sc.number_of_made:
+                if self.contributor == sc.contributor:
+                    return False
+                return self.contributor < sc.contributor
+            return self.number_of_made < sc.number_of_made
+        return self.date_of_creation < sc.date_of_creation
+    
+    def __gt__(self, other):
+        sc = self.__verify_data(other)
+        if self.date_of_creation == sc.date_of_creation:
+            if self.number_of_made == sc.number_of_made:
+                if self.contributor == sc.contributor:
+                    return False
+                return self.contributor > sc.contributor
+            return self.number_of_made > sc.number_of_made
+        return self.date_of_creation > sc.date_of_creation
+    
+    def __le__(self, other):
+        sc = self.__verify_data(other)
+        return self < sc or self==sc
+    
+    def __ge__(self, other):
+        sc = self.__verify_data(other)
+        return self > sc or self==sc
+    
+    @classmethod
+    def __verify_data(cls, other):
+        if not isinstance(other, cls):
+            raise TypeError(f"Операнд справа должен иметь тип {cls}")
+        
+        return other
 
     def toJSON(self):
-        return json.dumps(self, cls=simpleEncoder, sort_keys=True, indent=4, ensure_ascii=False)
+        return json.dumps(self, cls=simpleEncoder, indent=4, ensure_ascii=False)
 
     @classmethod
     def fromJSON(cls, json_string: str):
@@ -71,4 +114,6 @@ class Contribution:
                             number_of_made=info["number_of_made"], date_of_creation=data_dat)
 
 
-    
+def getValidData(data: date) -> str:
+    """Возвращает дату в удобочитаемом виде (ДД-ММ-ГГГГ)"""
+    return data.strftime("%d-%m-%Y")

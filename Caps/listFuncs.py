@@ -1,8 +1,8 @@
 import json
 from typing import List
 
-from order import Order
-from order import simpleEncoder
+from BaH.order import Order
+from BaH.order import simpleEncoder
 
 def listToHTML(orders : List[Order], title: str = "Отчёт") -> str:
     """Возвращает текст в формате HTML"""
@@ -99,6 +99,14 @@ def listToPlainHTML(orders : List[Order], title: str = "Отчёт") -> str:
 def listToJSON(orders : List[Order]) -> str:
     return json.dumps(orders, cls=simpleEncoder, sort_keys=True, indent=4, ensure_ascii=False)
 
+def listToJSONfile(orders : List[Order], filename : str):
+    filepath = filename.lower()
+    if not filename.endswith(".json"):
+        filepath += ".json"
+    
+    with open(filepath, "w", encoding="utf-8") as opened_file:
+        opened_file.write(listToJSON(orders))
+
 def listFromJSONfile(filename : str) -> List[Order]:
     filepath = filename.lower()
     if not filename.endswith(".json"):
@@ -121,3 +129,38 @@ def createHTMLfromJSON(jsonPath: str, htmlPath: str, htmlTitle: str = "Отчё�
 
     with open(htmlPath, "w", encoding="utf-8") as file:
         file.write(content)
+
+def createHTMLfromList(orders: List[Order], htmlPath: str, htmlTitle: str = "Отчёт"):
+    """Сохраняет HTML файл по указанному пути"""
+    content = listToPlainHTML(orders, htmlTitle)
+
+    filepath = htmlPath.lower()
+    if not htmlPath.endswith(".html"):
+        filepath += ".html"
+
+    with open(filepath, "w", encoding="utf-8") as file:
+        file.write(content)
+
+def ContributionsFromOrdersList(orders: List[Order]):
+    Contrs = list()
+    for order in orders:
+        for product in order.GetProducts():
+            for step in product.GetSteps():
+                Contrs = Contrs + step.GetContr()
+    
+    return Contrs
+
+def StepsFromOrdersList(orders: List[Order]):
+    Steps = list()
+    for order in orders:
+        for product in order.GetProducts():
+            Steps = Steps + product.GetSteps()
+    
+    return Steps
+
+def ProductsFromOrdersList(orders: List[Order]):
+    Products = list()
+    for order in orders:
+        Products = Products + order.GetProducts()
+    
+    return Products

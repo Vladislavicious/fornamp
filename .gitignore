@@ -78,6 +78,7 @@ docs/_build/
 target/
 
 # Jupyter Notebook
+*.ipynb 
 .ipynb_checkpoints
 
 # IPython
@@ -137,5 +138,5 @@ dmypy.json
 # file for local tests
 *localTest.py
 
-# Jupyter notebook files
-*.ipynb 
+# debug html
+aboba.html

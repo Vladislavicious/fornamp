@@ -2,8 +2,7 @@ import json
 from datetime import date
 from typing import List
 
-from Contribution import Contribution
-from Contribution import simpleEncoder
+from BaH.Contribution import *
 
 
 
@@ -119,6 +118,52 @@ class Step:
             return f"Шаг {self.name} в количестве {self.quantity} исполнен. Исполнители: \n{contributors_str}"
         return f"Шаг {self.name} не выполнен, текущий прогресс: {self.number_of_made} из {self.quantity}"
     
+    def __hash__(self) -> int:
+        return id(self)*self.complexity*self.quantity
+
+    def __eq__(self, other): 
+        sc = self.__verify_data(other)
+        return self.koef_value == sc.koef_value and self.quantity == sc.quantity and self.complexity == sc.complexity and self.name == sc.name
+    
+    def __lt__(self, other):
+        sc = self.__verify_data(other)
+        if self.koef_value == sc.koef_value:
+            if self.quantity == sc.quantity:
+                if self.complexity == sc.complexity:
+                    if self.name == sc.name:
+                        return False
+                    return self.name < sc.name
+                return self.complexity < sc.complexity
+            return self.quantity < sc.quantity
+        return self.koef_value < sc.koef_value
+    
+    def __lt__(self, other):
+        sc = self.__verify_data(other)
+        if self.koef_value == sc.koef_value:
+            if self.quantity == sc.quantity:
+                if self.complexity == sc.complexity:
+                    if self.name == sc.name:
+                        return False
+                    return self.name > sc.name
+                return self.complexity > sc.complexity
+            return self.quantity > sc.quantity
+        return self.koef_value > sc.koef_value
+    
+    def __le__(self, other):
+        sc = self.__verify_data(other)
+        return self < sc or self==sc
+    
+    def __ge__(self, other):
+        sc = self.__verify_data(other)
+        return self > sc or self==sc
+    
+    @classmethod
+    def __verify_data(cls, other):
+        if not isinstance(other, cls):
+            raise TypeError(f"Операнд справа должен иметь тип {cls}")
+        
+        return other
+
     def toHTML(self) -> str:
         if self.isDone:
             return '<li class="green">' + f"Шаг {self.name} в количестве "\
@@ -127,7 +172,7 @@ class Step:
         f"текущий прогресс: {self.number_of_made} из {self.quantity}" + '</li>'
 
     def toJSON(self) -> str:
-        return json.dumps(self, cls=simpleEncoder, sort_keys=True, indent=4, ensure_ascii=False)
+        return json.dumps(self, cls=simpleEncoder, indent=4, ensure_ascii=False)
 
     @classmethod
     def fromJSON(cls, json_string: str):
