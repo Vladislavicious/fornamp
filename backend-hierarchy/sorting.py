@@ -12,14 +12,15 @@ from Contribution import *
 
 
 @dataclass
-class ContributionID:
+class ContrID:
+    """Структура для нахождения контрибушна в списке заказов"""
     Order_id: int
     product_name: str
     step_name: str
     koef_value: int
 
 def getContributionsByContributor(contributor: str, orderList: List[Order]):
-    """Возвращает словарь Contribution : ContributionID"""
+    """Возвращает словарь Contribution : ContrID"""
     dictionary = dict()
     
     for order in orderList:
@@ -27,11 +28,11 @@ def getContributionsByContributor(contributor: str, orderList: List[Order]):
             for step in product.GetSteps():
                 for contr in step.GetContr():
                     if contr.contributor == contributor:
-                        dictionary[contr] = ContributionID(order.id, product.name, step.name, step.koef_value_done)
+                        dictionary[contr] = ContrID(order.id, product.name, step.name, step.koef_value_done)
     
     return dictionary
 
-def getKoefSum(dictionary: Dict[Contribution, ContributionID]) -> Dict[date, float]:
+def getKoefSum(dictionary: Dict[Contribution, ContrID]) -> Dict[date, float]:
     """Возвращает словарь Дата : выполненные коэф-ты"""
     koef_dict = defaultdict(lambda: 0.)
     for index in dictionary.keys():

@@ -64,9 +64,9 @@ class Contribution:
         sc = self.__verify_data(other)
         if self.date_of_creation == sc.date_of_creation:
             if self.number_of_made == sc.number_of_made:
-                if len(self.contributor) == len(sc.contributor):
+                if self.contributor == sc.contributor:
                     return False
-                return len(self.contributor) < len(sc.contributor)
+                return self.contributor < sc.contributor
             return self.number_of_made < sc.number_of_made
         return self.date_of_creation < sc.date_of_creation
     
@@ -74,9 +74,9 @@ class Contribution:
         sc = self.__verify_data(other)
         if self.date_of_creation == sc.date_of_creation:
             if self.number_of_made == sc.number_of_made:
-                if len(self.contributor) == len(sc.contributor):
+                if self.contributor == sc.contributor:
                     return False
-                return len(self.contributor) > len(sc.contributor)
+                return self.contributor > sc.contributor
             return self.number_of_made > sc.number_of_made
         return self.date_of_creation > sc.date_of_creation
     
@@ -91,7 +91,7 @@ class Contribution:
     @classmethod
     def __verify_data(cls, other):
         if not isinstance(other, cls):
-            raise TypeError(f"Операнд справа должен иметь тип {type(cls)}")
+            raise TypeError(f"Операнд справа должен иметь тип {cls}")
         
         return other
 
