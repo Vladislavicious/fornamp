@@ -1,16 +1,15 @@
-﻿import tkinter as tk
+import tkinter as tk
 from tkinter import ttk
 
 
-#пожалуйста не бейте это просто набросок)
 
 class Main_window(tk.Frame):
     def __init__(self, root):
         super().__init__(root)
 
-        self.init_main()
+        self.init_main_window()
 
-    def init_main(self):
+    def init_main_window(self):
 
         frame_title = ttk.Frame(borderwidth=5, relief=tk.SOLID, height=50)
         frame_tools = ttk.Frame(borderwidth=5, relief=tk.SOLID, width=150)
@@ -20,7 +19,7 @@ class Main_window(tk.Frame):
         button_profile = ttk.Button(frame_title, text="Профиль")
         button_profile.pack(side = tk.RIGHT)
        
-        name_label = ttk.Label(frame_title, text="НАЗВАНИЕ ПРОГРАММЫ", font =  36, padding=[15,0])
+        name_label = ttk.Label(frame_title, text="TASK MANAGER", font =  36, padding=[15,0])
         name_label.pack(anchor = tk.N)
 
         button_add_order = ttk.Button(frame_tools, text = "Добавить", command=self.open_window)
@@ -35,12 +34,15 @@ class Main_window(tk.Frame):
 
 
     def open_window(self):
-        Window_add()
+        self.window_add = Window_add()
 
 class Window_add(tk.Toplevel):
     def __init__(self):
         super().__init__(root)
         self.main_window = app
+        self.list_frame_product = []
+        self.current_step: int
+        
         self.init_window_add()
 
 
@@ -50,11 +52,12 @@ class Window_add(tk.Toplevel):
         self.resizable(False,False)
         self.overrideredirect(True)
 
+
         self.panel_add()
 
-        self.add_order()
-        self.add_product()
-        self.add_step()
+        self.add_area_order()
+        self.add_area_product()
+        self.add_area_step()
 
         self.rowconfigure(0, weight=1)
         self.rowconfigure(1, weight=610)
@@ -67,7 +70,6 @@ class Window_add(tk.Toplevel):
 
 
         self.bind("<Configure>", self.resize)
-        self.update_idletasks()
         self.minsize(self.winfo_width(), self.winfo_height())
 
     def resize(self, event):
@@ -81,9 +83,9 @@ class Window_add(tk.Toplevel):
 
     def panel_add(self):
 
-        self.frame_order_panel = ttk.Frame(self, borderwidth=5, relief=tk.SOLID, width=300, height=40)
-        self.frame_product_panel = ttk.Frame(self, borderwidth=5, relief=tk.SOLID, width=400, height=40)
-        self.frame_step_panel = ttk.Frame(self, borderwidth=5, relief=tk.SOLID, width=400, height=40)
+        self.frame_order_panel = ttk.Frame(self, borderwidth=5, relief=tk.GROOVE, width=300, height=40)
+        self.frame_product_panel = ttk.Frame(self, borderwidth=5, relief=tk.GROOVE, width=400, height=40)
+        self.frame_step_panel = ttk.Frame(self, borderwidth=5, relief=tk.GROOVE, width=400, height=40)
 
         self.frame_order_panel.grid(row=0, column=0, sticky="ew")
         self.frame_product_panel.grid(row=0, column=1, columnspan=2, sticky="ew")
@@ -96,13 +98,13 @@ class Window_add(tk.Toplevel):
         label_title_order = ttk.Label(self.frame_order_panel, text="ЗАКАЗ")
         label_title_order.pack(anchor=tk.CENTER, pady=5)
 
-        button_add_product = ttk.Button(self.frame_product_panel, text="Добавить продукт", command=self.product_field)
+        button_add_product = ttk.Button(self.frame_product_panel, text="Добавить продукт", command=self.add_product_field)
         button_add_product.pack(side=tk.RIGHT)
 
         label_title_product = ttk.Label(self.frame_product_panel, text="ПРОДУКТЫ")
         label_title_product.pack(side=tk.RIGHT, pady=5, padx=50)
 
-        button_add_step = ttk.Button(self.frame_step_panel, text="Добавить шаг", command=self.step_field)
+        button_add_step = ttk.Button(self.frame_step_panel, text="Добавить шаг", command=self.add_step_field)
         button_add_step.pack(side=tk.RIGHT)
 
         label_title_step = ttk.Label(self.frame_step_panel, text="ШАГИ")
@@ -110,17 +112,17 @@ class Window_add(tk.Toplevel):
 
 
 
-    def add_order(self):
-        self.frame_order = ttk.Frame(self, borderwidth=5, relief=tk.SOLID, width=300, height=600)
+    def add_area_order(self):
+        self.frame_order = ttk.Frame(self, borderwidth=5, relief=tk.GROOVE, width=300, height=600)
 
-        self.order_field()
+        self.add_order_field()
         self.frame_order.grid(row=1, column=0)
         
         
 
 
-    def add_product(self):
-        self.count_product = 1
+    def add_area_product(self):
+        self.number_product = 1
 
         scroll_y = tk.Scrollbar(self, orient=tk.VERTICAL)
         self.canvas_product = tk.Canvas(self, yscrollcommand=scroll_y.set)
@@ -136,8 +138,8 @@ class Window_add(tk.Toplevel):
 
 
 
-    def add_step(self):
-        self.count_steps = 1
+    def add_area_step(self):
+        self.number_step = 1
 
         scroll_y = tk.Scrollbar(self, orient=tk.VERTICAL)
         self.canvas_step = tk.Canvas(self, yscrollcommand=scroll_y.set)
@@ -153,7 +155,7 @@ class Window_add(tk.Toplevel):
 
 
 
-    def order_field(self):
+    def add_order_field(self):
         frame_order_field = ttk.Frame(self.frame_order, width=250, height=700)
         frame_order_field.pack(side=tk.TOP, padx=1, pady=1)
         frame_order_field.pack_propagate(False)
@@ -170,87 +172,157 @@ class Window_add(tk.Toplevel):
         self.entry_commentariy_order = ttk.Entry(frame_order_field)
         self.entry_commentariy_order.pack(fill=tk.X, pady=5)
 
-        button_close = ttk.Button(frame_order_field, text="Закрыть", command=self.close_window_add)
+        button_close = ttk.Button(frame_order_field, text="Закрыть", command=self.close_window)
         button_close.pack(side=tk.BOTTOM, anchor=tk.E)
 
-    def product_field(self):
-        label_count_product = ttk.Label(self.frame_product, text="Продукт № " + str(self.count_product))
-        label_count_product.pack(anchor=tk.CENTER, pady=5)
-        self.count_product+=1
-
-        frame_product_field = ttk.Frame(self.frame_product, borderwidth=5, relief=tk.SOLID, width=350, height=320)
-        frame_product_field.pack(side=tk.TOP, padx=1, pady=1)
-        frame_product_field.pack_propagate(False)
-
-        label_name = ttk.Label(frame_product_field, text="Введите название продукта")
-        label_name.pack(anchor=tk.CENTER, pady=5)
-
-        self.entry_name_product = ttk.Entry(frame_product_field)
-        self.entry_name_product.pack(fill=tk.X, pady=5)
-
-        label_selling_cost = ttk.Label(frame_product_field, text="Введите стоимость продажи")
-        label_selling_cost.pack(anchor=tk.CENTER, pady=5)
-
-        self.entry_selling_cost = ttk.Entry(frame_product_field)
-        self.entry_selling_cost.pack(fill=tk.X, pady=5)
-
-        label_production_cost = ttk.Label(frame_product_field, text="Введите себестоимость товара")
-        label_production_cost .pack(anchor=tk.CENTER, pady=5)
-
-        self.entry_production_cost = ttk.Entry(frame_product_field)
-        self.entry_production_cost.pack(fill=tk.X, pady=5)
-
-        label_commentariy = ttk.Label(frame_product_field, text="Введите описание заказа")
-        label_commentariy.pack(anchor=tk.CENTER, pady=5)
-
-        self.entry_commentariy_product = ttk.Entry(frame_product_field)
-        self.entry_commentariy_product.pack(fill=tk.X, pady=5)
-
-        label_quantity = ttk.Label(frame_product_field, text="Введите количество товаров")
-        label_quantity.pack(anchor=tk.CENTER, pady=5)
-
-        self.entry_quantity = ttk.Entry(frame_product_field)
-        self.entry_quantity.pack(fill=tk.X, pady=5)
+    
 
 
 
-    def step_field(self):
+    def add_step_field(self):
+        step = Step_field()
+        
+        self.list_frame_product[self.current_step].append(step)
 
-        label_count_step = ttk.Label(self.frame_step, text="Шаг № " + str(self.count_steps))
-        label_count_step.pack(anchor=tk.CENTER, pady=5)
-        self.count_steps+=1
+    def add_product_field(self):
+        self.product = Product_field(self.number_product)
+        self.number_product+=1
+        list_step: Step_field = []
+        self.list_frame_product.append(list_step)
+        self.product.reload(tk.Event)
 
-        frame_step_field = ttk.Frame(self.frame_step, borderwidth=5, relief=tk.SOLID, width=350, height=150)
-        frame_step_field.pack(side=tk.TOP, padx=1, pady=1)
-        frame_step_field.pack_propagate(False)
-
-        label_name = ttk.Label(frame_step_field, text="Введите название шага")
-        label_name.pack(anchor=tk.CENTER, pady=5)
-
-        self.entry_name_product = ttk.Entry(frame_step_field)
-        self.entry_name_product.pack(fill=tk.X, pady=5)
-
-        label_complexity_cost = ttk.Label(frame_step_field, text="Введите сложность шага")
-        label_complexity_cost.pack(anchor=tk.CENTER, pady=5)
-
-        self.entry_complexity_cost = ttk.Entry(frame_step_field)
-        self.entry_complexity_cost.pack(fill=tk.X, pady=5)
         
 
 
-    def close_window_add(self):
+    def close_window(self):
         self.destroy()
 
     def add_new_order(self):
         pass
+
+
+
+class Product_field():
+    def __init__(self, count: int) -> None:
+        self.main_window = app
+        self.window_add = self.main_window.window_add
+
+        self.count = count
+
+        self.label_count: ttk.Label
+        self.frame_product_field: ttk.Frame
+        self.label_name: ttk.Label
+        self.entry_name: ttk.Entry
+        self.label_selling_cost: ttk.Label
+        self.entry_selling_cost: ttk.Entry
+        self.label_production_cost: ttk.Label
+        self.entry_production_cost: ttk.Entry
+        self.label_commentariy: ttk.Label
+        self.entry_commentariy: ttk.Entry
+        self.label_quantity: ttk.Label
+        self.entry_quantity: ttk.Entry
+
+        self.add_product()
+
+
+    def add_product(self):
+        self.label_count = ttk.Label(self.window_add.frame_product, text="Продукт № " + str(self.count))
+        self.label_count.pack(anchor=tk.CENTER, pady=5)
+
+        self.frame_product_field = ttk.Frame(self.window_add.frame_product, borderwidth=5, relief=tk.SOLID, width=350, height=320)
+        self.frame_product_field.pack(side=tk.TOP, padx=1, pady=1)
+        self.frame_product_field.pack_propagate(False)
+        self.frame_product_field.bind('<Button-1>', self.reload)
+
+        self.label_name = ttk.Label(self.frame_product_field, text="Введите название продукта")
+        self.label_name.pack(anchor=tk.CENTER, pady=5)
+
+        self.entry_name = ttk.Entry(self.frame_product_field)
+        self.entry_name.pack(fill=tk.X, pady=5)
+
+        self.label_selling_cost = ttk.Label(self.frame_product_field, text="Введите стоимость продажи")
+        self.label_selling_cost.pack(anchor=tk.CENTER, pady=5)
+
+        self.entry_selling_cost = ttk.Entry(self.frame_product_field)
+        self.entry_selling_cost.pack(fill=tk.X, pady=5)
+
+        self.label_production_cost = ttk.Label(self.frame_product_field, text="Введите себестоимость товара")
+        self.label_production_cost .pack(anchor=tk.CENTER, pady=5)
+
+        self.entry_production_cost = ttk.Entry(self.frame_product_field)
+        self.entry_production_cost.pack(fill=tk.X, pady=5)
+
+        self.label_commentariy = ttk.Label(self.frame_product_field, text="Введите описание заказа")
+        self.label_commentariy.pack(anchor=tk.CENTER, pady=5)
+
+        self.entry_commentariy = ttk.Entry(self.frame_product_field)
+        self.entry_commentariy.pack(fill=tk.X, pady=5)
+
+        self.label_quantity = ttk.Label(self.frame_product_field, text="Введите количество товаров")
+        self.label_quantity.pack(anchor=tk.CENTER, pady=5)
+
+        self.entry_quantity = ttk.Entry(self.frame_product_field)
+        self.entry_quantity.pack(fill=tk.X, pady=5)
+
+
+
+    def reload(self, event):
+        self.window_add.canvas_step.delete(tk.ALL)
+        self.window_add.add_area_step()
+        self.window_add.current_step = self.count-1
+        for element in self.window_add.list_frame_product[self.count-1]:
+            element.add_step()
         
-        
+
+    
+
+
+
+class Step_field():
+    def __init__(self) -> None:
+
+        self.main_window = app
+        self.window_add = self.main_window.window_add
+
+        self.label_count: ttk.Label
+        self.frame_step_field: ttk.Frame
+        self.label_name: ttk.Label
+        self.entry_name: ttk.Entry
+        self.label_complexity_cost: ttk.Label
+        self.entry_complexity_cost: ttk.Entry
+        self.add_step()
+
+
+    def add_step(self):
+
+        self.label_count = ttk.Label(self.window_add.frame_step, text="Шаг № " + str(self.window_add.number_step))
+        self.label_count.pack(anchor=tk.CENTER, pady=5)
+        self.window_add.number_step+=1
+
+        self.frame_step_field = ttk.Frame(self.window_add.frame_step, borderwidth=5, relief=tk.SOLID, width=350, height=150)
+        self.frame_step_field.pack(side=tk.TOP, padx=1, pady=1)
+        self.frame_step_field.pack_propagate(False)
+
+        self.label_name = ttk.Label(self.frame_step_field, text="Введите название шага")
+        self.label_name.pack(anchor=tk.CENTER, pady=5)
+
+        self.entry_name= ttk.Entry(self.frame_step_field)
+        self.entry_name.pack(fill=tk.X, pady=5)
+
+        self.label_complexity_cost = ttk.Label(self.frame_step_field, text="Введите сложность шага")
+        self.label_complexity_cost.pack(anchor=tk.CENTER, pady=5)
+
+        self.entry_complexity_cost = ttk.Entry(self.frame_step_field)
+        self.entry_complexity_cost.pack(fill=tk.X, pady=5)        
+
+
+
 
 if __name__ == "__main__":
     root = tk.Tk()
     app = Main_window(root)
     app.pack()
-    root.title("Название программы)")
+    root.title("Task manager")
     root.geometry("1000x600+250+100")
     root.resizable(False, False)
     root.mainloop()
