@@ -98,10 +98,10 @@ class Window_add(tk.Toplevel):
         label_title_order = ttk.Label(self.frame_order_panel, text="ЗАКАЗ")
         label_title_order.pack(anchor=tk.CENTER, pady=5)
 
-        button_add_product = ttk.Button(self.frame_product_panel, text="Добавить продукт", command=self.add_product_field)
+        button_add_product = ttk.Button(self.frame_product_panel, text="Добавить товар", command=self.add_product_field)
         button_add_product.pack(side=tk.RIGHT)
 
-        label_title_product = ttk.Label(self.frame_product_panel, text="ПРОДУКТЫ")
+        label_title_product = ttk.Label(self.frame_product_panel, text="ТОВАРЫ")
         label_title_product.pack(side=tk.RIGHT, pady=5, padx=50)
 
         button_add_step = ttk.Button(self.frame_step_panel, text="Добавить шаг", command=self.add_step_field)
@@ -226,7 +226,7 @@ class Product_field():
 
 
     def add_product(self):
-        self.label_count = ttk.Label(self.window_add.frame_product, text="Продукт № " + str(self.count))
+        self.label_count = ttk.Label(self.window_add.frame_product, text="Товар № " + str(self.count))
         self.label_count.pack(anchor=tk.CENTER, pady=5)
 
         self.frame_product_field = ttk.Frame(self.window_add.frame_product, borderwidth=5, relief=tk.SOLID, width=350, height=320)
@@ -234,7 +234,7 @@ class Product_field():
         self.frame_product_field.pack_propagate(False)
         self.frame_product_field.bind('<Button-1>', self.reload)
 
-        self.label_name = ttk.Label(self.frame_product_field, text="Введите название продукта")
+        self.label_name = ttk.Label(self.frame_product_field, text="Введите название товара")
         self.label_name.pack(anchor=tk.CENTER, pady=5)
 
         self.entry_name = ttk.Entry(self.frame_product_field)
