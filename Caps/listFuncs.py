@@ -1,3 +1,4 @@
+"""Функции для работы со списком заказов"""
 import json
 from typing import List
 

@@ -1,3 +1,5 @@
+"""функции для сортировки заказов и их составляющих"""
+import pandas as pd
 from typing import List
 from typing import Dict
 from datetime import date
@@ -6,8 +8,6 @@ from collections import defaultdict
 
 from BaH.step import *
 from BaH.order import *
-from listFuncs import *
-from mail import *
 from BaH.Contribution import *
 
 
@@ -19,7 +19,7 @@ class ContrID:
     step_name: str
     koef_value: int
 
-def getContributionsByContributor(contributor: str, orderList: List[Order]):
+def getContributionsByContributor(contributor: str, orderList: List[Order]) -> Dict[Contribution, ContrID]:
     """Возвращает словарь Contribution : ContrID"""
     dictionary = dict()
     
@@ -32,10 +32,13 @@ def getContributionsByContributor(contributor: str, orderList: List[Order]):
     
     return dictionary
 
-def getKoefSum(dictionary: Dict[Contribution, ContrID]) -> Dict[date, float]:
+def getKoefSum(dictionary: Dict[Contribution, ContrID]) -> pd.Series:
     """Возвращает словарь Дата : выполненные коэф-ты"""
     koef_dict = defaultdict(lambda: 0.)
     for index in dictionary.keys():
         koef_dict[index.date_of_creation] += dictionary[index].koef_value
 
-    return koef_dict 
+    
+    koef_series = pd.Series(koef_dict).sort_index() 
+    koef_series.index = pd.to_datetime(koef_series.index)
+    return koef_series

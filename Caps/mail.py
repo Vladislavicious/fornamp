@@ -1,3 +1,4 @@
+"""функции для отправления писем на почту"""
 import smtplib
 from email import encoders
 from email.mime.multipart import MIMEMultipart 
