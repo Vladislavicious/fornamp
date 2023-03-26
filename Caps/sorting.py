@@ -41,4 +41,8 @@ def getKoefSum(dictionary: Dict[Contribution, ContrID]) -> pd.Series:
     
     koef_series = pd.Series(koef_dict).sort_index() 
     koef_series.index = pd.to_datetime(koef_series.index)
+
+    for contr, contrID in dictionary.items():
+        koef_series.name = contr.contributor
+        break
     return koef_series
