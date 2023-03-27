@@ -8,6 +8,7 @@ from typing import List
 from Caps.listFuncs import *
 from Caps.sorting import *
 
+
 def SaveBarplot(data : pd.Series, startDate : datetime.datetime, endDate : datetime.datetime, title: str = ""):
     """Сохраняет график в рабочей директории"""
     series = data[startDate:endDate]
