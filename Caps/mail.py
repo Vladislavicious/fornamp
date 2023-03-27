@@ -1,5 +1,6 @@
 """функции для отправления писем на почту"""
 import smtplib
+from typing import List
 from email import encoders
 from email.mime.multipart import MIMEMultipart 
 from email.mime.text import MIMEText 
@@ -36,7 +37,8 @@ def authentificate(login: str, password: str) -> Tuple[bool, str, smtplib.SMTP]:
         
         return (False, f"{error_code}: " + error_message, smtpObj)
         
-def createMessage(FROM: str, TO: str, message: str, filepath: str = "", Subject: str = "Отчёт") -> MIMEMultipart:
+def createMessage(FROM: str, TO: str, message: str, Subject: str = "Отчёт", filepaths: List[str] = list()) -> MIMEMultipart:
+    """filepath - путь для прикрепления файла, допускаются только англоязычные названия"""
     msg = MIMEMultipart()
     msg["Subject"] = Subject
     msg["From"] = FROM
@@ -44,17 +46,19 @@ def createMessage(FROM: str, TO: str, message: str, filepath: str = "", Subject:
 
     msg.attach(MIMEText(message, 'plain', 'utf-8'))
 
-    if filepath != "":
-        with open(filepath, "rb") as attachment:
+    if len(filepaths) != 0:
+        for filepath in filepaths:
             part = MIMEBase("application", "octet-stream")
-            part.set_payload(attachment.read())
-        encoders.encode_base64(part)
-        part.add_header("Content-Disposition", f"attachment; filename= {filepath}")
+            with open(filepath, "rb") as attachment:
+                part.set_payload(attachment.read())
+            encoders.encode_base64(part)
+            part.add_header("Content-Disposition", f"attachment; filename= {filepath}")
 
-        msg.attach(part)
+            msg.attach(part)
 
     return msg
 
 def sendMessage(SMTP: smtplib.SMTP, message: MIMEMultipart):
+    """SMTP - здесь это экземпляр, возвращаемый из authentificate"""
     SMTP.sendmail(message["From"], message["To"], message.as_string())
 
