@@ -138,6 +138,7 @@ class Order:
         return self.total_cost == sc.total_cost and self.date_of_vidacha == sc.date_of_vidacha and self.date_of_creation == sc.date_of_creation
     
     def __lt__(self, other):
+        """Сортировка в порядке: дата выдачи, общая цена, дата создания"""
         sc = self.__verify_data(other)
         if self.date_of_vidacha == sc.date_of_vidacha:
             if self.total_cost == sc.total_cost:

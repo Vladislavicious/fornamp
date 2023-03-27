@@ -10,7 +10,6 @@ class Main_window(tk.Frame):
         self.init_main_window()
 
     def init_main_window(self):
-
         frame_title = ttk.Frame(borderwidth=5, relief=tk.SOLID, height=50)
         frame_tools = ttk.Frame(borderwidth=5, relief=tk.SOLID, width=150)
         frame_order = ttk.Frame(borderwidth=5, relief=tk.SOLID)
@@ -38,7 +37,7 @@ class Main_window(tk.Frame):
 
 class Window_add(tk.Toplevel):
     def __init__(self):
-        super().__init__(root)
+        super().__init__(root)        
         self.main_window = app
         self.list_frame_product = []
         self.current_step: int
@@ -314,15 +313,3 @@ class Step_field():
 
         self.entry_complexity_cost = ttk.Entry(self.frame_step_field)
         self.entry_complexity_cost.pack(fill=tk.X, pady=5)        
-
-
-
-
-if __name__ == "__main__":
-    root = tk.Tk()
-    app = Main_window(root)
-    app.pack()
-    root.title("Task manager")
-    root.geometry("1000x600+250+100")
-    root.resizable(False, False)
-    root.mainloop()
