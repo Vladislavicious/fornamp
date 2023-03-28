@@ -7,9 +7,10 @@ class Main_window(tk.Frame):
     def __init__(self, root):
         super().__init__(root)
 
-        self.init_main_window()
+        self.root = root
+        self.init_main_window(self.root)
 
-    def init_main_window(self):
+    def init_main_window(self, root):
         frame_title = ctk.CTkFrame(master=root, height=50, border_width=3, fg_color="#FFFFFF")
         frame_tools = ctk.CTkFrame(master=root, width=150, border_width=3)
         frame_order = ctk.CTkFrame(master=root, border_width=3)
@@ -306,13 +307,4 @@ class Step_field():
         self.entry_complexity_cost = ctk.CTkEntry(self.frame_step_field)
         self.entry_complexity_cost.pack(fill=tk.X, pady=5, padx = 5)        
 
-if __name__ == "__main__":
-    root = ctk.CTk()
-    font_ = ctk.CTkFont(family="Arial", size=16)
-    fontmini = ctk.CTkFont(family="Arial", size=12)
-    app = Main_window(root)
-    app.pack()
-    root.title("Task manager")
-    root.geometry("1000x600+250+100")
-    root.resizable(False, False)
-    root.mainloop()
+#Здесь не должно быть исполняемого кода

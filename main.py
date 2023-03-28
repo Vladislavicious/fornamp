@@ -1,11 +1,13 @@
 import tkinter as tk
-from tkinter import ttk
+import customtkinter as ctk
 
 from GUI.GUI import *
 
 
 if __name__ == "__main__":
-    root = tk.Tk()
+    root = ctk.CTk()
+    font_ = ctk.CTkFont(family="Arial", size=16)
+    fontmini = ctk.CTkFont(family="Arial", size=12)
     app = Main_window(root)
     app.pack()
     root.title("Task manager")
