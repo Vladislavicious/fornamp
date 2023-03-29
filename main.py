@@ -1,12 +1,9 @@
-import tkinter as tk
-from tkinter import ttk
-
-from GUI.GUI import *
-
+import GUI.GUI as gui
 
 if __name__ == "__main__":
-    root = tk.Tk()
-    app = Main_window(root)
+    root = gui.ctk.CTk()
+    
+    app = gui.Main_window(root)
     app.pack()
     root.title("Task manager")
     root.geometry("1000x600+250+100")
