@@ -52,6 +52,9 @@ class Window_add(ctk.CTkToplevel):
         self.resizable(False,False)
         self.overrideredirect(True)
 
+        self.font_ = ctk.CTkFont(family="Arial", size=16)
+        self.fontmini = ctk.CTkFont(family="Arial", size=12)
+
 
         self.panel_add()
 
@@ -152,13 +155,13 @@ class Window_add(ctk.CTkToplevel):
         frame_order_field.pack(side=tk.TOP, padx=1, pady=1)
         frame_order_field.pack_propagate(False)
 
-        label_name = ctk.CTkLabel(frame_order_field, text="Введите имя заказа", font = font_)
+        label_name = ctk.CTkLabel(frame_order_field, text="Введите имя заказа", font = self.font_)
         label_name.pack(anchor=tk.CENTER, pady=5)
 
         self.entry_name_order = ctk.CTkEntry(frame_order_field)
         self.entry_name_order.pack(fill=tk.X, pady=5)
 
-        label_commentariy = ctk.CTkLabel(frame_order_field, text="Введите описание заказа", font=font_)
+        label_commentariy = ctk.CTkLabel(frame_order_field, text="Введите описание заказа", font=self.font_)
         label_commentariy.pack(anchor=tk.CENTER, pady=5)
 
         self.entry_commentariy_order = ctk.CTkEntry(frame_order_field)
@@ -172,9 +175,10 @@ class Window_add(ctk.CTkToplevel):
 
 
     def add_step_field(self):
-        step = Step_field()
+        step = Step_field(self.main_window)
         
         self.list_frame_product[self.current_step].append(step) #разобраться с исключением
+
 
     def add_product_field(self):
         self.product = Product_field(self.number_product, self.main_window)
@@ -200,6 +204,8 @@ class Product_field():
         self.window_add = self.main_window.window_add
 
         self.count = count
+        self.font_ = ctk.CTkFont(family="Arial", size=16)
+        self.fontmini = ctk.CTkFont(family="Arial", size=12)
 
         self.label_count: ctk.CTkLabel
         self.frame_product_field: ctk.CTkFrame
@@ -218,7 +224,7 @@ class Product_field():
 
 
     def add_product(self):
-        self.label_count = ctk.CTkLabel(self.window_add.frame_product, text="Товар № " + str(self.count), font = font_)
+        self.label_count = ctk.CTkLabel(self.window_add.frame_product, text="Товар № " + str(self.count), font = self.font_)
         self.label_count.pack(anchor=tk.CENTER, pady=5)
 
         self.frame_product_field = ctk.CTkFrame(self.window_add.frame_product, border_width=2, width=350, height=385)
@@ -226,31 +232,31 @@ class Product_field():
         self.frame_product_field.pack_propagate(False)
         self.frame_product_field.bind('<Button-1>', self.reload)
 
-        self.label_name = ctk.CTkLabel(self.frame_product_field, text="Введите название товара", font = fontmini)
+        self.label_name = ctk.CTkLabel(self.frame_product_field, text="Введите название товара", font = self.fontmini)
         self.label_name.pack(anchor=tk.CENTER, pady=5)
 
         self.entry_name = ctk.CTkEntry(self.frame_product_field)
         self.entry_name.pack(fill=tk.X, pady=5, padx=5)
 
-        self.label_selling_cost = ctk.CTkLabel(self.frame_product_field, text="Введите стоимость продажи", font = fontmini)
+        self.label_selling_cost = ctk.CTkLabel(self.frame_product_field, text="Введите стоимость продажи", font = self.fontmini)
         self.label_selling_cost.pack(anchor=tk.CENTER, pady=5)
 
         self.entry_selling_cost = ctk.CTkEntry(self.frame_product_field)
         self.entry_selling_cost.pack(fill=tk.X, pady=5, padx=5)
 
-        self.label_production_cost = ctk.CTkLabel(self.frame_product_field, text="Введите себестоимость товара", font = fontmini)
+        self.label_production_cost = ctk.CTkLabel(self.frame_product_field, text="Введите себестоимость товара", font = self.fontmini)
         self.label_production_cost .pack(anchor=tk.CENTER, pady=5)
 
         self.entry_production_cost = ctk.CTkEntry(self.frame_product_field)
         self.entry_production_cost.pack(fill=tk.X, pady=5, padx=5)
 
-        self.label_commentariy = ctk.CTkLabel(self.frame_product_field, text="Введите описание заказа", font = fontmini)
+        self.label_commentariy = ctk.CTkLabel(self.frame_product_field, text="Введите описание заказа", font = self.fontmini)
         self.label_commentariy.pack(anchor=tk.CENTER, pady=5)
 
         self.entry_commentariy = ctk.CTkEntry(self.frame_product_field)
         self.entry_commentariy.pack(fill=tk.X, pady=5, padx=5)
 
-        self.label_quantity = ctk.CTkLabel(self.frame_product_field, text="Введите количество товаров", font = fontmini)
+        self.label_quantity = ctk.CTkLabel(self.frame_product_field, text="Введите количество товаров", font = self.fontmini)
         self.label_quantity.pack(anchor=tk.CENTER, pady=5)
 
         self.entry_quantity = ctk.CTkEntry(self.frame_product_field)
@@ -271,10 +277,12 @@ class Product_field():
 
 
 class Step_field():
-    def __init__(self) -> None:
+    def __init__(self, app) -> None:
 
         self.main_window = app
         self.window_add = self.main_window.window_add
+        self.font_ = ctk.CTkFont(family="Arial", size=16)
+        self.fontmini = ctk.CTkFont(family="Arial", size=12)
 
         self.label_count: ctk.CTkLabel
         self.frame_step_field: ctk.CTkFrame
@@ -287,7 +295,7 @@ class Step_field():
 
     def add_step(self):
 
-        self.label_count = ctk.CTkLabel(self.window_add.frame_step, text="Шаг № " + str(self.window_add.number_step), font=font_)
+        self.label_count = ctk.CTkLabel(self.window_add.frame_step, text="Шаг № " + str(self.window_add.number_step), font=self.font_)
         self.label_count.pack(anchor=tk.CENTER, pady=5)
         self.window_add.number_step+=1
 
@@ -295,27 +303,17 @@ class Step_field():
         self.frame_step_field.pack(side=tk.TOP, padx=1, pady=1)
         self.frame_step_field.pack_propagate(False)
 
-        self.label_name = ctk.CTkLabel(self.frame_step_field, text="Введите название шага", font=fontmini)
+        self.label_name = ctk.CTkLabel(self.frame_step_field, text="Введите название шага", font=self.fontmini)
         self.label_name.pack(anchor=tk.CENTER, pady=5)
 
         self.entry_name= ctk.CTkEntry(self.frame_step_field)
         self.entry_name.pack(fill=tk.X, pady=5, padx = 5)
 
-        self.label_complexity_cost = ctk.CTkLabel(self.frame_step_field, text="Введите сложность шага", font=fontmini)
+        self.label_complexity_cost = ctk.CTkLabel(self.frame_step_field, text="Введите сложность шага", font=self.fontmini)
         self.label_complexity_cost.pack(anchor=tk.CENTER, pady=5)
 
         self.entry_complexity_cost = ctk.CTkEntry(self.frame_step_field)
         self.entry_complexity_cost.pack(fill=tk.X, pady=5, padx = 5)        
 
-def MainLoop():
-    root = ctk.CTk()
-    font_ = ctk.CTkFont(family="Arial", size=16)
-    fontmini = ctk.CTkFont(family="Arial", size=12)
-    app = Main_window(root)
-    app.pack()
-    root.title("Task manager")
-    root.geometry("1000x600+250+100")
-    root.resizable(False, False)
-    root.mainloop()
 
 MainLoop()
