@@ -143,3 +143,6 @@ dmypy.json
 
 # debug html
 aboba.html
+
+#any png
+*.png

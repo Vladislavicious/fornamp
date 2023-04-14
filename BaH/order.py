@@ -1,9 +1,11 @@
 import json
 import datetime
+import os
 from datetime import date
 from typing import List #Типизированный список
 from copy import deepcopy
 from random import Random
+
 
 from BaH.Contribution import *
 from BaH.product import *
@@ -189,6 +191,25 @@ class Order:
     
     def toJSON(self):
         return json.dumps(self, cls=simpleEncoder, indent=4, ensure_ascii=False)
+    
+    def toFile(self, directory: str = ""):
+        """Сохраняет заказ в указанной директории, по умолчанию в рабочей. указывать абсолютный путь"""
+        if directory == "":
+            directory = os.getcwd()
+        
+        if not os.path.exists(directory):
+            return False
+        firstLetter = "N" # V - если заказ выдан, D - если заказ сделан, N - если заказ не сделан 
+        if self.isVidan:
+            firstLetter = "V"
+        elif self.isDone:
+            firstLetter = "D"
+
+        filename = firstLetter + str(self.id) + ".order"
+
+        with open(filename, "w", encoding="utf-8") as file:
+            file.write(self.toJSON())
+        return True        
 
     @classmethod
     def fromJSON(cls, json_string: str):
