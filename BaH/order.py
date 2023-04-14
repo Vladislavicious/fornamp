@@ -205,11 +205,16 @@ class Order:
         elif self.isDone:
             firstLetter = "D"
 
-        filename = firstLetter + str(self.id) + ".order"
+        filename = directory + "\\" + firstLetter + str(self.id) + ".order"
 
         with open(filename, "w", encoding="utf-8") as file:
             file.write(self.toJSON())
         return True        
+
+    @classmethod
+    def fromFile(cls, filepath: str):
+        with open(filepath, "r", encoding="utf-8") as file:
+            return cls.fromJSON(file.read())
 
     @classmethod
     def fromJSON(cls, json_string: str):

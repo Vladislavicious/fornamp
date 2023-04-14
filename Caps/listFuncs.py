@@ -95,7 +95,10 @@ def listToPlainHTML(orders : List[Order], title: str = "Отчёт") -> str:
     '</html>'
 
     return text
-    
+
+def listToFile(orders : List[Order], directory: str):
+    for order in orders:
+        order.toFile(directory)
 
 def listToJSON(orders : List[Order]) -> str:
     return json.dumps(orders, cls=simpleEncoder, sort_keys=True, indent=4, ensure_ascii=False)

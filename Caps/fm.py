@@ -1,11 +1,12 @@
 import os
-
+from BaH.order import Order
 class FileManager():
     """Класс для работы с файлами приложения"""
     def __init__(self) -> None:
         self.__config_dir_path = os.getenv('APPDATA') + "\\factory-engine"
         self.working_directory = os.getcwd()
         self.readConfig()
+        self.parseOrderFilenames()
 
     def readConfig(self):
         dir_name = self.__config_dir_path
@@ -39,3 +40,46 @@ class FileManager():
         file.write("Statistics Directory Path: " + self.statistics_dir_path + "\n")
         file.write("Accounts Filepath: " + self.accounts_filepath + "\n")        
         file.close() 
+
+    def parseOrderFilenames(self):
+        order_filenames = os.listdir(self.orders_dir_path)
+        self.ordered_filenames = self.__getOrderStatusPairs(order_filenames)
+
+    def __getOrderStatusPairs(self, order_filenames):
+        """Возвращает словарь Айди заказа: статус"""
+        orders = dict()
+        for ord_file in order_filenames:
+            status = ord_file[0]
+            id = ord_file[1:12]
+            orders[id] = status
+        return orders
+    
+    def getOrderByID(self, ID: int):
+        """Возвращает Order либо None"""
+        filename = self.__getOrderFilename(ID)
+        if filename == "":
+            return None
+        
+        return Order.fromFile(filename)
+    
+    def deleteOrderByID(self, ID: int) -> bool:
+        filename = self.__getOrderFilename(ID)
+        if filename == "":
+            return False
+        
+        os.remove(filename)
+        del self.ordered_filenames[str(ID)]
+        return True
+        
+
+        
+    def __getOrderFilename(self, ID: int):
+        """Возвращает имя файла, либо '' """
+        id_str = str(ID)
+        try:
+            filename = self.orders_dir_path + "\\" + self.ordered_filenames[id_str] + id_str + ".order"
+        except KeyError:
+            filename = ""
+        
+        return filename
+        
