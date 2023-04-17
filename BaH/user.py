@@ -9,10 +9,10 @@ class User:
         self.emailpassword = emailpassword
     
     def __str__(self) -> str:
-        return f"email: {self.email}\n\
-                 login: {self.login}\n\
-                 password: {self.password}\n\
-                 email password: {self.emailpassword}\n"
+        return f"email: {self.email}\
+                 \nlogin: {self.login}\
+                 \npassword: {self.password}\
+                 \nemail password: {self.emailpassword}\n"
 
     def serialize(self, key):
         f = Fernet(key)

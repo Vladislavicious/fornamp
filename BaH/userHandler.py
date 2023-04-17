@@ -1,31 +1,81 @@
+import re
+
 from BaH.user import User
 class UserHandler:
-    users = list()
-    key = None
+    def __init__(self, key, filepath: str = "", users: list = list()) -> None:
+        self.users = users
+        self.key = key # filemanager задаёт все поля при начале работы с ним, считывая из config'а
+        self.filepath = filepath # Путь к файлу со всеми пользователями
 
-    @classmethod
-    def SaveToFile(cls, filepath):
+
+    def SaveToFile(self, filepath: str = "Перезапись"):
+        path = filepath
+        if filepath == "Перезапись":
+            path = self.filepath
+        if len(self.users) == 0:
+            return
         
-        with open(filepath, "wb") as file:
-            prelast_index = len(cls.users) - 1
+        with open(path, "wb") as file:
+            prelast_index = len(self.users) - 1
 
-            for user in cls.users[:prelast_index]:
-                file.write(user.serialize(cls.key))
+            for user in self.users[:prelast_index]:
+                file.write(user.serialize(self.key))
                 file.write(b'next_one')
 
-            file.write(cls.users[prelast_index].serialize(cls.key))
+            file.write(self.users[prelast_index].serialize(self.key))
     
-    @classmethod
-    def ReadFromFile(cls, filepath):
+    def ReadFromFile(self):
         
-        with open(filepath, "rb") as file:
+        with open(self.filepath, "rb") as file:
             text = file.read()
-            print(len(text))
             text = text.split(b'next_one')
 
             Users = list()
 
             for code in text:
-                Users.append(User.deserialize(code, cls.key))
+                Users.append(User.deserialize(code, self.key))
+
+        self.users = Users
+
+    def ValidateLogin(self, login: str) -> bool:
+        if len(self.users) == 0:
+            return True
+
+        login_len = len(login)
+
+        if login_len > 32 or login_len < 8:
+            return False
         
-        return Users
+        for i in login.lower():
+            if i not in '1234567890qwertyuiopasdfghjklzxcvbnm':
+                return False
+
+        for user in self.users:
+            if login == user.login:
+                return False
+        return True
+    
+    def ValidateEmail(self, email: str) -> bool:
+        """Проверка синтаксическая, без проверки на существование"""
+        pattern = r'^[a-zA-Z0-9]+@[a-zA-Z0-9]+\.[a-zA-Z]{2,}$'
+
+        if re.match(pattern, email):
+            return True
+        return False
+
+    
+    def addUser(self, user: User):
+        self.users.append(user)
+
+    def deleteUserByLogin(self, login: str) -> bool:
+        del_index = -1
+        for i in range(0, len(self.users)):
+            if login == self.users[i].login:
+                del_index = i
+                break
+        if del_index != -1:
+            self.users.pop(del_index)
+            return True
+        
+        return False
+        
