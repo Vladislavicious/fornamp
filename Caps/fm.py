@@ -5,8 +5,16 @@ from BaH.order import Order
 from BaH.uh import UserHandler
 
 
+
 class FileManager():
-    """Класс для работы с файлами приложения"""
+    """
+    Класс для работы с файлами приложения.
+    Создаётся при открытии приложения. считывает из конфига ( если его нет,
+    то создаёт ) пути ко всевозможным папкам,вроде рабочей папки, папки с заказами
+    и т.д. Конфиг по умолчанию создаётся в АппДате.Внутри также содержит
+    user_handler'а, с помощью которого делаются все
+    операции над пользователями в приложении
+    """
     def __init__(self) -> None:
         self.__config_dir_path = os.getenv('APPDATA') + "\\factory-engine"
         self.working_directory = os.getcwd()
@@ -21,7 +29,7 @@ class FileManager():
         try:
             config_file = open(dir_name + in_dir_path, "r", encoding="utf-8")
         except FileNotFoundError:
-            os.makedirs(dir_name, exist_ok = True)
+            os.makedirs(dir_name, exist_ok=True)
             self.orders_dir_path = self.working_directory + "\\orders"
             self.statistics_dir_path = self.working_directory + "\\statistics"
             self.accounts_filepath = self.__config_dir_path + "\\accs.b"
@@ -81,8 +89,6 @@ class FileManager():
         os.remove(filename)
         del self.ordered_filenames[str(ID)]
         return True
-        
-
         
     def __getOrderFilename(self, ID: int):
         """Возвращает имя файла, либо '' """

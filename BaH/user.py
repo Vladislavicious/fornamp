@@ -1,6 +1,7 @@
 import pickle
 from cryptography.fernet import Fernet
 
+
 class User:
     def __init__(self, email, login, password, emailpassword):
         self.email = email

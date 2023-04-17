@@ -1,16 +1,15 @@
 import json
-from typing import List #Типизированный список
+from typing import List
 from copy import deepcopy
 
 from BaH.step import Step
 from BaH.Contribution import simpleEncoder
 
 
-
 class Product:
-    def __init__(self, name : str, selling_cost : int, steps : List[Step] = list(), \
-                    quantity = 1, production_cost = 0, commentary = "", \
-                    isDone = False) -> None:
+    def __init__(self, name: str, selling_cost: int, steps: List[Step] = list(), \
+                    quantity=1, production_cost=0, commentary="", \
+                    isDone=False) -> None:
 
         self.name = name
         self.selling_cost = selling_cost
@@ -35,7 +34,7 @@ class Product:
         return self.__isDone
 
     @isDone.setter
-    def isDone(self, value : bool):
+    def isDone(self, value: bool):
         self.__isDone = value 
 
     @property
@@ -43,7 +42,7 @@ class Product:
         return self.__selling_cost
 
     @selling_cost.setter
-    def selling_cost(self, value : float):
+    def selling_cost(self, value: float):
         if value < 0:
             raise ValueError
         
@@ -54,7 +53,7 @@ class Product:
         return self.__production_cost
 
     @production_cost.setter
-    def production_cost(self, value : float):
+    def production_cost(self, value: float):
         if value < 0:
             raise ValueError
         
@@ -74,7 +73,7 @@ class Product:
         return self.__quantity
 
     @quantity.setter
-    def quantity(self, value : int):
+    def quantity(self, value: int):
         if value < 0:
             raise ValueError
         self.__quantity = value
@@ -86,7 +85,7 @@ class Product:
         return self.__commentary
 
     @commentary.setter
-    def commentary(self, value : str):
+    def commentary(self, value: str):
         self.__commentary = value 
 
     def GetSteps(self):
@@ -105,21 +104,21 @@ class Product:
             if step.name == step_name.lower():
                 step_for_deletion = step
         
-        if step_for_deletion != None:
+        if step_for_deletion is not None:
             self.__steps.remove(step_for_deletion)
         self.CheckIfDone()
 
     def EvaluateSteps(self) -> None:
         base_value = self.__CountBaseVal()
 
-        if base_value != None:
+        if base_value is not None:
             for step in self.__steps:
                 step.koef_value = base_value * step.complexity
 
     def CheckIfDone(self) -> bool:
         """проверяет Готовность всех шагов"""
         for step in self.GetSteps():
-            if step.isDone == False:
+            if not step.isDone:
                 self.isDone = False
                 return False
         self.isDone = True
@@ -177,11 +176,11 @@ class Product:
     
     def __le__(self, other):
         sc = self.__verify_data(other)
-        return self < sc or self==sc
+        return self < sc or self == sc
     
     def __ge__(self, other):
         sc = self.__verify_data(other)
-        return self > sc or self==sc
+        return self > sc or self == sc
     
     @classmethod
     def __verify_data(cls, other):
@@ -189,9 +188,6 @@ class Product:
             raise TypeError(f"Операнд справа должен иметь тип {cls}")
         
         return other
-
-    
-
 
     def toHTML(self) -> str:
         steps = "\n".join(list(step.toHTML() for step in self.GetSteps()))
@@ -211,7 +207,7 @@ class Product:
         return json.dumps(self, cls=simpleEncoder, indent=4, ensure_ascii=False)
     
     def SaveAsTemplate(self) -> None:
-        copy = deepcopy(self) # Чтобы не калечить нынешний товар
+        copy = deepcopy(self)  # Чтобы не калечить нынешний товар
 
         for step in copy.GetSteps():
             step.GetContr().clear()
@@ -221,7 +217,7 @@ class Product:
             file.write(copy.toJSON())
         
     @classmethod
-    def fromTemplate(cls, template_name : str):
+    def fromTemplate(cls, template_name: str):
         """Возвращает объект по шаблону, не имеет каких-либо проверок на существование файла"""
         filename = template_name.lower()
         if not filename.endswith(".json"):
@@ -233,14 +229,14 @@ class Product:
         return obj
 
     @classmethod
-    def fromJSON(cls, json_string : str):
+    def fromJSON(cls, json_string: str):
         """Возвращает объект класса Product из строки(формата JSON)"""
         info = json.loads(json_string)
         
         return Product.fromDict(info)            
 
     @classmethod
-    def fromDict(cls, info : dict):
+    def fromDict(cls, info: dict):
         """Возвращает объект класса Product из словаря"""
         
         step_list = list(Step.fromDict(step) for step in info["steps"])

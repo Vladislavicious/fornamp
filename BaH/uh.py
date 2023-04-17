@@ -4,13 +4,17 @@ from BaH.user import User
 
 
 class UserHandler:
+    """
+    Считывает пользователей из папки, хранит в себе пользователей, может добавлять, убирать.
+    В том числе содержит функции для проверки Логина и имейла
+    После любого изменения пользователей, требуется вызвать SaveToFile
+    """
     def __init__(self, key: bytes, filepath: str = "", users: list = list()) -> None:
         self.users = users
-        self.key = key # filemanager задаёт все поля при начале работы с ним, считывая из config'а
-        self.filepath = filepath # Путь к файлу со всеми пользователями
+        self.key = key              # filemanager задаёт все поля при начале работы с ним, считывая из config'а
+        self.filepath = filepath    # Путь к файлу со всеми пользователями
 
         self.__ReadFromFile()
-
 
     def SaveToFile(self, filepath: str = "Перезапись"):
         path = filepath
