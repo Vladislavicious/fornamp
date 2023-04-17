@@ -1,8 +1,7 @@
-import GUI.GUI as gui
+import GUI.MainWindow as gui
 
 if __name__ == "__main__":
     root = gui.ctk.CTk()
-    
     app = gui.MainWindow(root)
     app.pack()
     root.title("Task manager")
