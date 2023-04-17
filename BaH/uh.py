@@ -1,11 +1,15 @@
 import re
 
 from BaH.user import User
+
+
 class UserHandler:
-    def __init__(self, key, filepath: str = "", users: list = list()) -> None:
+    def __init__(self, key: bytes, filepath: str = "", users: list = list()) -> None:
         self.users = users
         self.key = key # filemanager задаёт все поля при начале работы с ним, считывая из config'а
         self.filepath = filepath # Путь к файлу со всеми пользователями
+
+        self.__ReadFromFile()
 
 
     def SaveToFile(self, filepath: str = "Перезапись"):
@@ -24,18 +28,21 @@ class UserHandler:
 
             file.write(self.users[prelast_index].serialize(self.key))
     
-    def ReadFromFile(self):
+    def __ReadFromFile(self):
         
-        with open(self.filepath, "rb") as file:
-            text = file.read()
-            text = text.split(b'next_one')
+        try:
+            with open(self.filepath, "rb") as file:
+                text = file.read()
+                text = text.split(b'next_one')
 
-            Users = list()
+                Users = list()
 
-            for code in text:
-                Users.append(User.deserialize(code, self.key))
+                for code in text:
+                    Users.append(User.deserialize(code, self.key))
 
-        self.users = Users
+            self.users = Users
+        except FileNotFoundError:
+            print("Файл с аккаунтами ещё не создан")
 
     def ValidateLogin(self, login: str) -> bool:
         if len(self.users) == 0:
@@ -62,7 +69,6 @@ class UserHandler:
         if re.match(pattern, email):
             return True
         return False
-
     
     def addUser(self, user: User):
         self.users.append(user)

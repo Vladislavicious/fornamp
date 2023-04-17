@@ -1,14 +1,21 @@
 import os
+from cryptography.fernet import Fernet
+
 from BaH.order import Order
+from BaH.uh import UserHandler
+
+
 class FileManager():
     """Класс для работы с файлами приложения"""
     def __init__(self) -> None:
         self.__config_dir_path = os.getenv('APPDATA') + "\\factory-engine"
         self.working_directory = os.getcwd()
-        self.readConfig()
-        self.parseOrderFilenames()
+        self.__readConfig()
+        self.__parseOrderFilenames()
 
-    def readConfig(self):
+        self.user_handler = UserHandler(self.key, self.accounts_filepath)
+
+    def __readConfig(self):
         dir_name = self.__config_dir_path
         in_dir_path = "\\.ordconfig"
         try:
@@ -17,7 +24,8 @@ class FileManager():
             os.makedirs(dir_name, exist_ok = True)
             self.orders_dir_path = self.working_directory + "\\orders"
             self.statistics_dir_path = self.working_directory + "\\statistics"
-            self.accounts_filepath = self.__config_dir_path
+            self.accounts_filepath = self.__config_dir_path + "\\accs.b"
+            self.key = Fernet.generate_key()
             self.saveNewConfig()
 
             return
@@ -32,16 +40,18 @@ class FileManager():
         self.orders_dir_path = (config_lines[0].split(": "))[1].strip()
         self.statistics_dir_path = (config_lines[1].split(": "))[1].strip()
         self.accounts_filepath = (config_lines[2].split(": "))[1].strip()
+        self.key = bytes((config_lines[3].split(": "))[1].strip(), encoding="utf-8")
 
     
     def saveNewConfig(self):
         file = open(self.__config_dir_path + "\\.ordconfig", "w", encoding="utf-8")
         file.write("Orders Directory Path: " + self.orders_dir_path + "\n")  
         file.write("Statistics Directory Path: " + self.statistics_dir_path + "\n")
-        file.write("Accounts Filepath: " + self.accounts_filepath + "\n")        
+        file.write("Accounts Filepath: " + self.accounts_filepath + "\n")
+        file.write("Key: " + self.key.decode("utf-8") + "\n")     
         file.close() 
 
-    def parseOrderFilenames(self):
+    def __parseOrderFilenames(self):
         order_filenames = os.listdir(self.orders_dir_path)
         self.ordered_filenames = self.__getOrderStatusPairs(order_filenames)
 
