@@ -2,6 +2,7 @@ import json
 from datetime import date
 from copy import deepcopy
 
+
 class simpleEncoder(json.JSONEncoder):
     """Нужен для нормального перевода класса в JSON"""
     def default(self, o):
@@ -16,9 +17,10 @@ class simpleEncoder(json.JSONEncoder):
 
         return slovar
 
+
 class Contribution:
-    def __init__(self, contributor : str, number_of_made : int = 1, date_of_creation : date = date.today()) -> None:
-        self.date_of_creation = date_of_creation # на вход получаем в виде date, а храним всё в виде isoformat строки
+    def __init__(self, contributor: str, number_of_made: int = 1, date_of_creation: date = date.today()) -> None:
+        self.date_of_creation = date_of_creation  # на вход получаем в виде date, а храним всё в виде isoformat строки
         self.contributor = contributor
         self.number_of_made = number_of_made
 
@@ -26,23 +28,23 @@ class Contribution:
     def date_of_creation(self) -> date:
         """Дата, когда был выполнен шаг в iso формате"""
         return date.fromisoformat(self.__date_of_creation)
-    
+
     @date_of_creation.setter
-    def date_of_creation(self, value : date):
+    def date_of_creation(self, value: date):
         self.__date_of_creation = value.isoformat()
 
     @property
     def contributor(self):
         return self.__contributor
-    
+
     @contributor.setter
     def contributor(self, contributor: str):
         self.__contributor = contributor.capitalize()
-    
+
     @property
     def number_of_made(self):
         return self.__number_of_made
-    
+
     @number_of_made.setter
     def number_of_made(self, number: int):
         if number < 0:
@@ -82,11 +84,11 @@ class Contribution:
     
     def __le__(self, other):
         sc = self.__verify_data(other)
-        return self < sc or self==sc
+        return self < sc or self == sc
     
     def __ge__(self, other):
         sc = self.__verify_data(other)
-        return self > sc or self==sc
+        return self > sc or self == sc
     
     @classmethod
     def __verify_data(cls, other):
@@ -106,7 +108,7 @@ class Contribution:
         return Contribution.fromDict(info)
     
     @classmethod
-    def fromDict(cls, info : dict):
+    def fromDict(cls, info: dict):
         """Возвращает объект класса Contribution из словаря"""
         data_dat = date.fromisoformat(info["date_of_creation"])
 

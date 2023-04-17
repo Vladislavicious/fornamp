@@ -30,13 +30,14 @@ def authentificate(login: str, password: str) -> Tuple[bool, str, smtplib.SMTP]:
     except smtplib.SMTPResponseException as e:
         error_code = e.smtp_code
         error_message = e.smtp_error
-        if(error_code==535):
+        if(error_code == 535):
             error_message = "Для входа необходим пароль приложения"
-        elif(error_code==553):
+        elif(error_code == 553):
             error_message = "Проверь все адреса в Кому, CC и BCC полях. Где-то должна быть ошибка или неправильное написание"
         
         return (False, f"{error_code}: " + error_message, smtpObj)
         
+
 def createMessage(FROM: str, TO: str, message: str, Subject: str = "Отчёт", filepaths: List[str] = list()) -> MIMEMultipart:
     """filepath - путь для прикрепления файла, допускаются только англоязычные названия"""
     msg = MIMEMultipart()
@@ -57,6 +58,7 @@ def createMessage(FROM: str, TO: str, message: str, Subject: str = "Отчёт",
             msg.attach(part)
 
     return msg
+
 
 def sendMessage(SMTP: smtplib.SMTP, message: MIMEMultipart):
     """SMTP - здесь это экземпляр, возвращаемый из authentificate"""

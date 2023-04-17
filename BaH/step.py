@@ -1,15 +1,12 @@
 import json
-from datetime import date
 from typing import List
 
 from BaH.Contribution import *
 
 
-
-
 class Step:
-    def __init__(self, name: str, contributions : List[Contribution] = list(), \
-                 quantity : int = 1, isDone=False, complexity = 1, koef_value = 1) -> None:
+    def __init__(self, name: str, contributions: List[Contribution] = list(), \
+                 quantity: int = 1, isDone=False, complexity=1, koef_value=1) -> None:
         self.name = name
         self.complexity = complexity
         self.koef_value = koef_value
@@ -24,7 +21,7 @@ class Step:
         return self.__isDone
 
     @isDone.setter
-    def isDone(self, value : bool): #value здесь "просто так"
+    def isDone(self, value: bool):              # value здесь "просто так"
         if self.number_of_made == self.quantity:
             self.__isDone = True
         else:
@@ -48,9 +45,9 @@ class Step:
         self.__complexity = complexity
 
         if complexity < 1:
-            self.__complexity = 1 # Easy
+            self.__complexity = 1        # Easy
         if complexity > 5:
-            self.__complexity = 5 # Hard
+            self.__complexity = 5        # Hard
 
     @property
     def koef_value(self):
@@ -62,7 +59,7 @@ class Step:
         self.__koef_value = koef_value
 
         if koef_value < 0 or koef_value > 1: 
-            raise ValueError # Для отладки
+            raise ValueError                # Для отладки
         
     @property
     def total_koef(self):
@@ -74,11 +71,11 @@ class Step:
         return self.__quantity
 
     @quantity.setter
-    def quantity(self, value : int):
+    def quantity(self, value: int):
         if value < 0:
             raise ValueError
         self.__quantity = value
-        self.isDone = True # та же проверка
+        self.isDone = True               # та же проверка
 
     @property
     def contr_length(self) -> int:
@@ -101,12 +98,12 @@ class Step:
         """То, сколько стоит шаг на данный момент"""
         return self.number_of_made * self.koef_value
     
-    def AddContr(self, contr : Contribution):
+    def AddContr(self, contr: Contribution):
         if self.contr_length == 0 and contr.number_of_made < self.quantity: 
             self.__contributions.append(contr)
         elif contr.number_of_made + self.number_of_made <= self.quantity:
             self.__contributions.append(contr)
-        self.isDone = True #так мы запрашиваем проверку на готовность шага
+        self.isDone = True    # так мы запрашиваем проверку на готовность шага
 
     def GetContr(self):
         return self.__contributions
@@ -137,7 +134,7 @@ class Step:
             return self.quantity < sc.quantity
         return self.koef_value < sc.koef_value
     
-    def __lt__(self, other):
+    def __gt__(self, other):
         sc = self.__verify_data(other)
         if self.koef_value == sc.koef_value:
             if self.quantity == sc.quantity:
@@ -151,11 +148,11 @@ class Step:
     
     def __le__(self, other):
         sc = self.__verify_data(other)
-        return self < sc or self==sc
+        return self < sc or self == sc
     
     def __ge__(self, other):
         sc = self.__verify_data(other)
-        return self > sc or self==sc
+        return self > sc or self == sc
     
     @classmethod
     def __verify_data(cls, other):
@@ -182,7 +179,7 @@ class Step:
         return Step.fromDict(info)
 
     @classmethod
-    def fromDict(cls, info : dict):
+    def fromDict(cls, info: dict):
         """Возвращает объект класса Step из словаря"""
 
         contr_list = list(Contribution.fromDict(contr) for contr in info["contributions"])

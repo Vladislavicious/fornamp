@@ -1,17 +1,18 @@
 import json
 import datetime
+import os
 from datetime import date
-from typing import List #Типизированный список
-from copy import deepcopy
+from typing import List
 from random import Random
+
 
 from BaH.Contribution import *
 from BaH.product import *
 
 class Order:
-    def __init__(self, id : int, zakazchik : str, date_of_creation : date, \
-                    date_of_vidacha : date, products : List[Product] = list(), commentary = "", isDone = False, \
-                        isVidan = False) -> None:
+    def __init__(self, id: int, zakazchik: str, date_of_creation: date, \
+                    date_of_vidacha: date, products: List[Product]=list(), commentary="", isDone=False, \
+                        isVidan=False) -> None:
         self.id = id    
         self.zakazchik = zakazchik
         self.date_of_creation = date_of_creation
@@ -37,11 +38,11 @@ class Order:
             self.__id = rand.randint(10000000000, 99999999999)
         else:
             self.__id = id
-        
+
     @property
     def zakazchik(self):
         return self.__zakazchik
-    
+
     @zakazchik.setter
     def zakazchik(self, zakazchik: str):
         self.__zakazchik = zakazchik.capitalize()
@@ -50,18 +51,18 @@ class Order:
     def date_of_creation(self) -> date:
         """Дата в iso формате"""
         return date.fromisoformat(self.__date_of_creation)
-    
+
     @date_of_creation.setter
-    def date_of_creation(self, value : date):
+    def date_of_creation(self, value: date):
         self.__date_of_creation = value.isoformat()
 
     @property
     def date_of_vidacha(self) -> date:
         """Дата в iso формате"""
         return date.fromisoformat(self.__date_of_vidacha)
-    
+
     @date_of_vidacha.setter
-    def date_of_vidacha(self, value : date):
+    def date_of_vidacha(self, value: date):
         self.__date_of_vidacha = value.isoformat()
 
     @property
@@ -69,7 +70,7 @@ class Order:
         return self.__commentary
 
     @commentary.setter
-    def commentary(self, value : str):
+    def commentary(self, value: str):
         self.__commentary = value 
 
     @property
@@ -77,7 +78,7 @@ class Order:
         return self.__isDone
 
     @isDone.setter
-    def isDone(self, value : bool):
+    def isDone(self, value: bool):
         self.__isDone = value 
     
     @property
@@ -85,7 +86,7 @@ class Order:
         return self.__isVidan
 
     @isVidan.setter
-    def isVidan(self, value : bool):
+    def isVidan(self, value: bool):
         self.__isVidan = value 
 
     @property
@@ -98,7 +99,7 @@ class Order:
     def CheckIfDone(self) -> bool:
         """проверяет Готовность всех товаров"""
         for product in self.GetProducts():
-            if product.CheckIfDone() == False:
+            if not product.CheckIfDone():
                 self.isDone = False
                 return False
         self.isDone = True
@@ -110,7 +111,6 @@ class Order:
     def AddProduct(self, step: Product):
         self.__products.append(step)
         self.CheckIfDone()
-
 
     def DeleteProduct(self, product_name: str):
         product_for_deletion = None
@@ -160,11 +160,11 @@ class Order:
     
     def __le__(self, other):
         sc = self.__verify_data(other)
-        return self < sc or self==sc
+        return self < sc or self == sc
     
     def __ge__(self, other):
         sc = self.__verify_data(other)
-        return self > sc or self==sc
+        return self > sc or self == sc
     
     @classmethod
     def __verify_data(cls, other):
@@ -189,6 +189,30 @@ class Order:
     
     def toJSON(self):
         return json.dumps(self, cls=simpleEncoder, indent=4, ensure_ascii=False)
+    
+    def toFile(self, directory: str = ""):
+        """Сохраняет заказ в указанной директории, по умолчанию в рабочей. указывать абсолютный путь"""
+        if directory == "":
+            directory = os.getcwd()
+        
+        if not os.path.exists(directory):
+            return False
+        firstLetter = "N"   # V - если заказ выдан, D - если заказ сделан, N - если заказ не сделан 
+        if self.isVidan:
+            firstLetter = "V"
+        elif self.isDone:
+            firstLetter = "D"
+
+        filename = directory + "\\" + firstLetter + str(self.id) + ".order"
+
+        with open(filename, "w", encoding="utf-8") as file:
+            file.write(self.toJSON())
+        return True        
+
+    @classmethod
+    def fromFile(cls, filepath: str):
+        with open(filepath, "r", encoding="utf-8") as file:
+            return cls.fromJSON(file.read())
 
     @classmethod
     def fromJSON(cls, json_string: str):
@@ -198,7 +222,7 @@ class Order:
         return Order.fromDict(info)
 
     @classmethod
-    def fromDict(cls, info : dict):
+    def fromDict(cls, info: dict):
         """Возвращает объект класса Order из словаря"""
 
         product_list = list(Product.fromDict(prod) for prod in info["products"])

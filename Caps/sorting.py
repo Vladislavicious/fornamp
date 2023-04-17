@@ -2,7 +2,6 @@
 import pandas as pd
 from typing import List
 from typing import Dict
-from datetime import date
 from dataclasses import dataclass
 from collections import defaultdict
 
@@ -18,6 +17,7 @@ class ContrID:
     product_name: str
     step_name: str
     koef_value: int
+
 
 def getContributionsByContributor(contributor: str, orderList: List[Order]) -> Dict[Contribution, ContrID]:
     """Возвращает словарь Contribution : ContrID"""
