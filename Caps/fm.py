@@ -63,6 +63,7 @@ class FileManager():
         return Order.fromFile(filename)
     
     def deleteOrderByID(self, ID: int) -> bool:
+        """Удаляет как файл, так и элемент словаря"""
         filename = self.__getOrderFilename(ID)
         if filename == "":
             return False
