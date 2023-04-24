@@ -1,6 +1,7 @@
 ﻿import tkinter as tk
 import customtkinter as ctk
 import BaH.product as bh_product
+from GUI.StepField import *
 
 
 
@@ -12,8 +13,9 @@ class Product_field():  #класс продукта
         self.list_frame_step: Step_field = []
         self.list_step = []
 
-        self.prod: bh_product
+        self.product: bh_product
         self.count = count
+        self.is_saved = 0
         self.font_ = ctk.CTkFont(family="Arial", size=16)
         self.fontmini = ctk.CTkFont(family="Arial", size=12)
 
@@ -31,10 +33,13 @@ class Product_field():  #класс продукта
         self.entry_quantity: ctk.CTkEntry
 
         self.button_aply: ctk.CTkButton
+        self.button_delete: ctk.CTkButton
 
         self.add_product()
 
     def add_product(self):  #создание поля нового пустого продукта
+        self.window_add.button_add_step.configure(state = "normal")
+
         self.label_count = ctk.CTkLabel(self.window_add.frame_product, text="Товар № " + str(self.count),
                                         font=self.font_)
         self.label_count.pack(anchor=tk.CENTER, pady=5)
@@ -80,22 +85,125 @@ class Product_field():  #класс продукта
         self.entry_commentariy.pack(fill=tk.X, pady=5, padx=5)
 
         self.button_aply = ctk.CTkButton(self.frame_product_field, text="Применить", command = self.aply)
-        self.button_aply.pack(anchor=tk.CENTER)
+        self.button_aply.pack(side = tk.LEFT, padx = 10)
+
+        self.button_delete = ctk.CTkButton(self.frame_product_field, text="Удалить", command = self.delete_product, fg_color = "#d9071c", hover_color= "#ad0314")
+        self.button_delete.pack(side = tk.RIGHT, padx = 10)
 
 
     def aply(self):     #кнопка подтверждения продукта и добавление его в список
         if(self.chek_field()==True):
-            self.prod = bh_product.Product(self.entry_name.get(),
+            self.product = bh_product.Product(self.entry_name.get(),
                                         int(self.entry_selling_cost.get()),
                                         self.list_step,
                                         int(self.entry_quantity.get()),
                                         int(self.entry_production_cost.get()))
-            self.main_window.window_add.list_product.append(self.prod)
-            self.button_aply.configure(fg_color = "#2dba52", hover_color = "#189e3b", text = "Редактировать")
+            self.window_add.list_product.append(self.product)
+            self.button_aply.configure(fg_color = "#2dba52", hover_color = "#189e3b", text = "Редактировать", command = self.edit)
+            self.edit_state_step_button("disabled")
+            self.is_saved = 1
+            
+
+
+    def edit(self):
+        self.edit_state_step_button("normal")
+        self.button_aply.configure(fg_color = "#3b8ed0", hover_color = "#36719f", text = "Применить", command=self.apply_edit)
+        self.is_saved = 0
+
+    def apply_edit(self):
+        if(self.chek_field()==True):
+            product = self.window_add.list_product[self.count-1]
+            product.name = self.entry_name.get()
+            product.selling_cost = int(self.entry_selling_cost.get())
+            product.production_cost = int(self.entry_production_cost.get())
+            product.quantity = int(self.entry_quantity.get())
+            product.commentary = self.entry_commentariy.get()
+
+            self.is_saved = 1
+
+            self.edit_state_step_button("disabled")
+            self.button_aply.configure(fg_color = "#2dba52", hover_color = "#189e3b", text = "Редактировать", command = self.edit)
+
+
+    def delete_product(self):
+        if(self.entry_name.get() != ""):
+            self.window_add.list_product.pop(self.count - 1)
+        ln = len(self.window_add.list_frame_product)
+        if(ln != self.count):
+            for i in range(self.count , ln):
+                self.window_add.list_frame_product[i].count = self.window_add.list_frame_product[i].count - 1
+                self.window_add.list_frame_product[i].label_count.configure(text = "Шаг №" + str(self.window_add.list_frame_product[i].count))
+
+               
+
+        self.label_count.destroy()
+        self.frame_product_field.destroy()
+        self.window_add.number_product -= 1
+        del self.window_add.list_frame_product[self.count-1]
+        self.window_add.canvas_step.delete(tk.ALL)
+        self.window_add.add_area_step()
+
+
+
+
+    def edit_state_step_button(self, state_aply: str):
+        for item in self.window_add.list_frame_product[self.count-1]:
+            item.button_aply.configure(state = state_aply)
+            item.button_delete.configure(state = state_aply)
+        self.entry_name.configure(state = state_aply)
+        self.entry_selling_cost.configure(state = state_aply)
+        self.entry_production_cost.configure(state = state_aply)
+        self.entry_commentariy.configure(state = state_aply)
+        self.entry_quantity.configure(state = state_aply)
+
+        self.window_add.button_add_step.configure(state = state_aply)
+
+
 
     def chek_field(self):   #проверка на введеные поля
-        if(self.entry_name.get() != "" and self.entry_commentariy.get() != "" and self.entry_selling_cost.get() != "" and self.entry_production_cost.get() != "" and self.entry_quantity.get() != ""):
-            return True #наверное сюда надо добавить проверку на корректность введеных полей
+        check = True
+        if(self.entry_name.get() == ""):
+            self.entry_name.configure(fg_color="#faebeb", border_color= "#e64646", placeholder_text = "Заполните все поля", placeholder_text_color="#979da2")
+            self.label_name.focus()
+            check = False
+        else:
+            self.entry_name.configure(fg_color="#f9f9fa", border_color= "#61bf0d", placeholder_text = "")
+
+
+        if(not(self.entry_selling_cost.get().isdigit())):
+            self.entry_selling_cost.configure(fg_color="#faebeb", border_color= "#e64646", placeholder_text = "Заполните все поля", placeholder_text_color="#979da2")
+            self.label_name.focus()
+            check =  False
+        else:
+            self.entry_selling_cost.configure(fg_color="#f9f9fa", border_color= "#61bf0d", placeholder_text = "")
+
+        if(not(self.entry_production_cost.get().isdigit())):
+            self.entry_production_cost.configure(fg_color="#faebeb", border_color= "#e64646", placeholder_text = "Заполните все поля", placeholder_text_color="#979da2")
+            self.label_name.focus()
+            check =  False
+        else:
+            self.entry_production_cost.configure(fg_color="#f9f9fa", border_color= "#61bf0d", placeholder_text = "")
+
+
+        if(not(self.entry_quantity.get().isdigit())):
+            self.entry_quantity.configure(fg_color="#faebeb", border_color= "#e64646", placeholder_text = "Заполните все поля", placeholder_text_color="#979da2")
+            self.label_name.focus()
+            check =  False
+        else:
+            self.entry_quantity.configure(fg_color="#f9f9fa", border_color= "#61bf0d", placeholder_text = "")
+
+        self.entry_commentariy.configure(fg_color="#f9f9fa", border_color= "#61bf0d", placeholder_text = "")
+        if(len(self.window_add.list_frame_product[self.count-1]) == 0):
+            check = False
+        else:
+            for item in self.window_add.list_frame_product[self.count-1]:
+                if(item.is_saved == 0):
+                    item.frame_step_field.configure(border_color = "#e64646")
+                    check = False
+                else:
+                    item.frame_step_field.configure(border_color = "#979da2")
+                
+        return check
 
     def reload(self, event):    #отображение шагов связанных с этим продуктом
         if(self.window_add.current_step != self.count - 1):
@@ -104,3 +212,9 @@ class Product_field():  #класс продукта
             self.window_add.current_step = self.count - 1
             for element in self.window_add.list_frame_product[self.count - 1]:
                 element.add_step()
+
+        if(self.is_saved == 1):
+            self.window_add.button_add_step.configure(state = "disabled")
+        else:
+            self.window_add.button_add_step.configure(state = "normal")
+

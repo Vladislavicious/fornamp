@@ -18,6 +18,7 @@ class Step_field():     #класс шага
         self.color_button = "#3b8ed0"
         self.text_button = "Применить"
         self.state_entry = "normal"
+        self.is_saved = 0
 
         self.label_count: ctk.CTkLabel
         self.frame_step_field: ctk.CTkFrame
@@ -52,7 +53,7 @@ class Step_field():     #класс шага
         self.entry_name.pack(fill=tk.X, pady=5, padx=5)
         self.entry_name.configure(state =  self.state_entry)
 
-        self.label_complexity = ctk.CTkLabel(self.frame_step_field, text="Введите сложность шага",
+        self.label_complexity = ctk.CTkLabel(self.frame_step_field, text="Введите сложность шага (от 1 до 5)",
                                                   font=self.fontmini)
         self.label_complexity.pack(anchor=tk.CENTER, pady=5)
 
@@ -61,7 +62,10 @@ class Step_field():     #класс шага
         self.entry_complexity.pack(fill=tk.X, pady=5, padx=5)
         self.entry_complexity.configure(state =  self.state_entry)
 
-        self.button_aply = ctk.CTkButton(self.frame_step_field, text= self.text_button, fg_color = self.color_button, command = self.aply)
+        if(self.is_saved == 0):
+            self.button_aply = ctk.CTkButton(self.frame_step_field, text= self.text_button, fg_color = self.color_button, command = self.aply)
+        else:
+            self.button_aply = ctk.CTkButton(self.frame_step_field, text= self.text_button, fg_color = self.color_button, hover_color = "#189e3b", state = self.state_entry, command = self.edit)
         self.button_aply.pack(side = tk.LEFT, padx = 10)
 
         self.button_delete = ctk.CTkButton(self.frame_step_field, text="Удалить", command = self.delete_step, fg_color = "#d9071c", hover_color= "#ad0314")
@@ -80,6 +84,7 @@ class Step_field():     #класс шага
                                      int(self.entry_complexity.get()),
                                      1)# ЭТО КОСТЫЛЬ НАДО ПЕРЕДЕЛАТЬ  
             self.window_add.product_field.list_step.append(self.step)   
+            self.is_saved = 1
             self.color_button = "#2dba52"
             self.text_button = "Редактировать"
             self.button_aply.configure(fg_color = self.color_button, hover_color = "#189e3b", text = self.text_button, command = self.edit)
@@ -90,24 +95,28 @@ class Step_field():     #класс шага
             self.entry_complexity.configure(state =  "disabled")
             self.index =  self.window_add.product_field.list_step.index(self.step)
             
+            
 
 
     def edit(self):
         self.button_aply.configure(fg_color = "#3b8ed0", hover_color = "#36719f", text = "Применить", command=self.apply_edit)
         self.entry_name.configure(state = "normal")
         self.entry_complexity.configure(state = "normal")
+        self.is_saved = 0
         
 
 
     def apply_edit(self):
         if(self.chek_field()==True):
-            self.window_add.product_field.list_step[self.index].complexity = int(self.entry_complexity.get())
+            #self.window_add.product_field.list_step[self.index].complexity = int(self.entry_complexity.get())
+            self.step.complexity = int(self.entry_complexity.get())
             self.complex = int(self.entry_complexity.get())
-            self.window_add.product_field.list_step[self.index].name = self.entry_name.get()
+            self.step.name = self.entry_name.get()
             self.text = self.entry_name.get()
             self.entry_name.configure(state = "disabled")
             self.entry_complexity.configure(state = "disabled")
             self.button_aply.configure(fg_color = "#2dba52", hover_color = "#189e3b", text = "Редактировать", command = self.edit)
+            self.is_saved = 1
 
 
 
@@ -135,12 +144,12 @@ class Step_field():     #класс шага
             self.label_name.focus()
             check = False
         else:
-            self.entry_name.configure(fg_color="#f9f9fa", border_color= "#979da2", placeholder_text = "")
+            self.entry_name.configure(fg_color="#f9f9fa", border_color= "#61bf0d", placeholder_text = "")
         if(not(self.entry_complexity.get().isdigit())):
             self.entry_complexity.configure(fg_color="#faebeb", border_color= "#e64646", placeholder_text = "Заполните все поля", placeholder_text_color="#979da2")
             self.label_name.focus()
             check =  False
         else:
-            self.entry_complexity.configure(fg_color="#f9f9fa", border_color= "#979da2", placeholder_text = "")
+            self.entry_complexity.configure(fg_color="#f9f9fa", border_color= "#61bf0d", placeholder_text = "")
         return check
 

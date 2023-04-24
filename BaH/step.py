@@ -44,10 +44,11 @@ class Step:
         """Сложность шага, 1 - лёгкий, 3 - средний, 5 - тяжёлый"""
         self.__complexity = complexity
 
-        if complexity < 1:
+        if complexity <= 1:
             self.__complexity = 1        # Easy
-        if complexity > 5:
+        if complexity >= 5:
             self.__complexity = 5        # Hard
+
 
     @property
     def koef_value(self):

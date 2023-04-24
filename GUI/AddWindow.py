@@ -72,16 +72,16 @@ class WindowAdd(ctk.CTkToplevel):
         self.frame_step_panel.grid(row=0, column=3, columnspan=2, sticky="ensw")
 
         button_add_order = ctk.CTkButton(self.frame_order_panel, text="Добавить заказ", 
-                                              command=self.add_new_order, width=40, height=10)
+                                              command=self.add_new_order)#, width=40, height=10)
         button_add_order.pack(side=tk.TOP, pady=7)
 
         button_add_product = ctk.CTkButton(self.frame_product_panel, text="Добавить товар",
-                                           command=self.add_product_field, width=40, height=10)
+                                           command=self.add_product_field)#, width=40, height=10)
         button_add_product.pack(side=tk.TOP, pady=7)
 
-        button_add_step = ctk.CTkButton(self.frame_step_panel, text="Добавить шаг", command=self.add_step_field,
-                                        width=40, height=10)
-        button_add_step.pack(side=tk.TOP, pady=7)
+        self.button_add_step = ctk.CTkButton(self.frame_step_panel, text="Добавить шаг", 
+                                             command=self.add_step_field)#, width=40, height=10)
+        self.button_add_step.pack(side=tk.TOP, pady=7)
 
     def add_area_order(self):   #создание области в которой создается заказ
         self.frame_order = ctk.CTkFrame(self, border_width=1, width=300, height=650, corner_radius=0)
@@ -93,7 +93,7 @@ class WindowAdd(ctk.CTkToplevel):
         self.number_product = 1
 
         scroll_y = ctk.CTkScrollbar(self)
-        self.canvas_product = tk.Canvas(self, yscrollcommand=scroll_y.set)  # избавиться от Canvas если это возможно
+        self.canvas_product = tk.Canvas(self, yscrollcommand=scroll_y.set,  highlightthickness=0)  # избавиться от Canvas если это возможно
         scroll_y.configure(command=self.canvas_product.yview)
 
         self.frame_product = tk.Frame(self.canvas_product)
@@ -108,7 +108,7 @@ class WindowAdd(ctk.CTkToplevel):
         self.number_step = 1
 
         scroll_y = ctk.CTkScrollbar(self)
-        self.canvas_step = tk.Canvas(self, yscrollcommand=scroll_y.set)
+        self.canvas_step = tk.Canvas(self, yscrollcommand=scroll_y.set,  highlightthickness=0)
         scroll_y.configure(command=self.canvas_step.yview)
 
         self.frame_step = tk.Frame(self.canvas_step)
@@ -162,7 +162,7 @@ class WindowAdd(ctk.CTkToplevel):
 
     def check_order_field(self):
         if(self.entry_commentariy_order.get() != "" and self.entry_data_order.get()!= ""):
-            return True # добавить проверку на то что все поля заполнены в других фреймах
+            return True #добавить проверку на то что все поля заполнены в других фреймах
             
     def add_new_order(self):
         if(self.check_order_field() == True):
