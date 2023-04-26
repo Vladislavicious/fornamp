@@ -17,7 +17,7 @@ class WindowAdd(ctk.CTkToplevel):
         self.list_frame_product = []
         self.list_product = []
         
-        self.current_step = None
+        self.current_product = 0
 
         self.init_window_add()
 
@@ -144,15 +144,15 @@ class WindowAdd(ctk.CTkToplevel):
             return
         steps = Step_field(self.main_window)
 
-        self.list_frame_product[self.current_step].append(steps)
+        self.list_frame_product[self.current_product].list_frame_step.append(steps)
 
-        steps.index =  self.list_frame_product[self.current_step].index(steps)
+        steps.index =  self.list_frame_product[self.current_product].list_frame_step.index(steps)
 
     def add_product_field(self): #добавление новго продукта и добавление шага в список
         self.product_field = Product_field(self.number_product, self.main_window)
         self.number_product += 1
         
-        self.list_frame_product.append(self.product_field.list_frame_step)
+        self.list_frame_product.append(self.product_field)
         self.product_field.reload(tk.Event)
 
     def close_window(self):

@@ -126,13 +126,13 @@ class Product_field():  #класс продукта
 
 
     def delete_product(self):
-        if(self.entry_name.get() != ""):
+        if(self.is_saved==1):
             self.window_add.list_product.pop(self.count - 1)
         ln = len(self.window_add.list_frame_product)
         if(ln != self.count):
             for i in range(self.count , ln):
                 self.window_add.list_frame_product[i].count = self.window_add.list_frame_product[i].count - 1
-                self.window_add.list_frame_product[i].label_count.configure(text = "Шаг №" + str(self.window_add.list_frame_product[i].count))
+                self.window_add.list_frame_product[i].label_count.configure(text = "Продукт №" + str(self.window_add.list_frame_product[i].count))
 
                
 
@@ -142,12 +142,16 @@ class Product_field():  #класс продукта
         del self.window_add.list_frame_product[self.count-1]
         self.window_add.canvas_step.delete(tk.ALL)
         self.window_add.add_area_step()
+        if(len(self.window_add.list_frame_product)>=1):
+            self.window_add.current_product = 1
+            self.window_add.list_frame_product[0].reload(tk.Event)
+            
 
 
 
 
     def edit_state_step_button(self, state_aply: str):
-        for item in self.window_add.list_frame_product[self.count-1]:
+        for item in self.window_add.list_frame_product[self.count-1].list_frame_step:
             item.button_aply.configure(state = state_aply)
             item.button_delete.configure(state = state_aply)
         self.entry_name.configure(state = state_aply)
@@ -193,10 +197,10 @@ class Product_field():  #класс продукта
             self.entry_quantity.configure(fg_color="#f9f9fa", border_color= "#61bf0d", placeholder_text = "")
 
         self.entry_commentariy.configure(fg_color="#f9f9fa", border_color= "#61bf0d", placeholder_text = "")
-        if(len(self.window_add.list_frame_product[self.count-1]) == 0):
+        if(len(self.window_add.list_frame_product[self.count-1].list_frame_step) == 0):
             check = False
         else:
-            for item in self.window_add.list_frame_product[self.count-1]:
+            for item in self.window_add.list_frame_product[self.count-1].list_frame_step:
                 if(item.is_saved == 0):
                     item.frame_step_field.configure(border_color = "#e64646")
                     check = False
@@ -206,11 +210,11 @@ class Product_field():  #класс продукта
         return check
 
     def reload(self, event):    #отображение шагов связанных с этим продуктом
-        if(self.window_add.current_step != self.count - 1):
+        if(self.window_add.current_product != self.count - 1):
             self.window_add.canvas_step.delete(tk.ALL)
             self.window_add.add_area_step()
-            self.window_add.current_step = self.count - 1
-            for element in self.window_add.list_frame_product[self.count - 1]:
+            self.window_add.current_product = self.count - 1
+            for element in self.list_frame_step:#self.window_add.list_frame_product[self.count - 1].list_frame_step:
                 element.add_step()
 
         if(self.is_saved == 1):

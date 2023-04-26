@@ -68,7 +68,10 @@ class Step_field():     #класс шага
             self.button_aply = ctk.CTkButton(self.frame_step_field, text= self.text_button, fg_color = self.color_button, hover_color = "#189e3b", state = self.state_entry, command = self.edit)
         self.button_aply.pack(side = tk.LEFT, padx = 10)
 
-        self.button_delete = ctk.CTkButton(self.frame_step_field, text="Удалить", command = self.delete_step, fg_color = "#d9071c", hover_color= "#ad0314")
+        if(self.is_saved == 0):
+            self.button_delete = ctk.CTkButton(self.frame_step_field, text="Удалить", command = self.delete_step, fg_color = "#d9071c", hover_color= "#ad0314")
+        else:
+            self.button_delete = ctk.CTkButton(self.frame_step_field, text="Удалить", command = self.delete_step, fg_color = "#d9071c", hover_color= "#ad0314", state = "disabled")
         self.button_delete.pack(side = tk.RIGHT, padx = 10)
 
 
@@ -83,7 +86,8 @@ class Step_field():     #класс шага
                                      False,
                                      int(self.entry_complexity.get()),
                                      1)# ЭТО КОСТЫЛЬ НАДО ПЕРЕДЕЛАТЬ  
-            self.window_add.product_field.list_step.append(self.step)   
+            self.window_add.list_frame_product[self.window_add.current_product].list_step.append(self.step)
+            #self.window_add.product_field.list_step.append(self.step)   
             self.is_saved = 1
             self.color_button = "#2dba52"
             self.text_button = "Редактировать"
@@ -93,7 +97,7 @@ class Step_field():     #класс шага
             self.state_entry = "disabled"
             self.entry_name.configure(state =  "disabled")
             self.entry_complexity.configure(state =  "disabled")
-            self.index =  self.window_add.product_field.list_step.index(self.step)
+            self.index =  self.window_add.list_frame_product[self.window_add.current_product].list_step.index(self.step)
             
             
 
@@ -121,18 +125,18 @@ class Step_field():     #класс шага
 
 
     def delete_step(self):
-        if(self.text !=""):
-            self.window_add.product_field.list_step.pop(self.index)
-        ln = len(self.window_add.list_frame_product[self.window_add.current_step]) - 1
+        if(self.is_saved == 1):
+            self.window_add.list_frame_product[self.window_add.current_product].list_step.pop(self.index)
+        ln = len(self.window_add.list_frame_product[self.window_add.current_product].list_frame_step) - 1
         if(ln != self.index):
             for i in range(self.index + 1 , ln+1):
-                self.window_add.list_frame_product[self.window_add.current_step][i].index = self.window_add.list_frame_product[self.window_add.current_step][i].index - 1
-                self.window_add.list_frame_product[self.window_add.current_step][i].label_count.configure(text = "Шаг №" + str(self.window_add.list_frame_product[self.window_add.current_step][i].index + 1))
+                self.window_add.list_frame_product[self.window_add.current_product].list_frame_step[i].index = self.window_add.list_frame_product[self.window_add.current_product].list_frame_step[i].index - 1
+                self.window_add.list_frame_product[self.window_add.current_product].list_frame_step[i].label_count.configure(text = "Шаг №" + str(self.window_add.list_frame_product[self.window_add.current_product].list_frame_step[i].index + 1))
 
         self.label_count.destroy()
         self.frame_step_field.destroy()
         self.window_add.number_step -= 1
-        del self.window_add.list_frame_product[self.window_add.current_step][self.index]
+        del self.window_add.list_frame_product[self.window_add.current_product].list_frame_step[self.index]
         
 
 
