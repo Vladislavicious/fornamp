@@ -4,8 +4,6 @@ import BaH.product as bh_product
 from GUI.StepField import *
 
 
-
-
 class Product_field():  #класс продукта
     def __init__(self, count: int, app) -> None:
         self.main_window = app
@@ -38,6 +36,7 @@ class Product_field():  #класс продукта
         self.add_product()
 
     def add_product(self):  #создание поля нового пустого продукта
+        self.window_add.button_add_order.configure(state = "disabled")
         self.window_add.button_add_step.configure(state = "normal")
 
         self.label_count = ctk.CTkLabel(self.window_add.frame_product, text="Товар № " + str(self.count),
@@ -102,6 +101,10 @@ class Product_field():  #класс продукта
             self.button_aply.configure(fg_color = "#2dba52", hover_color = "#189e3b", text = "Редактировать", command = self.edit)
             self.edit_state_step_button("disabled")
             self.is_saved = 1
+            self.check_button_add_order()
+                
+
+
             
 
 
@@ -109,6 +112,7 @@ class Product_field():  #класс продукта
         self.edit_state_step_button("normal")
         self.button_aply.configure(fg_color = "#3b8ed0", hover_color = "#36719f", text = "Применить", command=self.apply_edit)
         self.is_saved = 0
+        self.window_add.button_add_order.configure(state = "disabled")
 
     def apply_edit(self):
         if(self.chek_field()==True):
@@ -123,6 +127,8 @@ class Product_field():  #класс продукта
 
             self.edit_state_step_button("disabled")
             self.button_aply.configure(fg_color = "#2dba52", hover_color = "#189e3b", text = "Редактировать", command = self.edit)
+            self.check_button_add_order()
+        
 
 
     def delete_product(self):
@@ -145,9 +151,18 @@ class Product_field():  #класс продукта
         if(len(self.window_add.list_frame_product)>=1):
             self.window_add.current_product = 1
             self.window_add.list_frame_product[0].reload(tk.Event)
+        self.check_button_add_order()
             
+        
 
-
+    def check_button_add_order(self):
+        for item in self.window_add.list_frame_product:
+            if(item.is_saved == 0):
+                self.window_add.button_add_order.configure(state = "disabled")
+                break
+            else:
+                self.window_add.button_add_order.configure(state = "normal")
+        
 
 
     def edit_state_step_button(self, state_aply: str):

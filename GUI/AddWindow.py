@@ -71,9 +71,9 @@ class WindowAdd(ctk.CTkToplevel):
         self.frame_product_panel.grid(row=0, column=1, columnspan=2, sticky="ensw")
         self.frame_step_panel.grid(row=0, column=3, columnspan=2, sticky="ensw")
 
-        button_add_order = ctk.CTkButton(self.frame_order_panel, text="Добавить заказ", 
-                                              command=self.add_new_order)#, width=40, height=10)
-        button_add_order.pack(side=tk.TOP, pady=7)
+        self.button_add_order = ctk.CTkButton(self.frame_order_panel, text="Добавить заказ", 
+                                              command=self.add_new_order, state = "disabled")#, width=40, height=10)
+        self.button_add_order.pack(side=tk.TOP, pady=7)
 
         button_add_product = ctk.CTkButton(self.frame_product_panel, text="Добавить товар",
                                            command=self.add_product_field)#, width=40, height=10)
