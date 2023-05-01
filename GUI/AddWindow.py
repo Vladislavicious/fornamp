@@ -1,4 +1,5 @@
-﻿import tkinter as tk
+from datetime import date
+import tkinter as tk
 import customtkinter as ctk
 import BaH.order as bh_order
 from GUI.ProductField import *
@@ -127,7 +128,7 @@ class WindowAdd(ctk.CTkToplevel):
         label_date = ctk.CTkLabel(frame_order_field, text="Введите дату выдачи", font=self.font_)
         label_date.pack(anchor=tk.CENTER, pady=5)
 
-        self.entry_data_order = ctk.CTkEntry(frame_order_field)
+        self.entry_data_order = ctk.CTkEntry(frame_order_field, placeholder_text="гггг-мм-дд")
         self.entry_data_order.pack(fill=tk.X, pady=5)
 
         label_commentariy = ctk.CTkLabel(frame_order_field, text="Введите описание заказа", font=self.font_)
@@ -160,13 +161,29 @@ class WindowAdd(ctk.CTkToplevel):
         self.main_window.root.deiconify()
         self.destroy()
 
+    def edit_data_vidachi_field(self): #редактирование поля ввода даты, если она введена неверно
+        self.entry_data_order.configure(fg_color="#faebeb", border_color= "#e64646", placeholder_text = "гггг-мм-дд", placeholder_text_color="#979da2")
+        self.entry_data_order.delete(first_index=0, last_index = len(self.entry_data_order.get()))
+        self.entry_data_order.insert(0, "")
+        self.entry_data_order.focus()
+
     def check_order_field(self):
-        if(self.entry_commentariy_order.get() != "" and self.entry_data_order.get()!= ""):
-            return True #добавить проверку на то что все поля заполнены в других фреймах
+        if(self.entry_commentariy_order.get() != "" and self.entry_data_order.get() != ""):
+            is_valid_date = lambda d: date.fromisoformat(d) >= date.today()
+            try:
+                if(is_valid_date(self.entry_data_order.get())):
+                    self.dat_of_vidacha = date.fromisoformat(self.entry_data_order.get())
+                    return True
+                else:
+                    self.edit_data_vidachi_field()
+                    return False
+            except:
+                self.edit_data_vidachi_field()
+                return False
             
     def add_new_order(self):
         if(self.check_order_field() == True):
             dat = bh_order.date.today()
-            order = bh_order.Order(1, self.entry_commentariy_order.get(), dat, dat, self.list_product, self.entry_commentariy_order.get()) #это затычка надо поменять принимаемые данные
+            order = bh_order.Order(1, self.entry_commentariy_order.get(), dat, self.dat_of_vidacha, self.list_product, self.entry_commentariy_order.get()) #это затычка надо поменять принимаемые данные
             self.main_window.list_order.append(order)
             self.close_window()
