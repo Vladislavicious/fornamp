@@ -2,9 +2,7 @@
 import customtkinter as ctk
 from GUI.AddWindow import *
 
-#добавить проверку ввода для заказа
 #добавить проверку что добавлен хотя бы 1 шаг и оповещение что шаги не были добавлены
-#сделать сохранение продукта при нажатии кнопки добавить новый продукт  ??? необязательно
 #подправить конструкторы продуктов и шагов
 #испрвить баг в котором при создании заказа с несколькими продуктами показывает у продуктов одни и те же шаги если после создание этого заказа сначала открыть другой заказ  (при переходе в show_info не меняется индекс)
 
@@ -48,14 +46,14 @@ class MainWindow(tk.Frame):
         
         self.frame_order = ctk.CTkFrame(master=self.root, border_width=3)
         self.frame_order.pack(anchor=tk.SW, fill=tk.BOTH, expand=tk.TRUE, padx=5, pady=5)
-        #scrol = ctk.CTkScrollableFrame(self.frame_order, label_anchor=ctk.E, height=500)
-        #scrol.pack(padx = 10, pady = 10, fill=tk.X)
+        self.scroll = ctk.CTkScrollableFrame(master = self.frame_order, height=600)
+        self.scroll.pack(padx = 5, pady =5, fill=tk.X)
 
     def add_list_order(self):
         self.frame_order.destroy()
         self.create_canvas_order()
         for item in self.list_order:
-            self.frame_order_info = ctk.CTkFrame(self.frame_order, border_width=3, fg_color="#6F7A71", height=50)
+            self.frame_order_info = ctk.CTkFrame(self.scroll, border_width=3, fg_color="#6F7A71", height=50)
             self.frame_order_info.pack(fill=tk.X, padx = 10, pady=7)
             self.label_order = ctk.CTkLabel(self.frame_order_info, text = item.zakazchik + "  " + str(item.date_of_creation)+ "  " + str(item.date_of_vidacha), font = ctk.CTkFont(family="Arial", size=12))
             self.label_order.pack(fill=tk.X, padx=10, pady = 10)
@@ -65,13 +63,14 @@ class MainWindow(tk.Frame):
     def open_info(self, order):
         self.button_add_order.configure(state = "disabled")
         self.frame_order.destroy()
-        self.create_canvas_order()
+        #self.create_canvas_order()
         self.button_close_info = ctk.CTkButton(self.frame_tools, text="Вернуться к заказам", command=self.close_info)
         self.button_close_info.pack(anchor=tk.N, pady=6)
         self.window_info = WindowInfo(self, order)
 
 
     def close_info(self):
+        self.window_info.delete_window_info()
         del self.window_info
         self.add_list_order()
         self.button_add_order.configure(state = "normal")
@@ -93,22 +92,27 @@ class WindowInfo(tk.Frame):
         
 
     def init_window_info(self):
-        self.frame_info_product = ctk.CTkFrame(self.main_window.frame_order, border_width=3, width=400)
-        
-        self.frame_info_product.pack(fill=tk.Y, padx=5, pady = 10, side=tk.LEFT, expand=True)
+        self.frame_info_product = ctk.CTkFrame(self.main_window.root, border_width=3, width=410)     
+        self.frame_info_product.pack(fill=tk.BOTH, padx=5, pady = 10, side=tk.LEFT)
+        self.frame_info_product.pack_propagate(False)
+        self.scroll_product = ctk.CTkScrollableFrame(master = self.frame_info_product, height=600)
+        self.scroll_product.pack(padx = 3, pady =3, fill=tk.X)
         self.create_step_frame()
         self.show_product()
 
     def create_step_frame(self):
-        self.frame_info_step = ctk.CTkFrame(self.main_window.frame_order, border_width=3, width=400)
-        self.frame_info_step.pack(fill=tk.Y, padx=5, pady = 10, side = tk.RIGHT, expand=True)
+        self.frame_info_step = ctk.CTkFrame(self.main_window.root, border_width=3, width=410)
+        self.frame_info_step.pack(fill=tk.BOTH, padx=5, pady = 10, side = tk.RIGHT)
+        self.frame_info_step.pack_propagate(False)
+        self.scroll_step = ctk.CTkScrollableFrame(master = self.frame_info_step, height=600)
+        self.scroll_step.pack(padx = 3, pady =3, fill=tk.X)
 
 
     def show_product(self):
 
         self.product = self.cur_order.GetProducts()
         for item in self.product:
-            self.frame_product_show = ctk.CTkFrame(self.frame_info_product, border_width=3, fg_color="#6F7A71", height=50, width=400)
+            self.frame_product_show = ctk.CTkFrame(self.scroll_product, border_width=3, fg_color="#6F7A71", height=50, width=150)
             self.frame_product_show.pack(fill=tk.X, padx = 10, pady=7)
             self.frame_product_show.pack_propagate(False)
             self.label_product = ctk.CTkLabel(self.frame_product_show, text = item.name + "  " + str(item.selling_cost - item.production_cost), font = ctk.CTkFont(family="Arial", size=12))
@@ -121,9 +125,14 @@ class WindowInfo(tk.Frame):
         self.create_step_frame()   
         step = self.product[s_index].GetSteps()
         for item in step:
-            self.frame_step_show = ctk.CTkFrame(self.frame_info_step, border_width=3, fg_color="#6F7A71", height=50, width=400)
+            self.frame_step_show = ctk.CTkFrame(self.scroll_step, border_width=3, fg_color="#6F7A71", height=50, width=150)
             self.frame_step_show.pack(fill=tk.X, padx = 10, pady=7)
             self.frame_step_show.pack_propagate(False)
             
             self.label_step = ctk.CTkLabel(self.frame_step_show, text = item.name + "  ", font = ctk.CTkFont(family="Arial", size=12))
             self.label_step.pack(fill=tk.X, padx=10, pady = 10)
+
+    def delete_window_info(self):
+        self.frame_info_product.destroy()
+        self.frame_info_step.destroy()
+        self.main_window.create_canvas_order()

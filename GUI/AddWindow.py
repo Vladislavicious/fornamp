@@ -12,8 +12,6 @@ class WindowAdd(ctk.CTkToplevel):
     def __init__(self, root, app):
         super().__init__(root)
 
-        #self.attributes('-topmost',True)
-
         self.main_window = app
         self.list_frame_product = []
         self.list_product = []
@@ -24,10 +22,7 @@ class WindowAdd(ctk.CTkToplevel):
 
     def init_window_add(self) -> None:
         self.geometry("810x510+250+100")
-        self.resizable(False, False)
-        #self.overrideredirect(True)
-        
-        
+        self.resizable(False, False)  
 
         self.font_ = ctk.CTkFont(family="Arial", size=16)
         self.fontmini = ctk.CTkFont(family="Arial", size=12)
@@ -137,6 +132,9 @@ class WindowAdd(ctk.CTkToplevel):
         self.entry_commentariy_order = ctk.CTkEntry(frame_order_field)
         self.entry_commentariy_order.pack(fill=tk.X, pady=5)
 
+        self.label_error = ctk.CTkLabel(frame_order_field, text="", font=self.font_, text_color = "#e64646")
+        self.label_error.pack(anchor=tk.CENTER, pady=5)
+
         button_close = ctk.CTkButton(frame_order_field, text="Закрыть", command=self.close_window, width=40, height=10)
         button_close.pack(side=tk.BOTTOM, anchor=tk.E)
 
@@ -167,12 +165,16 @@ class WindowAdd(ctk.CTkToplevel):
         self.label_date.focus()
 
     def check_order_field(self):
-        k = 0
+        check = True
 
         if(self.entry_commentariy_order.get() == ""):
             self.entry_commentariy_order.configure(fg_color="#faebeb", border_color= "#e64646", placeholder_text = "Заполните это поле", placeholder_text_color="#979da2")
             self.label_commentariy.focus()
-            k += 1
+            check = False
+        elif(len(self.entry_commentariy_order.get()) > 60):
+            self.entry_commentariy_order.configure(fg_color="#faebeb", border_color= "#e64646")
+            self.label_error.configure(text = "Введите не больше 60 символов")
+            check = False
         else:
             self.entry_commentariy_order.configure(fg_color="#f9f9fa", border_color= "#61bf0d", placeholder_text = "")
         
@@ -183,15 +185,12 @@ class WindowAdd(ctk.CTkToplevel):
                 self.entry_data_order.configure(fg_color="#f9f9fa", border_color= "#61bf0d", placeholder_text = "")
             else:
                 self.edit_data_vidachi_field()
-                k += 1
+                check = False
         except:
             self.edit_data_vidachi_field()
-            k += 1
+            check = False
 
-        if(k>0):
-            return False
-        else:
-            return True
+        return check
         
             
     def add_new_order(self):

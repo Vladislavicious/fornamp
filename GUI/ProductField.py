@@ -51,37 +51,47 @@ class Product_field():  #класс продукта
 
         self.label_name = ctk.CTkLabel(self.frame_product_field, text="Введите название товара", font=self.fontmini)
         self.label_name.pack(anchor=tk.CENTER, pady=5)
+        self.label_name.bind('<Button-1>', self.reload)
 
         self.entry_name = ctk.CTkEntry(self.frame_product_field)
         self.entry_name.pack(fill=tk.X, pady=5, padx=5)
+        self.entry_name.bind('<Button-1>', self.reload)
 
         self.label_selling_cost = ctk.CTkLabel(self.frame_product_field, text="Введите стоимость продажи",
                                                font=self.fontmini)
         self.label_selling_cost.pack(anchor=tk.CENTER, pady=5)
+        self.label_selling_cost.bind('<Button-1>', self.reload)
 
         self.entry_selling_cost = ctk.CTkEntry(self.frame_product_field)
         self.entry_selling_cost.pack(fill=tk.X, pady=5, padx=5)
+        self.entry_selling_cost.bind('<Button-1>', self.reload)
 
         self.label_production_cost = ctk.CTkLabel(self.frame_product_field, text="Введите себестоимость товара",
                                                   font=self.fontmini)
         self.label_production_cost.pack(anchor=tk.CENTER, pady=5)
+        self.label_production_cost.bind('<Button-1>', self.reload)
 
         self.entry_production_cost = ctk.CTkEntry(self.frame_product_field)
         self.entry_production_cost.pack(fill=tk.X, pady=5, padx=5)
+        self.entry_production_cost.bind('<Button-1>', self.reload)
 
         self.label_quantity = ctk.CTkLabel(self.frame_product_field, text="Введите количество товаров",
                                            font=self.fontmini)
         self.label_quantity.pack(anchor=tk.CENTER, pady=5)
+        self.label_quantity.bind('<Button-1>', self.reload)
 
         self.entry_quantity = ctk.CTkEntry(self.frame_product_field)
         self.entry_quantity.pack(fill=tk.X, pady=5, padx=5)
+        self.entry_quantity.bind('<Button-1>', self.reload)
 
         self.label_commentariy = ctk.CTkLabel(self.frame_product_field, text="Введите описание ",
                                               font=self.fontmini)
         self.label_commentariy.pack(anchor=tk.CENTER, pady=5)
+        self.label_commentariy.bind('<Button-1>', self.reload)
 
         self.entry_commentariy = ctk.CTkEntry(self.frame_product_field)
         self.entry_commentariy.pack(fill=tk.X, pady=5, padx=5)
+        self.entry_commentariy.bind('<Button-1>', self.reload)
 
         self.button_aply = ctk.CTkButton(self.frame_product_field, text="Применить", command = self.aply)
         self.button_aply.pack(side = tk.LEFT, padx = 10)
