@@ -153,6 +153,7 @@ class WindowAdd(ctk.CTkToplevel):
         
         self.list_frame_product.append(self.product_field)
         self.product_field.reload(tk.Event)
+        self.add_step_field()
 
     def close_window(self):
         self.main_window.add_list_order()
