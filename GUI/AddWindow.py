@@ -21,7 +21,7 @@ class WindowAdd(ctk.CTkToplevel):
         self.init_window_add()
 
     def init_window_add(self) -> None:
-        self.geometry("810x510+250+100")
+        self.geometry("1000x600+250+100")
         self.resizable(False, False)  
 
         self.font_ = ctk.CTkFont(family="Arial", size=16)
@@ -29,43 +29,39 @@ class WindowAdd(ctk.CTkToplevel):
 
         self.protocol("WM_DELETE_WINDOW", lambda: self.close_window()) 
 
+        
         self.panel_add()
-
         self.add_area_order()
         self.add_area_product()
         self.add_area_step()
-
-        self.rowconfigure(0, weight=1)
-        self.rowconfigure(1, weight=100)
-        # надо разобраться с колоннами (разметкой)
-        self.columnconfigure(0, weight=1)
-        self.columnconfigure(1, weight=10)
-        self.columnconfigure(2, weight=1)
-        self.columnconfigure(3, weight=10)
-        self.columnconfigure(4, weight=1)
-
-
-
-        self.bind("<Configure>", self.resize)
-        self.minsize(self.winfo_width(), self.winfo_height())
+        
         
         self.main_window.root.withdraw()
 
-    def resize(self, event):    #отвечает за нормальное поведение скроллбара
-        region = self.canvas_product.bbox(tk.ALL)
-        self.canvas_product.configure(scrollregion=region)
 
-        region_step = self.canvas_step.bbox(tk.ALL)
-        self.canvas_step.configure(scrollregion=region_step)
 
     def panel_add(self):    #панель добавления шагов, продуктов, заказа
-        self.frame_order_panel = ctk.CTkFrame(self, border_width=1, width=300, corner_radius=0)
-        self.frame_product_panel = ctk.CTkFrame(self, border_width=1, width=400, corner_radius=0)
-        self.frame_step_panel = ctk.CTkFrame(self, border_width=1, width=400, corner_radius=0)
+        self.frame_common_panel = self.frame_order_panel = ctk.CTkFrame(self, border_width=0, width=1000, corner_radius=0, height=40)
+        self.frame_common_panel.pack(anchor=tk.W, side=tk.TOP)
+        self.frame_common_panel.pack_propagate(False)
 
-        self.frame_order_panel.grid(row=0, column=0, sticky="ensw")
-        self.frame_product_panel.grid(row=0, column=1, columnspan=2, sticky="ensw")
-        self.frame_step_panel.grid(row=0, column=3, columnspan=2, sticky="ensw")
+        self.frame_order_panel = ctk.CTkFrame(self.frame_common_panel, border_width=1, width=250, corner_radius=0, height=40)
+        self.frame_product_panel = ctk.CTkFrame(self.frame_common_panel, border_width=1, width=375, corner_radius=0, height=40)
+        self.frame_step_panel = ctk.CTkFrame(self.frame_common_panel, border_width=1, width=375, corner_radius=0, height=40)
+
+        self.frame_order_panel.pack(side=tk.LEFT)
+        self.frame_order_panel.pack_propagate(False)
+        
+
+        
+        self.frame_product_panel.pack(side = tk.LEFT)
+        self.frame_product_panel.pack_propagate(False)
+        
+        
+        self.frame_step_panel.pack(side = tk.LEFT)
+        self.frame_step_panel.pack_propagate(False)
+        
+
 
         self.button_add_order = ctk.CTkButton(self.frame_order_panel, text="Добавить заказ", 
                                               command=self.add_new_order, state = "disabled")#, width=40, height=10)
@@ -80,43 +76,32 @@ class WindowAdd(ctk.CTkToplevel):
         self.button_add_step.pack(side=tk.TOP, pady=7)
 
     def add_area_order(self):   #создание области в которой создается заказ
-        self.frame_order = ctk.CTkFrame(self, border_width=1, width=300, height=650, corner_radius=0)
+        self.frame_order = ctk.CTkFrame(self, border_width=1, width=250, height=560, corner_radius=0)
 
         self.add_order_field()
-        self.frame_order.grid(row=1, column=0, sticky="ensw")
+        self.frame_order.pack(side = tk.LEFT)
+        self.frame_order.pack_propagate(False)
 
     def add_area_product(self):     #создание области в которой создается продукт
         self.number_product = 1
 
-        scroll_y = ctk.CTkScrollbar(self)
-        self.canvas_product = tk.Canvas(self, yscrollcommand=scroll_y.set,  highlightthickness=0)  # избавиться от Canvas если это возможно
-        scroll_y.configure(command=self.canvas_product.yview)
-
-        self.frame_product = tk.Frame(self.canvas_product)
-
-        self.canvas_product.create_window((0, 0), window=self.frame_product,
-                                          anchor=tk.N)
-
-        self.canvas_product.grid(row=1, column=1, sticky="ensw")
-        scroll_y.grid(row=1, column=2, sticky="ns")
+        self.frame_product = ctk.CTkFrame(master=self, border_width=0, width=375, height=560)
+        self.frame_product.pack(side = tk.LEFT)
+        self.frame_product.pack_propagate(False)
+        self.scroll_product = ctk.CTkScrollableFrame(master = self.frame_product, height=560)
+        self.scroll_product.pack(padx = 5, pady =5, fill=tk.X)
 
     def add_area_step(self):    #создание области в которой создается шаг
         self.number_step = 1
 
-        scroll_y = ctk.CTkScrollbar(self)
-        self.canvas_step = tk.Canvas(self, yscrollcommand=scroll_y.set,  highlightthickness=0)
-        scroll_y.configure(command=self.canvas_step.yview)
-
-        self.frame_step = tk.Frame(self.canvas_step)
-
-        self.canvas_step.create_window((0, 0), window=self.frame_step,
-                                       anchor=tk.N)
-
-        self.canvas_step.grid(row=1, column=3, sticky="ensw")
-        scroll_y.grid(row=1, column=4, sticky="ns")
+        self.frame_step = ctk.CTkFrame(master=self, border_width=0, width=375, height=560)
+        self.frame_step.pack(side = tk.LEFT)
+        self.frame_step.pack_propagate(False)
+        self.scroll_step = ctk.CTkScrollableFrame(master = self.frame_step, height=560)
+        self.scroll_step.pack(padx = 5, pady =5, fill=tk.X)
 
     def add_order_field(self):  #поля ввода для создания заказа и конпка выхода в главное меню
-        frame_order_field = ctk.CTkFrame(self.frame_order, width=250, height=700, corner_radius=0)
+        frame_order_field = ctk.CTkFrame(self.frame_order, width=250, height=560, corner_radius=0)
         frame_order_field.pack(side=tk.TOP, padx=1, pady=1)
         frame_order_field.pack_propagate(False)
 

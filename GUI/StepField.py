@@ -35,12 +35,12 @@ class Step_field():     #класс шага
         self.add_step()
 
     def add_step(self):     #создание поля нового пустого шага
-        self.label_count = ctk.CTkLabel(self.window_add.frame_step, text="Шаг № " + str(self.window_add.number_step),
+        self.label_count = ctk.CTkLabel(self.window_add.scroll_step, text="Шаг № " + str(self.window_add.number_step),
                                         font=self.font_)
         self.label_count.pack(anchor=tk.CENTER, pady=5)
         self.window_add.number_step += 1
 
-        self.frame_step_field = ctk.CTkFrame(self.window_add.frame_step, border_width=2, width=350, height=190)
+        self.frame_step_field = ctk.CTkFrame(self.window_add.scroll_step, border_width=2, width=350, height=190)
         self.frame_step_field.pack(side=tk.TOP, padx=1, pady=1)
         self.frame_step_field.pack_propagate(False)
 

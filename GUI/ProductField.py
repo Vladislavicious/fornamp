@@ -39,11 +39,11 @@ class Product_field():  #класс продукта
         self.window_add.button_add_order.configure(state = "disabled")
         self.window_add.button_add_step.configure(state = "normal")
 
-        self.label_count = ctk.CTkLabel(self.window_add.frame_product, text="Товар № " + str(self.count),
+        self.label_count = ctk.CTkLabel(self.window_add.scroll_product, text="Товар № " + str(self.count),
                                         font=self.font_)
         self.label_count.pack(anchor=tk.CENTER, pady=5)
 
-        self.frame_product_field = ctk.CTkFrame(self.window_add.frame_product, border_width=2, width=350, height=415)
+        self.frame_product_field = ctk.CTkFrame(self.window_add.scroll_product, border_width=2, width=350, height=415)
         self.frame_product_field.pack(side=tk.TOP, padx=1, pady=1)
         self.frame_product_field.pack_propagate(False)
         self.frame_product_field.bind('<Button-1>', self.reload)
@@ -156,7 +156,7 @@ class Product_field():  #класс продукта
         self.frame_product_field.destroy()
         self.window_add.number_product -= 1
         del self.window_add.list_frame_product[self.count-1]
-        self.window_add.canvas_step.delete(tk.ALL)
+        self.window_add.frame_step.destroy()
         self.window_add.add_area_step()
         if(len(self.window_add.list_frame_product)>=1):
             self.window_add.current_product = 1
@@ -236,7 +236,7 @@ class Product_field():  #класс продукта
 
     def reload(self, event):    #отображение шагов связанных с этим продуктом
         if(self.window_add.current_product != self.count - 1):
-            self.window_add.canvas_step.delete(tk.ALL)
+            self.window_add.frame_step.destroy()
             self.window_add.add_area_step()
             self.window_add.current_product = self.count - 1
             for element in self.list_frame_step:#self.window_add.list_frame_product[self.count - 1].list_frame_step:

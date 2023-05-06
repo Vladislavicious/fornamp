@@ -39,10 +39,11 @@ class MainWindow(tk.Frame):
         frame_title.pack_propagate(False)
         self.frame_tools.pack_propagate(False)
 
-        self.create_canvas_order()
+        self.create_frame_order()
 
 
-    def create_canvas_order(self):
+
+    def create_frame_order(self):
         
         self.frame_order = ctk.CTkFrame(master=self.root, border_width=3)
         self.frame_order.pack(anchor=tk.SW, fill=tk.BOTH, expand=tk.TRUE, padx=5, pady=5)
@@ -51,7 +52,7 @@ class MainWindow(tk.Frame):
 
     def add_list_order(self):
         self.frame_order.destroy()
-        self.create_canvas_order()
+        self.create_frame_order()
         for item in self.list_order:
             self.frame_order_info = ctk.CTkFrame(self.scroll, border_width=3, fg_color="#6F7A71", height=50)
             self.frame_order_info.pack(fill=tk.X, padx = 10, pady=7)
@@ -63,7 +64,6 @@ class MainWindow(tk.Frame):
     def open_info(self, order):
         self.button_add_order.configure(state = "disabled")
         self.frame_order.destroy()
-        #self.create_canvas_order()
         self.button_close_info = ctk.CTkButton(self.frame_tools, text="Вернуться к заказам", command=self.close_info)
         self.button_close_info.pack(anchor=tk.N, pady=6)
         self.window_info = WindowInfo(self, order)
@@ -87,6 +87,7 @@ class WindowInfo(tk.Frame):
     def __init__(self, main_win, order):
         self.main_window = main_win
         self.cur_order = order
+        self.cure_product = -1
         self.init_window_info()
         
         
@@ -110,29 +111,32 @@ class WindowInfo(tk.Frame):
 
     def show_product(self):
 
-        self.product = self.cur_order.GetProducts()
-        for item in self.product:
+        self.products = self.cur_order.GetProducts()
+        for item in self.products:
             self.frame_product_show = ctk.CTkFrame(self.scroll_product, border_width=3, fg_color="#6F7A71", height=50, width=150)
             self.frame_product_show.pack(fill=tk.X, padx = 10, pady=7)
             self.frame_product_show.pack_propagate(False)
             self.label_product = ctk.CTkLabel(self.frame_product_show, text = item.name + "  " + str(item.selling_cost - item.production_cost), font = ctk.CTkFont(family="Arial", size=12))
             self.label_product.pack(fill=tk.X, padx=10, pady = 10)
-            self.label_product.bind('<Button-1>', lambda event, step_index = self.product.index(item): self.open_step_info(step_index))
+            self.label_product.bind('<Button-1>', lambda event, product_index = self.products.index(item): self.open_step_info(product_index))
 
 
-    def open_step_info(self, s_index):  
-        self.frame_info_step.destroy()
-        self.create_step_frame()   
-        step = self.product[s_index].GetSteps()
-        for item in step:
-            self.frame_step_show = ctk.CTkFrame(self.scroll_step, border_width=3, fg_color="#6F7A71", height=50, width=150)
-            self.frame_step_show.pack(fill=tk.X, padx = 10, pady=7)
-            self.frame_step_show.pack_propagate(False)
+    def open_step_info(self, s_index): 
+        if(self.cure_product != s_index):
+            self.frame_info_step.destroy()
+            self.create_step_frame()   
+            step = self.products[s_index].GetSteps()
+            for item in step:
+                self.frame_step_show = ctk.CTkFrame(self.scroll_step, border_width=3, fg_color="#6F7A71", height=50, width=150)
+                self.frame_step_show.pack(fill=tk.X, padx = 10, pady=7)
+                self.frame_step_show.pack_propagate(False)
             
-            self.label_step = ctk.CTkLabel(self.frame_step_show, text = item.name + "  ", font = ctk.CTkFont(family="Arial", size=12))
-            self.label_step.pack(fill=tk.X, padx=10, pady = 10)
+                self.label_step = ctk.CTkLabel(self.frame_step_show, text = item.name + "  ", font = ctk.CTkFont(family="Arial", size=12))
+                self.label_step.pack(fill=tk.X, padx=10, pady = 10)
+            self.cure_product = s_index
+
 
     def delete_window_info(self):
         self.frame_info_product.destroy()
         self.frame_info_step.destroy()
-        self.main_window.create_canvas_order()
+        self.main_window.create_frame_order()
