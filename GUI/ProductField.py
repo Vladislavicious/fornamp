@@ -106,7 +106,8 @@ class Product_field():  #класс продукта
                                         int(self.entry_selling_cost.get()),
                                         self.list_step,
                                         int(self.entry_quantity.get()),
-                                        int(self.entry_production_cost.get()))
+                                        int(self.entry_production_cost.get()),
+                                        self.entry_commentariy.get())
             self.window_add.list_product.append(self.product)
             self.button_aply.configure(fg_color = "#2dba52", hover_color = "#189e3b", text = "Редактировать", command = self.edit)
             self.edit_state_step_button("disabled")
@@ -195,6 +196,11 @@ class Product_field():  #класс продукта
             self.entry_name.configure(fg_color="#faebeb", border_color= "#e64646", placeholder_text = "Заполните все поля", placeholder_text_color="#979da2")
             self.label_name.focus()
             check = False
+        elif(len(self.entry_name.get()) > 60):
+            self.entry_name.delete(first_index=0, last_index= len(self.entry_name.get()))
+            self.entry_name.configure(fg_color="#faebeb", border_color= "#e64646", placeholder_text = "Длина названия должна быть не более 35 символов", placeholder_text_color="#979da2")
+            self.label_name.focus()
+            check = False
         else:
             self.entry_name.configure(fg_color="#f9f9fa", border_color= "#61bf0d", placeholder_text = "")
 
@@ -221,7 +227,14 @@ class Product_field():  #класс продукта
         else:
             self.entry_quantity.configure(fg_color="#f9f9fa", border_color= "#61bf0d", placeholder_text = "")
 
-        self.entry_commentariy.configure(fg_color="#f9f9fa", border_color= "#61bf0d", placeholder_text = "")
+        if(len(self.entry_commentariy.get()) > 60):
+            self.entry_commentariy.delete(first_index=0, last_index= len(self.entry_commentariy.get()))
+            self.entry_commentariy.configure(fg_color="#faebeb", border_color= "#e64646", placeholder_text = "Длина названия должна быть не более 60 символов", placeholder_text_color="#979da2")
+            self.label_name.focus()
+            check = False
+        else:
+            self.entry_commentariy.configure(fg_color="#f9f9fa", border_color= "#61bf0d", placeholder_text = "")
+
         if(len(self.window_add.list_frame_product[self.count-1].list_frame_step) == 0):
             check = False
         else:

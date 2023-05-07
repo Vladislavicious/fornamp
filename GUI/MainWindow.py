@@ -54,9 +54,17 @@ class MainWindow(tk.Frame):
         self.frame_order.destroy()
         self.create_frame_order()
         for item in self.list_order:
-            self.frame_order_info = ctk.CTkFrame(self.scroll, border_width=3, fg_color="#6F7A71", height=50)
+            self.frame_order_info = ctk.CTkFrame(self.scroll, border_width=2, fg_color="#b8bab9", height=120)
             self.frame_order_info.pack(fill=tk.X, padx = 10, pady=7)
-            self.label_order = ctk.CTkLabel(self.frame_order_info, text = item.zakazchik + "  " + str(item.date_of_creation)+ "  " + str(item.date_of_vidacha), font = ctk.CTkFont(family="Arial", size=12))
+
+            if(item.isDone == False):
+                self.frame_order_info.configure(border_color = "#bf6b6b")
+            elif(item.isDone == True and item.isVidan == False):
+                self.frame_order_info.configure(border_color = "#e3a002")
+            else:
+                self.frame_order_info.configure(border_color = "#77bf6d")
+
+            self.label_order = ctk.CTkLabel(self.frame_order_info, text = "Заказчик: " + item.zakazchik + "\nОписание заказа: " + item.commentary + "\nДата создания: " + str(item.date_of_creation)+ "\nДата выдачи: " + str(item.date_of_vidacha), font = ctk.CTkFont(family="Arial", size=12))
             self.label_order.pack(fill=tk.X, padx=10, pady = 10)
             self.label_order.bind('<Button-1>', lambda event, order = item: self.open_info(order))
 
@@ -113,12 +121,18 @@ class WindowInfo(tk.Frame):
 
         self.products = self.cur_order.GetProducts()
         for item in self.products:
-            self.frame_product_show = ctk.CTkFrame(self.scroll_product, border_width=3, fg_color="#6F7A71", height=50, width=150)
+            self.frame_product_show = ctk.CTkFrame(self.scroll_product, border_width=2, fg_color= "#b8bab9", height=90, width=150)
             self.frame_product_show.pack(fill=tk.X, padx = 10, pady=7)
             self.frame_product_show.pack_propagate(False)
-            self.label_product = ctk.CTkLabel(self.frame_product_show, text = item.name + "  " + str(item.selling_cost - item.production_cost), font = ctk.CTkFont(family="Arial", size=12))
+            self.label_product = ctk.CTkLabel(self.frame_product_show,
+                                             text =  "Название продукта: " + item.name[:item.name.find(" ", 15)+1] + "\n" + item.name[item.name.find(" ", 15)+1:] + '\nОписание продукта: ' + item.commentary[:item.commentary.find(" ", 15)+1] + "\n" + item.commentary[item.commentary.find(" ", 15)+1:] + "\nПрибыль с реализации: " + str(item.selling_cost*item.quantity - item.production_cost*item.quantity) + " ₽",
+                                            font = ctk.CTkFont(family="Arial", size=12))
             self.label_product.pack(fill=tk.X, padx=10, pady = 10)
             self.label_product.bind('<Button-1>', lambda event, product_index = self.products.index(item): self.open_step_info(product_index))
+            if(item.isDone == False):
+                self.frame_product_show.configure(border_color= "#bf6b6b")
+            else:
+                self.frame_product_show.configure(border_color= "#77bf6d")
 
 
     def open_step_info(self, s_index): 
@@ -127,11 +141,18 @@ class WindowInfo(tk.Frame):
             self.create_step_frame()   
             step = self.products[s_index].GetSteps()
             for item in step:
-                self.frame_step_show = ctk.CTkFrame(self.scroll_step, border_width=3, fg_color="#6F7A71", height=50, width=150)
+                self.frame_step_show = ctk.CTkFrame(self.scroll_step, border_width=2, fg_color= "#b8bab9", height=50, width=150)
+                
+                if(item.isDone == False):
+                    self.frame_step_show.configure(border_color= "#b86161")
+                else:
+                    self.frame_step_show.configure(border_color= "#77bf6d")
+
                 self.frame_step_show.pack(fill=tk.X, padx = 10, pady=7)
                 self.frame_step_show.pack_propagate(False)
             
                 self.label_step = ctk.CTkLabel(self.frame_step_show, text = item.name + "  ", font = ctk.CTkFont(family="Arial", size=12))
+
                 self.label_step.pack(fill=tk.X, padx=10, pady = 10)
             self.cure_product = s_index
 

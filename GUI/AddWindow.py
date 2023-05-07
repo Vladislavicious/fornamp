@@ -166,8 +166,8 @@ class WindowAdd(ctk.CTkToplevel):
         
         is_valid_date = lambda d: date.fromisoformat(d) >= date.today()
         try:
-            if(is_valid_date(self.entry_data_order.get())):
-                self.dat_of_vidacha = date.fromisoformat(self.entry_data_order.get())
+            if(is_valid_date(self.entry_data_order.get()[:10])):
+                self.dat_of_vidacha = date.fromisoformat(self.entry_data_order.get()[:10])
                 self.entry_data_order.configure(fg_color="#f9f9fa", border_color= "#61bf0d", placeholder_text = "")
             else:
                 self.edit_data_vidachi_field()
