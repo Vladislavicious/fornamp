@@ -110,6 +110,7 @@ class WindowAdd(ctk.CTkToplevel):
 
         self.entry_data_order = ctk.CTkEntry(frame_order_field, placeholder_text="ГГГГ-ММ-ДД")
         self.entry_data_order.pack(fill=tk.X, pady=5)
+        self.entry_data_order.bind('<KeyRelease>', self.edit_data)
 
         self.label_commentariy = ctk.CTkLabel(frame_order_field, text="Введите описание заказа", font=self.font_)
         self.label_commentariy.pack(anchor=tk.CENTER, pady=5)
@@ -178,6 +179,11 @@ class WindowAdd(ctk.CTkToplevel):
 
         return check
         
+
+    def edit_data(self, event):
+        length = len(event.widget.get())
+        if( length > 10):
+           self.entry_data_order.delete(10, length)
             
     def add_new_order(self):
         if(self.check_order_field() == True):

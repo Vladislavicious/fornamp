@@ -11,6 +11,7 @@ class Step_field():     #класс шага
         self.fontmini = ctk.CTkFont(family="Arial", size=12)
 
         self.index: int
+        self.index_list_steps: int
 
         self.text = ""
         self.complex = ""
@@ -97,7 +98,7 @@ class Step_field():     #класс шага
             self.state_entry = "disabled"
             self.entry_name.configure(state =  "disabled")
             self.entry_complexity.configure(state =  "disabled")
-            self.index =  self.window_add.list_frame_product[self.window_add.current_product].list_step.index(self.step)
+            self.index_list_steps =  self.window_add.list_frame_product[self.window_add.current_product].list_step.index(self.step)
             
             
 
@@ -125,9 +126,11 @@ class Step_field():     #класс шага
 
 
     def delete_step(self):
-        if(self.is_saved == 1):
-            self.window_add.list_frame_product[self.window_add.current_product].list_step.pop(self.index)
         ln = len(self.window_add.list_frame_product[self.window_add.current_product].list_frame_step) - 1
+        if(self.is_saved == 1):
+            self.window_add.list_frame_product[self.window_add.current_product].list_step.pop(self.index_list_steps)
+            for i in range(self.index + 1 , ln+1):
+                self.window_add.list_frame_product[self.window_add.current_product].list_frame_step[i].index_list_steps -= 1
         if(ln != self.index):
             for i in range(self.index + 1 , ln+1):
                 self.window_add.list_frame_product[self.window_add.current_product].list_frame_step[i].index = self.window_add.list_frame_product[self.window_add.current_product].list_frame_step[i].index - 1
