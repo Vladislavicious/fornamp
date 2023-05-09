@@ -162,7 +162,12 @@ class Step_field():     #класс шага
             self.entry_complexity.configure(fg_color="#faebeb", border_color= "#e64646", placeholder_text = "Заполните все поля", placeholder_text_color="#979da2")
             self.label_name.focus()
             check =  False
-        else:
-            self.entry_complexity.configure(fg_color="#f9f9fa", border_color= "#61bf0d", placeholder_text = "")
+        elif(self.entry_complexity.get().isdigit()):
+            if(int(self.entry_complexity.get()) > 5 or int(self.entry_complexity.get()) < 1):
+                self.entry_complexity.configure(fg_color="#faebeb", border_color= "#e64646", placeholder_text = "Заполните все поля", placeholder_text_color="#979da2")
+                self.label_name.focus()
+                check =  False
+            else:
+                self.entry_complexity.configure(fg_color="#f9f9fa", border_color= "#61bf0d", placeholder_text = "")
         return check
 

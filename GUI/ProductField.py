@@ -244,7 +244,12 @@ class Product_field():  #класс продукта
                     check = False
                 else:
                     item.frame_step_field.configure(border_color = "#979da2")
-                
+        
+        if(not(check)):
+            self.button_aply.configure(border_width = 2, border_color = "#e64646")
+        else:
+            self.button_aply.configure(border_width = 0)
+
         return check
 
     def reload(self, event):    #отображение шагов связанных с этим продуктом
