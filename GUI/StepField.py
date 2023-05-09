@@ -72,7 +72,7 @@ class Step_field():     #класс шага
         if(self.is_saved == 0):
             self.button_delete = ctk.CTkButton(self.frame_step_field, text="Удалить", command = self.delete_step, fg_color = "#d9071c", hover_color= "#ad0314")
         else:
-            self.button_delete = ctk.CTkButton(self.frame_step_field, text="Удалить", command = self.delete_step, fg_color = "#d9071c", hover_color= "#ad0314", state = "disabled")
+            self.button_delete = ctk.CTkButton(self.frame_step_field, text="Удалить", command = self.delete_step, fg_color = "#d9071c", hover_color= "#ad0314")
         self.button_delete.pack(side = tk.RIGHT, padx = 10)
 
 
@@ -130,7 +130,8 @@ class Step_field():     #класс шага
         if(self.is_saved == 1):
             self.window_add.list_frame_product[self.window_add.current_product].list_step.pop(self.index_list_steps)
             for i in range(self.index + 1 , ln+1):
-                self.window_add.list_frame_product[self.window_add.current_product].list_frame_step[i].index_list_steps -= 1
+                if(self.window_add.list_frame_product[self.window_add.current_product].list_frame_step[i].is_saved == 1):
+                    self.window_add.list_frame_product[self.window_add.current_product].list_frame_step[i].index_list_steps -= 1
         if(ln != self.index):
             for i in range(self.index + 1 , ln+1):
                 self.window_add.list_frame_product[self.window_add.current_product].list_frame_step[i].index = self.window_add.list_frame_product[self.window_add.current_product].list_frame_step[i].index - 1
