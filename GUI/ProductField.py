@@ -120,9 +120,10 @@ class Product_field():  #класс продукта
 
 
     def edit(self):
+        self.reload(tk.Event)
         self.edit_state_step_button("normal")
         self.button_aply.configure(fg_color = "#3b8ed0", hover_color = "#36719f", text = "Применить", command=self.apply_edit)
-        self.is_saved = 0
+        self.is_saved = 2
         self.window_add.button_add_order.configure(state = "disabled")
 
     def apply_edit(self):
@@ -143,7 +144,7 @@ class Product_field():  #класс продукта
 
 
     def delete_product(self):
-        if(self.is_saved==1):
+        if(self.is_saved!=0):
             self.window_add.list_product.pop(self.count - 1)
         ln = len(self.window_add.list_frame_product)
         if(ln != self.count):
@@ -168,7 +169,7 @@ class Product_field():  #класс продукта
 
     def check_button_add_order(self):
         for item in self.window_add.list_frame_product:
-            if(item.is_saved == 0):
+            if(item.is_saved != 1):
                 self.window_add.button_add_order.configure(state = "disabled")
                 break
             else:
@@ -239,7 +240,7 @@ class Product_field():  #класс продукта
             check = False
         else:
             for item in self.window_add.list_frame_product[self.count-1].list_frame_step:
-                if(item.is_saved == 0):
+                if(item.is_saved != 1):
                     item.frame_step_field.configure(border_color = "#e64646")
                     check = False
                 else:

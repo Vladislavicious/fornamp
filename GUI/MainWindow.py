@@ -1,26 +1,29 @@
 ﻿import tkinter as tk
 import customtkinter as ctk
 from GUI.AddWindow import *
+from GUI.ProfileWindow import *
 
 #добавить проверку что добавлен хотя бы 1 шаг и оповещение что шаги не были добавлены
 #подправить конструкторы продуктов и шагов
 #испрвить баг в котором при создании заказа с несколькими продуктами показывает у продуктов одни и те же шаги если после создание этого заказа сначала открыть другой заказ  (при переходе в show_info не меняется индекс)
 
-class MainWindow(tk.Frame):
+class MainWindow(ctk.CTkToplevel):
     def __init__(self, root):
         self.root = root
 
-        super().__init__(self.root)
+        super().__init__(root)
 
         self.list_order = []
         self.init_main_window()
 
     def init_main_window(self):
 
-        
+        self.title("Task manager")
+        self.geometry("1000x600+250+100")
+        self.resizable(False, False)
 
-        frame_title = ctk.CTkFrame(master=self.root, height=50, border_width=3, fg_color="#FFFFFF")
-        self.frame_tools = ctk.CTkFrame(master=self.root, width=150, border_width=3)
+        frame_title = ctk.CTkFrame(master=self, height=50, border_width=3, fg_color="#FFFFFF")
+        self.frame_tools = ctk.CTkFrame(master=self, width=150, border_width=3)
         
         
 
@@ -41,11 +44,14 @@ class MainWindow(tk.Frame):
 
         self.create_frame_order()
 
+        self.protocol("WM_DELETE_WINDOW", lambda: self.close_window()) 
+        self.root.withdraw()
+
 
 
     def create_frame_order(self):
         
-        self.frame_order = ctk.CTkFrame(master=self.root, border_width=3)
+        self.frame_order = ctk.CTkFrame(master=self, border_width=3)
         self.frame_order.pack(anchor=tk.SW, fill=tk.BOTH, expand=tk.TRUE, padx=5, pady=5)
         self.scroll = ctk.CTkScrollableFrame(master = self.frame_order, height=600)
         self.scroll.pack(padx = 5, pady =5, fill=tk.X)
@@ -86,7 +92,14 @@ class MainWindow(tk.Frame):
 
 
     def open_window(self):
-        self.window_add = WindowAdd(self.root, self)
+        self.window_add = WindowAdd(self, self)
+
+    def open_profile(self):
+        self.profile = ProfileWindow(self, self)
+
+    def close_window(self):
+        self.destroy()
+        self.root.destroy()
 
 
 
@@ -101,7 +114,7 @@ class WindowInfo(tk.Frame):
         
 
     def init_window_info(self):
-        self.frame_info_product = ctk.CTkFrame(self.main_window.root, border_width=3, width=410)     
+        self.frame_info_product = ctk.CTkFrame(self.main_window, border_width=3, width=410)     
         self.frame_info_product.pack(fill=tk.BOTH, padx=5, pady = 10, side=tk.LEFT)
         self.frame_info_product.pack_propagate(False)
         self.scroll_product = ctk.CTkScrollableFrame(master = self.frame_info_product, height=600)
@@ -110,7 +123,7 @@ class WindowInfo(tk.Frame):
         self.show_product()
 
     def create_step_frame(self):
-        self.frame_info_step = ctk.CTkFrame(self.main_window.root, border_width=3, width=410)
+        self.frame_info_step = ctk.CTkFrame(self.main_window, border_width=3, width=410)
         self.frame_info_step.pack(fill=tk.BOTH, padx=5, pady = 10, side = tk.RIGHT)
         self.frame_info_step.pack_propagate(False)
         self.scroll_step = ctk.CTkScrollableFrame(master = self.frame_info_step, height=600)

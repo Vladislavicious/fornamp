@@ -36,7 +36,7 @@ class WindowAdd(ctk.CTkToplevel):
         self.add_area_step()
         
         
-        self.main_window.root.withdraw()
+        self.main_window.withdraw()
 
 
 
@@ -143,7 +143,7 @@ class WindowAdd(ctk.CTkToplevel):
 
     def close_window(self):
         self.main_window.add_list_order()
-        self.main_window.root.deiconify()
+        self.main_window.deiconify()
         self.destroy()
 
     def edit_data_vidachi_field(self): #редактирование поля ввода даты, если она введена неверно

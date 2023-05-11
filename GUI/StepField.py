@@ -19,7 +19,7 @@ class Step_field():     #класс шага
         self.color_button = "#3b8ed0"
         self.text_button = "Применить"
         self.state_entry = "normal"
-        self.is_saved = 0
+        self.is_saved = 0 # 0- не сохранено 1 - сохранено 2 - редактируется
 
         self.label_count: ctk.CTkLabel
         self.frame_step_field: ctk.CTkFrame
@@ -77,7 +77,6 @@ class Step_field():     #класс шага
 
 
 
-
     def aply(self):     #кнопка подтверждения шага и добавление его в список
         if(self.chek_field()==True):
             contributions: list = []
@@ -87,8 +86,7 @@ class Step_field():     #класс шага
                                      False,
                                      int(self.entry_complexity.get()),
                                      1)# ЭТО КОСТЫЛЬ НАДО ПЕРЕДЕЛАТЬ  
-            self.window_add.list_frame_product[self.window_add.current_product].list_step.append(self.step)
-            #self.window_add.product_field.list_step.append(self.step)   
+            self.window_add.list_frame_product[self.window_add.current_product].list_step.append(self.step) 
             self.is_saved = 1
             self.color_button = "#2dba52"
             self.text_button = "Редактировать"
@@ -107,13 +105,12 @@ class Step_field():     #класс шага
         self.button_aply.configure(fg_color = "#3b8ed0", hover_color = "#36719f", text = "Применить", command=self.apply_edit)
         self.entry_name.configure(state = "normal")
         self.entry_complexity.configure(state = "normal")
-        self.is_saved = 0
+        self.is_saved = 2
         
 
 
     def apply_edit(self):
         if(self.chek_field()==True):
-            #self.window_add.product_field.list_step[self.index].complexity = int(self.entry_complexity.get())
             self.step.complexity = int(self.entry_complexity.get())
             self.complex = int(self.entry_complexity.get())
             self.step.name = self.entry_name.get()
@@ -127,7 +124,7 @@ class Step_field():     #класс шага
 
     def delete_step(self):
         ln = len(self.window_add.list_frame_product[self.window_add.current_product].list_frame_step) - 1
-        if(self.is_saved == 1):
+        if(self.is_saved != 0):
             self.window_add.list_frame_product[self.window_add.current_product].list_step.pop(self.index_list_steps)
             for i in range(self.index + 1 , ln+1):
                 if(self.window_add.list_frame_product[self.window_add.current_product].list_frame_step[i].is_saved == 1):
