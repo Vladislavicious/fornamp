@@ -5,7 +5,6 @@ from BaH.order import Order
 from BaH.uh import UserHandler
 
 
-
 class FileManager():
     """
     Класс для работы с файлами приложения.
@@ -50,7 +49,6 @@ class FileManager():
         self.accounts_filepath = (config_lines[2].split(": "))[1].strip()
         self.key = bytes((config_lines[3].split(": "))[1].strip(), encoding="utf-8")
 
-    
     def saveNewConfig(self):
         file = open(self.__config_dir_path + "\\.ordconfig", "w", encoding="utf-8")
         file.write("Orders Directory Path: " + self.orders_dir_path + "\n")  
