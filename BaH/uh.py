@@ -104,7 +104,15 @@ class UserHandler:
         self.lastUser = None
         if isChanged:
             self.SaveToFile()
-    
+
+    def getAdministratorsNames(self):
+        names = list()
+        for user in self.users:
+            if user.isAdministrator:
+                names.append(user.login)
+        
+        return names
+
     def __lexicLoginValidation(self, login: str) -> bool:
         """Проверяет символы в логине"""
         login_len = len(login)
@@ -140,7 +148,9 @@ class UserHandler:
         return False
     
     def addUser(self, user: User):
+        """Подразумевается, что прежде чем юзера добавлять, были проверены логин и пароль"""
         self.users.append(user)
+        self.SaveToFile()
 
     def deleteUserByLogin(self, login: str) -> bool:
         del_index = -1
@@ -150,6 +160,7 @@ class UserHandler:
                 break
         if del_index != -1:
             self.users.pop(del_index)
+            self.SaveToFile()
             return True
 
         return False

@@ -3,12 +3,13 @@ from cryptography.fernet import Fernet
 
 
 class User:
-    def __init__(self, email, login, password, emailpassword, isLastUser=False):
+    def __init__(self, email, login, password, emailpassword, isLastUser=False, isAdministrator=False):
         self.email = email
         self.login = login
         self.password = password
         self.emailpassword = emailpassword
 
+        self.isAdministrator = isAdministrator
         self.isLastUser = isLastUser
     
     def __str__(self) -> str:
@@ -16,7 +17,8 @@ class User:
                  \nlogin: {self.login}\
                  \npassword: {self.password}\
                  \nemail password: {self.emailpassword}\
-                 \nit's last user: {self.isLastUser}\n"
+                 \nit's last user: {self.isLastUser}\
+                 \nit's Administrator: {self.isAdministrator}\n"
 
     def serialize(self, key):
         f = Fernet(key)
