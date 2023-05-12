@@ -1,11 +1,10 @@
-import GUI.GUI as gui
+import GUI.ProfileWindow as prof
 
 if __name__ == "__main__":
-    root = gui.ctk.CTk()
-    
-    app = gui.MainWindow(root)
-    app.pack()
-    root.title("Task manager")
-    root.geometry("1000x600+250+100")
+    root = prof.ctk.CTk()
+    profile = prof.ProfileWindow(root)
+    profile.pack()
+    root.title("Autorization\Registration")
+    root.geometry("500x220+500+340")
     root.resizable(False, False)
     root.mainloop()

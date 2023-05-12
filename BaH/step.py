@@ -1,8 +1,8 @@
 import json
 from typing import List
 
-from BaH.Contribution import *
-
+from BaH.Contribution import Contribution
+from BaH.Contribution import simpleEncoder
 
 class Step:
     def __init__(self, name: str, contributions: List[Contribution] = list(), \
