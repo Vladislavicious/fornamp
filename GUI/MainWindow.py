@@ -2,8 +2,9 @@
 import customtkinter as ctk
 from GUI.AddWindow import *
 from GUI.ProfileWindow import *
+from BaH.Contribution import *
 
-#добавить проверку что добавлен хотя бы 1 шаг и оповещение что шаги не были добавлены
+
 #подправить конструкторы продуктов и шагов
 #испрвить баг в котором при создании заказа с несколькими продуктами показывает у продуктов одни и те же шаги если после создание этого заказа сначала открыть другой заказ  (при переходе в show_info не меняется индекс)
 
@@ -12,7 +13,6 @@ class MainWindow(ctk.CTkToplevel):
         self.root = root
 
         super().__init__(root)
-
         self.list_order = []
         self.init_main_window()
 
@@ -59,20 +59,20 @@ class MainWindow(ctk.CTkToplevel):
     def add_list_order(self):
         self.frame_order.destroy()
         self.create_frame_order()
-        for item in self.list_order:
+        for item_order in self.list_order:
             self.frame_order_info = ctk.CTkFrame(self.scroll, border_width=2, fg_color="#b8bab9", height=120)
             self.frame_order_info.pack(fill=tk.X, padx = 10, pady=7)
 
-            if(item.isDone == False):
+            if(item_order.isDone == False):
                 self.frame_order_info.configure(border_color = "#bf6b6b")
-            elif(item.isDone == True and item.isVidan == False):
+            elif(item_order.isDone == True and item_order.isVidan == False):
                 self.frame_order_info.configure(border_color = "#e3a002")
             else:
                 self.frame_order_info.configure(border_color = "#77bf6d")
 
-            self.label_order = ctk.CTkLabel(self.frame_order_info, text = "Заказчик: " + item.zakazchik + "\nОписание заказа: " + item.commentary + "\nДата создания: " + str(item.date_of_creation)+ "\nДата выдачи: " + str(item.date_of_vidacha), font = ctk.CTkFont(family="Arial", size=12))
+            self.label_order = ctk.CTkLabel(self.frame_order_info, text = "Заказчик: " + item_order.zakazchik + "\nОписание заказа: " + item_order.commentary + "\nДата создания: " + str(item_order.date_of_creation)+ "\nДата выдачи: " + str(item_order.date_of_vidacha), font = ctk.CTkFont(family="Arial", size=12))
             self.label_order.pack(fill=tk.X, padx=10, pady = 10)
-            self.label_order.bind('<Button-1>', lambda event, order = item: self.open_info(order))
+            self.label_order.bind('<Button-1>', lambda event, order = item_order: self.open_info(order))
 
 
     def open_info(self, order):
@@ -94,9 +94,6 @@ class MainWindow(ctk.CTkToplevel):
     def open_window(self):
         self.window_add = WindowAdd(self, self)
 
-    def open_profile(self):
-        self.profile = ProfileWindow(self, self)
-
     def close_window(self):
         self.destroy()
         self.root.destroy()
@@ -109,13 +106,14 @@ class WindowInfo(tk.Frame):
         self.main_window = main_win
         self.cur_order = order
         self.cure_product = -1
+        self.username = "Igor"
         self.init_window_info()
         
         
 
     def init_window_info(self):
         self.frame_info_product = ctk.CTkFrame(self.main_window, border_width=3, width=410)     
-        self.frame_info_product.pack(fill=tk.BOTH, padx=5, pady = 10, side=tk.LEFT)
+        self.frame_info_product.pack(fill=tk.BOTH, padx=5, pady = 5, side=tk.LEFT)
         self.frame_info_product.pack_propagate(False)
         self.scroll_product = ctk.CTkScrollableFrame(master = self.frame_info_product, height=600)
         self.scroll_product.pack(padx = 3, pady =3, fill=tk.X)
@@ -124,7 +122,7 @@ class WindowInfo(tk.Frame):
 
     def create_step_frame(self):
         self.frame_info_step = ctk.CTkFrame(self.main_window, border_width=3, width=410)
-        self.frame_info_step.pack(fill=tk.BOTH, padx=5, pady = 10, side = tk.RIGHT)
+        self.frame_info_step.pack(fill=tk.BOTH, padx=5, pady = 5, side = tk.RIGHT)
         self.frame_info_step.pack_propagate(False)
         self.scroll_step = ctk.CTkScrollableFrame(master = self.frame_info_step, height=600)
         self.scroll_step.pack(padx = 3, pady =3, fill=tk.X)
@@ -148,29 +146,76 @@ class WindowInfo(tk.Frame):
                 self.frame_product_show.configure(border_color= "#77bf6d")
 
 
-    def open_step_info(self, s_index): 
-        if(self.cure_product != s_index):
+    def open_step_info(self, s_index):
+        self.prod_index = s_index
+        if(self.cure_product != self.prod_index):
             self.frame_info_step.destroy()
             self.create_step_frame()   
-            step = self.products[s_index].GetSteps()
-            for item in step:
-                self.frame_step_show = ctk.CTkFrame(self.scroll_step, border_width=2, fg_color= "#b8bab9", height=50, width=150)
-                
-                if(item.isDone == False):
-                    self.frame_step_show.configure(border_color= "#b86161")
-                else:
-                    self.frame_step_show.configure(border_color= "#77bf6d")
+            self.step = self.products[self.prod_index].GetSteps()
+            for item_step in self.step:
+                step_info = StepInfo(self, item_step)
 
-                self.frame_step_show.pack(fill=tk.X, padx = 10, pady=7)
-                self.frame_step_show.pack_propagate(False)
-            
-                self.label_step = ctk.CTkLabel(self.frame_step_show, text = item.name + "  ", font = ctk.CTkFont(family="Arial", size=12))
+            self.cure_product = self.prod_index
 
-                self.label_step.pack(fill=tk.X, padx=10, pady = 10)
-            self.cure_product = s_index
 
 
     def delete_window_info(self):
         self.frame_info_product.destroy()
         self.frame_info_step.destroy()
         self.main_window.create_frame_order()
+
+
+class StepInfo(tk.Frame):
+    def __init__(self, info_window, item_step):
+        self.info_window = info_window
+        self.item_step = item_step
+        self.init_stepInfo()
+
+    def init_stepInfo(self):
+
+        self.frame_step_show = ctk.CTkFrame(self.info_window.scroll_step, border_width=2, fg_color= "#b8bab9", height=50, width=150)
+                
+        if(self.item_step.isDone == False):
+            self.frame_step_show.configure(border_color= "#b86161")
+        else:
+            self.frame_step_show.configure(border_color= "#77bf6d")
+
+        self.frame_step_show.pack(fill=tk.X, padx = 10, pady=7)
+        self.frame_step_show.pack_propagate(False)
+            
+        if(self.item_step.isDone == False):
+            self.label_step = ctk.CTkLabel(self.frame_step_show, text = self.item_step.name + "  " + str(self.item_step.quantity - self.item_step.number_of_made), font = ctk.CTkFont(family="Arial", size=12), justify = tk.LEFT)
+        else:
+            self.label_step = ctk.CTkLabel(self.frame_step_show, text = self.item_step.name + "  ", font = ctk.CTkFont(family="Arial", size=12), justify = tk.LEFT)
+
+        self.label_step.pack(side = tk.LEFT, padx=5, pady = 10)
+
+        if(self.item_step.isDone == False):
+            self.button_redy = ctk.CTkButton(self.frame_step_show, text = "Выполнено", command = lambda: self.change_status(self.item_step, self.frame_step_show, self.button_redy))
+            self.button_redy.pack(side = tk.RIGHT, padx = 5)
+
+    def change_status(self, item_step, frame, button):
+        k = 0
+        for item in item_step.GetContr():
+            if(item.contributor == self.info_window.username):
+                item.number_of_made += 1
+                self.label_step.configure(text = item_step.name + "  " + str(item_step.quantity - item_step.number_of_made))
+                item_step.isDone = True
+                self.info_window.products[self.info_window.prod_index].CheckIfDone()
+                k= 1
+
+        if(k == 0):
+            contribution = Contribution(self.info_window.username)
+            item_step.AddContr(contribution)
+            self.label_step.configure(text = item_step.name + "  " + str(item_step.quantity - item_step.number_of_made))
+            self.info_window.products[self.info_window.prod_index].CheckIfDone()
+
+        if(item_step.isDone == True):
+            frame.configure(border_color= "#77bf6d")
+            self.label_step.configure(text = self.item_step.name + "  ")
+            button.destroy()
+            self.info_window.step.append(self.info_window.step.pop( self.info_window.step.index(self.item_step)))
+
+        if(self.info_window.products[self.info_window.prod_index].isDone == True):
+            self.info_window.frame_product_show.configure(border_color= "#77bf6d")
+            self.info_window.cur_order.CheckIfDone()
