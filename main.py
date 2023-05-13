@@ -5,6 +5,6 @@ if __name__ == "__main__":
     profile = prof.ProfileWindow(root)
     profile.pack()
     root.title("Autorization\Registration")
-    root.geometry("500x220+500+340")
+    root.geometry("500x250+500+390")
     root.resizable(False, False)
     root.mainloop()

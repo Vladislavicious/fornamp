@@ -20,7 +20,7 @@ class ProfileWindow(tk.Frame):
 
 
 
-        self.frame_user_data = ctk.CTkFrame(self.root, width=500, height=220) 
+        self.frame_user_data = ctk.CTkFrame(self.root, width=500, height=390) 
         self.frame_user_data.pack(side=tk.TOP)
         self.frame_user_data.pack_propagate(False)
 
@@ -30,15 +30,29 @@ class ProfileWindow(tk.Frame):
         entry_login = ctk.CTkEntry(self.frame_user_data, width = 400)
         entry_login.pack(anchor = tk.CENTER, pady=2)
 
+        #label_email = ctk.CTkLabel(self.frame_user_data,text = "Ведите почту", font=self.font_, width = 400)
+        #label_email.pack(anchor = tk.CENTER, pady=2)
+
+        #entry_email = ctk.CTkEntry(self.frame_user_data, width = 400)
+        #entry_email.pack(anchor = tk.CENTER, pady=2)
+
         label_password = ctk.CTkLabel(self.frame_user_data,text = "Ведите пароль", font=self.font_, width = 400)
         label_password.pack(anchor = tk.CENTER, pady=2)
 
         entry_password = ctk.CTkEntry(self.frame_user_data, width = 400)
         entry_password.pack(anchor = tk.CENTER, pady=2)
 
-        self.button_autorization = ctk.CTkButton(self.frame_user_data, text = "Войти",command = self.open_main_window)
-        self.button_autorization.pack(anchor = tk.S, pady = 10)
 
+        self.button_autorization = ctk.CTkButton(self.frame_user_data, text = "Войти",command = self.open_main_window)
+        self.button_autorization.pack(anchor = tk.CENTER, pady = 10, side = tk.RIGHT, padx = 70)
+
+        combobox_post = ctk.CTkComboBox(self.frame_user_data, width = 160, state = "readonly", values=["Рабочий", "Начальник"])
+        combobox_post.pack(pady=5, anchor = tk.CENTER,  side = tk.RIGHT)
+        combobox_post.set("Рабочий")
+
+        
+
+         
 
     def color_enter(self, event):
         self.label_rigisration.configure(text_color = "#2113bf")
