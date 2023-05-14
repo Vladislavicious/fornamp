@@ -184,7 +184,7 @@ class StepInfo(tk.Frame):
         self.frame_step_show.pack_propagate(False)
             
         if(self.item_step.isDone == False):
-            self.label_step = ctk.CTkLabel(self.frame_step_show, text = "Описание шага:\n" + self.item_step.name + "\nВыполнено шагов: " + str(self.item_step.number_of_made) + "/" + str(self.item_step.quantity), font = ctk.CTkFont(family="Arial", size=12), justify = tk.LEFT)
+            self.label_step = ctk.CTkLabel(self.frame_step_show, text = "Описание шага: " + self.item_step.name[:self.item_step.name.find(" ", 15)+1] + "\n" + self.item_step.name[self.item_step.name.find(" ", 15)+1:] + "\nВыполнено шагов: " + str(self.item_step.number_of_made) + "/" + str(self.item_step.quantity), font = ctk.CTkFont(family="Arial", size=12), justify = tk.LEFT)
             self.label_step.pack(side = tk.LEFT, padx=5, pady = 10)
         else:
             self.label_step = ctk.CTkLabel(self.frame_step_show, text = "Описание шага:\n" + self.item_step.name, font = ctk.CTkFont(family="Arial", size=12), justify = tk.CENTER)
@@ -199,7 +199,7 @@ class StepInfo(tk.Frame):
         for item in item_step.GetContr():
             if(item.contributor == self.info_window.username):
                 item.number_of_made += 1
-                self.label_step.configure(text = "Описание шага:\n" + item_step.name + "\nВыполнено шагов: " + str(item_step.number_of_made) + "/" + str(item_step.quantity))
+                self.label_step.configure(text = "Описание шага: " + item_step.name[:item_step.name.find(" ", 15)+1] + "\n" + item_step.name[item_step.name.find(" ", 15)+1:] + "\nВыполнено шагов: " + str(item_step.number_of_made) + "/" + str(item_step.quantity))
                 item_step.isDone = True
                 self.info_window.products[self.info_window.prod_index].CheckIfDone()
                 k = 1
@@ -207,7 +207,7 @@ class StepInfo(tk.Frame):
         if(k == 0):
             contribution = Contribution(self.info_window.username)
             item_step.AddContr(contribution)
-            self.label_step.configure(text = "Описание шага:\n" + item_step.name + "\nВыполнено шагов: " + str(item_step.number_of_made) + "/" + str(item_step.quantity))
+            self.label_step.configure(text = "Описание шага: " + item_step.name[:item_step.name.find(" ", 15)+1] + "\n" + item_step.name[item_step.name.find(" ", 15)+1:] + "\nВыполнено шагов: " + str(item_step.number_of_made) + "/" + str(item_step.quantity))
             self.info_window.products[self.info_window.prod_index].CheckIfDone()
 
         if(item_step.isDone == True):
