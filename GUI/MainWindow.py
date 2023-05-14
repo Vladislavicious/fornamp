@@ -173,7 +173,7 @@ class StepInfo(tk.Frame):
 
     def init_stepInfo(self):
 
-        self.frame_step_show = ctk.CTkFrame(self.info_window.scroll_step, border_width=2, fg_color= "#b8bab9", height=50, width=150)
+        self.frame_step_show = ctk.CTkFrame(self.info_window.scroll_step, border_width=2, fg_color= "#b8bab9", height=60, width=150)
                 
         if(self.item_step.isDone == False):
             self.frame_step_show.configure(border_color= "#b86161")
@@ -184,11 +184,11 @@ class StepInfo(tk.Frame):
         self.frame_step_show.pack_propagate(False)
             
         if(self.item_step.isDone == False):
-            self.label_step = ctk.CTkLabel(self.frame_step_show, text = self.item_step.name + "  " + str(self.item_step.quantity - self.item_step.number_of_made), font = ctk.CTkFont(family="Arial", size=12), justify = tk.LEFT)
+            self.label_step = ctk.CTkLabel(self.frame_step_show, text = "Описание шага:\n" + self.item_step.name + "\nВыполнено шагов: " + str(self.item_step.number_of_made) + "/" + str(self.item_step.quantity), font = ctk.CTkFont(family="Arial", size=12), justify = tk.LEFT)
+            self.label_step.pack(side = tk.LEFT, padx=5, pady = 10)
         else:
-            self.label_step = ctk.CTkLabel(self.frame_step_show, text = self.item_step.name + "  ", font = ctk.CTkFont(family="Arial", size=12), justify = tk.LEFT)
-
-        self.label_step.pack(side = tk.LEFT, padx=5, pady = 10)
+            self.label_step = ctk.CTkLabel(self.frame_step_show, text = "Описание шага:\n" + self.item_step.name, font = ctk.CTkFont(family="Arial", size=12), justify = tk.CENTER)
+            self.label_step.pack(side = tk.TOP, padx=5, pady = 15)
 
         if(self.item_step.isDone == False):
             self.button_redy = ctk.CTkButton(self.frame_step_show, text = "Выполнено", command = lambda: self.change_status(self.item_step, self.frame_step_show, self.button_redy))
@@ -199,20 +199,21 @@ class StepInfo(tk.Frame):
         for item in item_step.GetContr():
             if(item.contributor == self.info_window.username):
                 item.number_of_made += 1
-                self.label_step.configure(text = item_step.name + "  " + str(item_step.quantity - item_step.number_of_made))
+                self.label_step.configure(text = "Описание шага:\n" + item_step.name + "\nВыполнено шагов: " + str(item_step.number_of_made) + "/" + str(item_step.quantity))
                 item_step.isDone = True
                 self.info_window.products[self.info_window.prod_index].CheckIfDone()
-                k= 1
+                k = 1
 
         if(k == 0):
             contribution = Contribution(self.info_window.username)
             item_step.AddContr(contribution)
-            self.label_step.configure(text = item_step.name + "  " + str(item_step.quantity - item_step.number_of_made))
+            self.label_step.configure(text = "Описание шага:\n" + item_step.name + "\nВыполнено шагов: " + str(item_step.number_of_made) + "/" + str(item_step.quantity))
             self.info_window.products[self.info_window.prod_index].CheckIfDone()
 
         if(item_step.isDone == True):
             frame.configure(border_color= "#77bf6d")
-            self.label_step.configure(text = self.item_step.name + "  ")
+            self.label_step.configure(text = "Описание шага:\n" + self.item_step.name, justify = tk.CENTER)
+            self.label_step.pack(side = tk.TOP, padx=5, pady = 15)
             button.destroy()
             self.info_window.step.append(self.info_window.step.pop( self.info_window.step.index(self.item_step)))
 
