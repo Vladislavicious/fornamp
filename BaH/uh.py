@@ -128,7 +128,7 @@ class UserHandler:
             
         return True
 
-    def ValidateLogin(self, login: str) -> Tuple[bool, str]:
+    def __ValidateLogin(self, login: str) -> Tuple[bool, str]:
         """Проверяет можно ли создать аккаунт с таким логином"""
         if not self.__lexicLoginValidation(login):
             return False, "Логин должен состоять из цифр и/или букв латинского "\
@@ -141,7 +141,7 @@ class UserHandler:
                 return False, "Логин уже существует"
         return True, ""
     
-    def ValidateEmail(self, email: str) -> Tuple[bool, str]:
+    def __ValidateEmail(self, email: str) -> Tuple[bool, str]:
         """Проверка синтаксическая, без проверки на существование такого адреса"""
         pattern = r'^[a-zA-Z0-9]+@[a-zA-Z0-9]+\.[a-zA-Z]{2,}$'
 
@@ -149,7 +149,7 @@ class UserHandler:
             return True, ""
         return False, "Невозможный email"
     
-    def ValidatePassword(self, password: str) -> Tuple[bool, str]:
+    def __ValidatePassword(self, password: str) -> Tuple[bool, str]:
         password_len = len(password)
 
         if password_len > 32:
@@ -170,18 +170,18 @@ class UserHandler:
            Возвращает список словрей {int: str}, где int - аргумент, в котором была найдена ошибка
            0 - ошибок нет, 1 - Логин, 2 - Пароль, и т.д.
            str - описание ошибки"""
-        isLoginValidated, LoginErrorString = self.ValidateLogin(login)
-        isPasswordValidated, PasswordErrorString = self.ValidatePassword(password)
+        isLoginValidated, LoginErrorString = self.__ValidateLogin(login)
+        isPasswordValidated, PasswordErrorString = self.__ValidatePassword(password)
         
         if email == "":
             isEmailValidated, EmailErrorString = True, ""
         else:
-            isEmailValidated, EmailErrorString = self.ValidateEmail(email)
+            isEmailValidated, EmailErrorString = self.__ValidateEmail(email)
 
         if emailpassword == "":
             isEmailPasswordValidated, EmailPasswordErrorString = True, ""
         else:
-            isEmailPasswordValidated, EmailPasswordErrorString = self.ValidatePassword(email)
+            isEmailPasswordValidated, EmailPasswordErrorString = self.__ValidatePassword(email)
 
         errors = list()
         didErrorOccur = False
