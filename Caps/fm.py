@@ -1,9 +1,11 @@
 import os
+import pickle
+from typing import List
 from cryptography.fernet import Fernet
 
 from BaH.order import Order
+from BaH.order import OrderPreview
 from BaH.uh import UserHandler
-
 
 
 class FileManager():
@@ -50,7 +52,6 @@ class FileManager():
         self.accounts_filepath = (config_lines[2].split(": "))[1].strip()
         self.key = bytes((config_lines[3].split(": "))[1].strip(), encoding="utf-8")
 
-    
     def saveNewConfig(self):
         file = open(self.__config_dir_path + "\\.ordconfig", "w", encoding="utf-8")
         file.write("Orders Directory Path: " + self.orders_dir_path + "\n")  
@@ -58,6 +59,35 @@ class FileManager():
         file.write("Accounts Filepath: " + self.accounts_filepath + "\n")
         file.write("Key: " + self.key.decode("utf-8") + "\n")     
         file.close() 
+    
+    def parseOrderPreviews(self) -> List[OrderPreview]:
+        order_preview_list = list()
+        try:
+            with open(self.orders_dir_path + "\\orderPreviews.b", "rb") as file:
+                text = file.read()
+                order_preview_list = pickle.loads(text)
+        except FileNotFoundError:
+           
+            order_list = self.getOrderList()
+            for order in order_list:
+                order_preview = order.createPreview()
+                order_preview_list.append(order_preview)
+
+            self.saveOrderPreviewList(order_preview_list) 
+
+        return order_preview_list           
+
+    def saveOrderPreviewList(self, order_preview_list: List[OrderPreview]):
+        with open(self.orders_dir_path + "\\orderPreviews.b", "wb") as file:
+            file.write(pickle.dumps(order_preview_list))
+
+    def getOrderList(self):
+        """Возвращает список всех заказов"""
+        order_list = list()
+        for key in self.ordered_filenames.keys():
+            order_list.append(self.getOrderByID(key))
+        
+        return order_list
 
     def __parseOrderFilenames(self):
         order_filenames = os.listdir(self.orders_dir_path)
@@ -99,4 +129,4 @@ class FileManager():
             filename = ""
         
         return filename
-        
+    

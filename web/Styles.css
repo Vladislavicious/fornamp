@@ -1,75 +1,75 @@
 /* Base styles */
 * {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
 
 main {
-  display: flex;
-  flex: 1;
+    display: flex;
+    flex: 1;
 }
 
 aside {
-  flex: 1;
+    flex: 1;
 }
 
 section {
-  flex: 3;
+    flex: 3;
 }
 
 .flex-container {
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
-  background: linear-gradient(70deg, #f7c6c6, #3d36f5, #fb83e5, #6cfa9b);
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    background: linear-gradient(70deg, #f7c6c6, #3d36f5, #fb83e5, #6cfa9b);
 }
 
 .flex-item {
-  padding: 10px;
-  font: 900 15px "Roboto", sans-serif;
-  color: #fdfafa;
-  text-align: center;
-  text-shadow: 2px 1px 0 rgba(0, 0, 0, 0.2);
+    padding: 10px;
+    font: 900 15px "Roboto", sans-serif;
+    color: #fdfafa;
+    text-align: center;
+    text-shadow: 2px 1px 0 rgba(0, 0, 0, 0.2);
 }
 
 
-.green-container .container{
-  background-color: #69fc9a;
+.green-container .container {
+    background-color: #69fc9a;
 }
 
-.red-container .container{
-  background-color: #f86d72;
+.red-container .container {
+    background-color: #f86d72;
 }
 
-.container{
-  border: 1px solid black;
-  margin: 1px;
-  padding: 5px;
+.container {
+    border: 1px solid black;
+    margin: 1px;
+    padding: 5px;
 }
 
-.green{
-  color: rgb(0, 108, 0);
+.green {
+    color: rgb(0, 108, 0);
 }
 
-.red{
-  color: rgb(210, 2, 2);
+.red {
+    color: rgb(210, 2, 2);
 }
 
 ol {
-  text-align: left;
-  margin-left: 20px;
-  margin-top: 1em;
+    text-align: left;
+    margin-left: 20px;
+    margin-top: 1em;
 }
 
-ol ul {
-  margin-left: 20px;
-}
+    ol ul {
+        margin-left: 20px;
+    }
 
 
 
 @media screen and (max-width: 650px) {
-  main {
-    flex-direction: column;
-  }
+    main {
+        flex-direction: column;
+    }
 }

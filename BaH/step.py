@@ -1,8 +1,9 @@
+from datetime import date
 import json
 from typing import List
 
-from BaH.Contribution import *
-
+from BaH.Contribution import Contribution
+from BaH.Contribution import simpleEncoder
 
 class Step:
     def __init__(self, name: str, contributions: List[Contribution] = list(), \
@@ -22,7 +23,7 @@ class Step:
 
     @isDone.setter
     def isDone(self, value: bool):              # value здесь "просто так"
-        if self.number_of_made == self.quantity:
+        if self.number_of_made >= self.quantity:
             self.__isDone = True
         else:
             self.__isDone = False
@@ -58,7 +59,7 @@ class Step:
         """Цена шага отосительно товара"""
         self.__koef_value = koef_value
 
-        if koef_value < 0 or koef_value > 1: 
+        if koef_value < 0 or koef_value > 1:
             raise ValueError                # Для отладки
         
     @property
@@ -78,17 +79,10 @@ class Step:
         self.isDone = True               # та же проверка
 
     @property
-    def contr_length(self) -> int:
-        num = 0
-        for item in self.__contributions:
-            num = num + 1
-        return num
-
-    @property
     def number_of_made(self) -> int:
         """То, сколько повторений уже выполнено"""
         number = 0
-        if self.contr_length > 0:
+        if len(self.__contributions) > 0:
             for contr in self.__contributions:
                 number += contr.number_of_made
         return number
@@ -98,11 +92,16 @@ class Step:
         """То, сколько стоит шаг на данный момент"""
         return self.number_of_made * self.koef_value
     
-    def AddContr(self, contr: Contribution):
-        if self.contr_length == 0 and contr.number_of_made < self.quantity: 
-            self.__contributions.append(contr)
-        elif contr.number_of_made + self.number_of_made <= self.quantity:
-            self.__contributions.append(contr)
+    def Contribute(self, contributor: str, number_of_made: int = 1, date_of_creation: date = date.today()):
+        """Метод, используемый для создания контрибушнов извне.
+           contributor - логин пользователя, number_of_made - сколько 
+           экземпляров шага выполнено."""
+        contr = Contribution(contributor, number_of_made, date_of_creation)
+        self.__AddContr(contr)
+    
+    def __AddContr(self, contr: Contribution):
+        """Позволяет 'переполнять' quantity, потому что в этом нет чего-то плохого"""
+        self.__contributions.append(contr)
         self.isDone = True    # так мы запрашиваем проверку на готовность шага
 
     def GetContr(self):
