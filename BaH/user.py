@@ -3,7 +3,8 @@ from cryptography.fernet import Fernet
 
 
 class User:
-    def __init__(self, email, login, password, emailpassword, isLastUser=False, isAdministrator=False):
+    def __init__(self, email: str, login: str, password: str,
+                 emailpassword: str, isLastUser=False, isAdministrator=False):
         self.email = email
         self.login = login
         self.password = password

@@ -1,4 +1,6 @@
 import re
+from typing import List, Tuple
+from typing import Dict
 
 from BaH.user import User
 
@@ -126,28 +128,94 @@ class UserHandler:
             
         return True
 
-    def ValidateLogin(self, login: str) -> bool:
+    def ValidateLogin(self, login: str) -> Tuple[bool, str]:
         """Проверяет можно ли создать аккаунт с таким логином"""
         if not self.__lexicLoginValidation(login):
-            return False
-        
+            return False, "Логин должен состоять из цифр и/или букв латинского "\
+                           + "алфавита и быть длиной не меньше 8 и не больше 32 символов"     
         if len(self.users) == 0:
-            return True
+            return True, ""
 
         for user in self.users:
             if login == user.login:
-                return False
-        return True
+                return False, "Логин уже существует"
+        return True, ""
     
-    def ValidateEmail(self, email: str) -> bool:
+    def ValidateEmail(self, email: str) -> Tuple[bool, str]:
         """Проверка синтаксическая, без проверки на существование такого адреса"""
         pattern = r'^[a-zA-Z0-9]+@[a-zA-Z0-9]+\.[a-zA-Z]{2,}$'
 
         if re.match(pattern, email):
-            return True
-        return False
+            return True, ""
+        return False, "Невозможный email"
     
-    def addUser(self, user: User):
+    def ValidatePassword(self, password: str) -> Tuple[bool, str]:
+        password_len = len(password)
+
+        if password_len > 32:
+            return False, "Длина пароля больше 32 символов"
+        if password_len < 8:
+            return False, "Длина пароля меньше 8 символов"
+        
+        for i in password.lower():
+            if i not in '1234567890qwertyuiopasdfghjklzxcvbnm!@#%&*?%№':
+                return False, "Пароль содержит недопустимые символы"
+        
+        return True, ""
+    
+    def NewUser(self, login: str, password: str, email: str = "",
+                emailpassword: str = "", isLastUser=False,
+                isAdministrator=False) -> List[Dict[int, str]]:
+        """Интерфейс для регистрации нового пользователя
+           Возвращает список словрей {int: str}, где int - аргумент, в котором была найдена ошибка
+           0 - ошибок нет, 1 - Логин, 2 - Пароль, и т.д.
+           str - описание ошибки"""
+        isLoginValidated, LoginErrorString = self.ValidateLogin(login)
+        isPasswordValidated, PasswordErrorString = self.ValidatePassword(password)
+        
+        if email == "":
+            isEmailValidated, EmailErrorString = True, ""
+        else:
+            isEmailValidated, EmailErrorString = self.ValidateEmail(email)
+
+        if emailpassword == "":
+            isEmailPasswordValidated, EmailPasswordErrorString = True, ""
+        else:
+            isEmailPasswordValidated, EmailPasswordErrorString = self.ValidatePassword(email)
+
+        errors = list()
+        didErrorOccur = False
+
+        if not isLoginValidated:
+            errors.append({1: LoginErrorString})
+            didErrorOccur = True
+
+        if not isPasswordValidated:
+            errors.append({2: PasswordErrorString})
+            didErrorOccur = True
+
+        if not isEmailValidated:
+            errors.append({3: EmailErrorString})
+            if emailpassword == "":
+                errors.append({4: "Не заполнен пароль почты"})
+            didErrorOccur = True
+
+        if not isEmailPasswordValidated:
+            errors.append({4: EmailPasswordErrorString})
+            if email == "":
+                errors.append({3: "Не заполнен логин почты"})
+            didErrorOccur = True
+        
+        if not didErrorOccur:
+            errors.append({0: "Ошибок не выявлено"})
+            newUser = User(email=email, login=login, password=password,
+                           emailpassword=emailpassword, isLastUser=isLastUser,
+                           isAdministrator=isAdministrator)
+            self.__addUser(newUser)
+
+        return errors
+
+    def __addUser(self, user: User):
         """Подразумевается, что прежде чем юзера добавлять, были проверены логин и пароль"""
         self.users.append(user)
         self.SaveToFile()
