@@ -3,7 +3,8 @@ import customtkinter as ctk
 from GUI.AddWindow import *
 from GUI.ProfileWindow import *
 from BaH.Contribution import *
-
+import Caps.fm as file_manager
+import BaH.App as application
 
 #подправить конструкторы продуктов и шагов
 #испрвить баг в котором при создании заказа с несколькими продуктами показывает у продуктов одни и те же шаги если после создание этого заказа сначала открыть другой заказ  (при переходе в show_info не меняется индекс)
@@ -13,8 +14,14 @@ class MainWindow(ctk.CTkToplevel):
         self.root = root
 
         super().__init__(root)
+        
+        self.fm = file_manager.FileManager()
+        self.app = application.App()
         self.list_order = []
+        self.oders_previews_list = []
+        self.oders_previews_list = self.fm.parseOrderPreviews()
         self.init_main_window()
+        self.add_list_order()
 
     def init_main_window(self):
 
@@ -89,6 +96,7 @@ class MainWindow(ctk.CTkToplevel):
         self.add_list_order()
         self.button_add_order.configure(state = "normal")
         self.button_close_info.destroy()
+        
 
 
     def open_window(self):
