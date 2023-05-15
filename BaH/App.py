@@ -57,7 +57,7 @@ class App:
     def saveNewOrderPreviews(self):
         """Эта функция 'обновляет' файл в превью
            её надо вызывать при любых изменениях нынешних заказов
-           или при появлении новых старых заказов
+           или при появлении новых заказов,
            то есть почти при каждом действии"""
         self.file_manager.saveOrderPreviewList(self.order_previews)
 
@@ -70,7 +70,7 @@ class App:
         return index
 
     def __parseOrderByID(self, ID: int):
-        """Возвращает либо order, либо None"""
+        """Возвращает Order, либо None"""
         order = self.file_manager.getOrderByID(ID)
         if order is not None:
             self.__orders[order.id] = order
@@ -92,7 +92,7 @@ class App:
 
         if index != -1:
             self.order_previews.pop(index)
-            self.saveNewOrderReviews()  
+            self.saveNewOrderReviews()
         else:
             success = False
         try:
@@ -146,7 +146,10 @@ class App:
     def __sendMail(self, message: MIMEMultipart):
         self.mail_account.sendMessage(message)
 
-    def sendOtchetMail(self, TO: str, msg_text: str = ""):
+    def sendOtchetMail(self, TO: str, msg_text: str = "")  -> Tuple[int, str]:
+        """Функция, которая отправляет на указанную почту сообщение с прикреплённым
+           html-файлом со всеми заказами.
+           перед использованием необходимо вызвать функцию AuthentificateMail"""
         if self.mail_account.smtp is None:
             return (1, "Аккаунт почты не авторизован")
 
@@ -154,4 +157,3 @@ class App:
         self.__sendMail(message=message)
 
         return (0, "Успешно")
-
