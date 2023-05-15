@@ -1,3 +1,4 @@
+from dataclasses import dataclass
 import json
 import datetime
 import os
@@ -8,6 +9,17 @@ from random import Random
 
 from BaH.Contribution import *
 from BaH.product import *
+
+@dataclass
+class OrderPreview:
+    id: int
+    date_of_creation: date
+    date_of_vidacha: date
+    commentary: str
+    zakazchik: str
+    isDone: bool
+    isVidan: bool
+
 
 class Order:
     def __init__(self, id: int, zakazchik: str, date_of_creation: date, \
@@ -172,6 +184,12 @@ class Order:
             raise TypeError(f"Операнд справа должен иметь тип {cls}")
         
         return other
+    
+    def createPreview(self) -> OrderPreview:
+        return OrderPreview(id=self.id, date_of_creation=self.date_of_creation,
+                            date_of_vidacha=self.date_of_vidacha, isDone=self.isDone,
+                            zakazchik=self.zakazchik, isVidan=self.isVidan,
+                            commentary=self.commentary)
     
     def toHTML(self) -> str:
         prod = "\n".join(list(prod.toHTML() for prod in self.GetProducts()))

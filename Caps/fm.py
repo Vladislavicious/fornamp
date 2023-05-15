@@ -1,8 +1,12 @@
 import os
+import pickle
+from typing import List, Tuple
 from cryptography.fernet import Fernet
 
 from BaH.order import Order
+from BaH.order import OrderPreview
 from BaH.uh import UserHandler
+from Caps.listFuncs import createHTMLfromList
 
 
 class FileManager():
@@ -36,13 +40,13 @@ class FileManager():
             self.saveNewConfig()
 
             return
-        
+
         lines = [line.rstrip() for line in config_file]
-        
+
         self.__parsePath(lines)
 
         config_file.close()
-    
+
     def __parsePath(self, config_lines: list):
         self.orders_dir_path = (config_lines[0].split(": "))[1].strip()
         self.statistics_dir_path = (config_lines[1].split(": "))[1].strip()
@@ -57,8 +61,47 @@ class FileManager():
         file.write("Key: " + self.key.decode("utf-8") + "\n")     
         file.close() 
 
+    def parseOrderPreviews(self) -> List[OrderPreview]:
+        order_preview_list = list()
+        try:
+            with open(self.orders_dir_path + "\\orderPreviews.b", "rb") as file:
+                text = file.read()
+                order_preview_list = pickle.loads(text)
+        except FileNotFoundError:
+
+            order_list = self.getOrderList()
+            for order in order_list:
+                order_preview = order.createPreview()
+                order_preview_list.append(order_preview)
+
+            self.saveOrderPreviewList(order_preview_list) 
+
+        return order_preview_list           
+
+    def saveOrderPreviewList(self, order_preview_list: List[OrderPreview]):
+        with open(self.orders_dir_path + "\\orderPreviews.b", "wb") as file:
+            file.write(pickle.dumps(order_preview_list))
+
+    def getOrderList(self):
+        """Возвращает список всех заказов"""
+        order_list = list()
+        for key in self.ordered_filenames.keys():
+            order_list.append(self.getOrderByID(key))
+
+        return order_list
+
+    def CreateStatusHTML(self) -> Tuple[List[Order], str]:
+        orders = self.getOrderList()
+
+        filepath = createHTMLfromList(orders, self.orders_dir_path + "\\otchet")
+
+        return orders, filepath
+
     def __parseOrderFilenames(self):
         order_filenames = os.listdir(self.orders_dir_path)
+
+        order_filenames = order_filenames[:-2]   # исключаем orderPreviews.b
+
         self.ordered_filenames = self.__getOrderStatusPairs(order_filenames)
 
     def __getOrderStatusPairs(self, order_filenames):
@@ -69,25 +112,25 @@ class FileManager():
             id = ord_file[1:12]
             orders[id] = status
         return orders
-    
+
     def getOrderByID(self, ID: int):
         """Возвращает Order либо None"""
         filename = self.__getOrderFilename(ID)
         if filename == "":
             return None
-        
+
         return Order.fromFile(filename)
-    
+
     def deleteOrderByID(self, ID: int) -> bool:
         """Удаляет как файл, так и элемент словаря"""
         filename = self.__getOrderFilename(ID)
         if filename == "":
             return False
-        
+
         os.remove(filename)
         del self.ordered_filenames[str(ID)]
         return True
-        
+
     def __getOrderFilename(self, ID: int):
         """Возвращает имя файла, либо '' """
         id_str = str(ID)
@@ -95,6 +138,6 @@ class FileManager():
             filename = self.orders_dir_path + "\\" + self.ordered_filenames[id_str] + id_str + ".order"
         except KeyError:
             filename = ""
-        
+
         return filename
-        
+
