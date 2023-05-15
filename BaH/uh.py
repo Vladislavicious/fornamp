@@ -181,7 +181,7 @@ class UserHandler:
         if emailpassword == "":
             isEmailPasswordValidated, EmailPasswordErrorString = True, ""
         else:
-            isEmailPasswordValidated, EmailPasswordErrorString = self.__ValidatePassword(email)
+            isEmailPasswordValidated, EmailPasswordErrorString = self.__ValidatePassword(emailpassword)
 
         errors = list()
         didErrorOccur = False

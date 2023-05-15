@@ -143,7 +143,7 @@ def createHTMLfromJSON(jsonPath: str, htmlPath: str, htmlTitle: str = "Отчё�
         file.write(content)
 
 
-def createHTMLfromList(orders: List[Order], htmlPath: str, htmlTitle: str = "Отчёт"):
+def createHTMLfromList(orders: List[Order], htmlPath: str, htmlTitle: str = "Отчёт") -> str:
     """Сохраняет HTML файл по указанному пути"""
     content = listToPlainHTML(orders, htmlTitle)
 
@@ -153,6 +153,8 @@ def createHTMLfromList(orders: List[Order], htmlPath: str, htmlTitle: str = "О�
 
     with open(filepath, "w", encoding="utf-8") as file:
         file.write(content)
+
+    return filepath
 
 
 def ContributionsFromOrdersList(orders: List[Order]):

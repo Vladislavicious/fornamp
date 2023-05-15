@@ -1,11 +1,12 @@
 import os
 import pickle
-from typing import List
+from typing import List, Tuple
 from cryptography.fernet import Fernet
 
 from BaH.order import Order
 from BaH.order import OrderPreview
 from BaH.uh import UserHandler
+from Caps.listFuncs import createHTMLfromList
 
 
 class FileManager():
@@ -88,9 +89,19 @@ class FileManager():
             order_list.append(self.getOrderByID(key))
         
         return order_list
+    
+    def CreateStatusHTML(self) -> Tuple[List[Order], str]:
+        orders = self.getOrderList()
+
+        filepath = createHTMLfromList(orders, self.orders_dir_path + "\\otchet")
+
+        return orders, filepath
 
     def __parseOrderFilenames(self):
         order_filenames = os.listdir(self.orders_dir_path)
+        
+        order_filenames = order_filenames[:-2]   # исключаем orderPreviews.b
+
         self.ordered_filenames = self.__getOrderStatusPairs(order_filenames)
 
     def __getOrderStatusPairs(self, order_filenames):
