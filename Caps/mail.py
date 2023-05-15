@@ -12,7 +12,7 @@ class MailAccount:
     def __init__(self, email, email_password) -> None:
         self.login = email
         self.password = email_password
-        
+
         self.smtp = None   # Инициализируется при вызове authentificate
 
     def authentificate(self) -> Tuple[bool, str]:
@@ -28,7 +28,7 @@ class MailAccount:
             smtpObj = smtplib.SMTP('smtp.inbox.ru', 587)
         elif self.login.endswith("yandex.ru"):
             smtpObj = smtplib.SMTP('smtp.yandex.ru', 587)
-        
+
         smtpObj.starttls()
 
         try:
@@ -43,10 +43,10 @@ class MailAccount:
                 error_message = "Для входа необходим пароль приложения"
             elif (error_code == 553):
                 error_message = "Проверь все адреса в Кому, CC и BCC полях. Где-то должна быть ошибка или неправильное написание"
-            
+
             self.smtp = smtpObj
             return (False, f"{error_code}: " + error_message)
-        
+
     def createMessage(self, TO: str, message: str, Subject: str = "Отчёт", filepaths: List[str] = list()) -> MIMEMultipart:
         """filepath - путь для прикрепления файла, допускаются только англоязычные названия"""
         FROM = self.login

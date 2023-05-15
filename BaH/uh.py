@@ -40,6 +40,12 @@ class UserHandler:
 
             file.write(self.users[prelast_index].serialize(self.key))
     
+    def getUserLogins(self) -> List[str]:
+        names = list()
+        for user in self.users:
+            names.append(user)
+        return names
+
     def __ReadFromFile(self):
 
         try:
