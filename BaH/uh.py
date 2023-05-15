@@ -19,10 +19,8 @@ class UserHandler:
 
         self.__ReadFromFile()
         self.__seekLastUser()   # Если список юзеров пуст, то переменная self.lastUser равна None
-        self.__seekLastUser()   # Если список юзеров пуст, то переменная self.lastUser равна None
 
     def SaveToFile(self, filepath: str = "Перезапись"):
-        """без проверки на существование файла"""
         """без проверки на существование файла"""
         path = filepath
         if filepath == "Перезапись":
