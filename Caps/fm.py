@@ -130,7 +130,16 @@ class FileManager():
         os.remove(filename)
         del self.ordered_filenames[str(ID)]
         return True
+    
+    def saveOrder(self, order: Order):
+        """Если ордер с таким айди уже существовал, удаляет его
+           При успешном выполнении возвращает True"""
+        previous_order_filename = self.__getOrderFilename(order.id)
+        if previous_order_filename != "":
+            os.remove(previous_order_filename)
 
+        Order.toFile(order, self.orders_dir_path)
+        
     def __getOrderFilename(self, ID: int):
         """Возвращает имя файла, либо '' """
         id_str = str(ID)
