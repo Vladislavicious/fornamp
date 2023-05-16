@@ -3,7 +3,6 @@ import customtkinter as ctk
 from GUI.AddWindow import *
 from GUI.ProfileWindow import *
 from BaH.Contribution import *
-import Caps.fm as file_manager
 import BaH.App as application
 
 #подправить конструкторы продуктов и шагов
@@ -15,13 +14,11 @@ class MainWindow(ctk.CTkToplevel):
 
         super().__init__(root)
         
-        self.fm = file_manager.FileManager()
         self.app = application.App()
-        self.list_order = []
-        self.oders_previews_list = []
-        self.oders_previews_list = self.fm.parseOrderPreviews()
+        #self.list_order = []
+        self.order : bh_order.Order
+        self.oders_previews_list = self.app.order_previews
         self.init_main_window()
-        self.add_list_order()
 
     def init_main_window(self):
 
@@ -50,6 +47,7 @@ class MainWindow(ctk.CTkToplevel):
         self.frame_tools.pack_propagate(False)
 
         self.create_frame_order()
+        self.add_list_order()
 
         self.protocol("WM_DELETE_WINDOW", lambda: self.close_window()) 
         self.root.withdraw()
@@ -66,7 +64,7 @@ class MainWindow(ctk.CTkToplevel):
     def add_list_order(self):
         self.frame_order.destroy()
         self.create_frame_order()
-        for item_order in self.list_order:
+        for item_order in self.oders_previews_list:
             self.frame_order_info = ctk.CTkFrame(self.scroll, border_width=2, fg_color="#b8bab9", height=120)
             self.frame_order_info.pack(fill=tk.X, padx = 10, pady=7)
 
@@ -76,13 +74,12 @@ class MainWindow(ctk.CTkToplevel):
                 self.frame_order_info.configure(border_color = "#e3a002")
             else:
                 self.frame_order_info.configure(border_color = "#77bf6d")
-
             self.label_order = ctk.CTkLabel(self.frame_order_info, text = "Заказчик: " + item_order.zakazchik + "\nОписание заказа: " + item_order.commentary + "\nДата создания: " + str(item_order.date_of_creation)+ "\nДата выдачи: " + str(item_order.date_of_vidacha), font = ctk.CTkFont(family="Arial", size=12))
             self.label_order.pack(fill=tk.X, padx=10, pady = 10)
-            self.label_order.bind('<Button-1>', lambda event, order = item_order: self.open_info(order))
-
+            self.label_order.bind('<Button-1>', lambda event, order = self.app.getOrderByID(item_order.id): self.open_info(order))
 
     def open_info(self, order):
+        self.order = order
         self.button_add_order.configure(state = "disabled")
         self.frame_order.destroy()
         self.button_close_info = ctk.CTkButton(self.frame_tools, text="Вернуться к заказам", command=self.close_info)
@@ -202,20 +199,22 @@ class StepInfo(tk.Frame):
             self.button_redy = ctk.CTkButton(self.frame_step_show, text = "Выполнено", command = lambda: self.change_status(self.item_step, self.frame_step_show, self.button_redy))
             self.button_redy.pack(side = tk.RIGHT, padx = 5)
 
-    def change_status(self, item_step, frame, button):
-        k = 0
-        for item in item_step.GetContr():
-            if(item.contributor == self.info_window.username):
-                item.number_of_made += 1
-                self.label_step.configure(text = "Описание шага: " + item_step.name[:item_step.name.find(" ", 12)+1] + "\n" + item_step.name[item_step.name.find(" ", 12)+1:] + "\nВыполнено шагов: " + str(item_step.number_of_made) + "/" + str(item_step.quantity))
-                item_step.isDone = True
-                self.info_window.products[self.info_window.prod_index].CheckIfDone()
-                k = 1
+            self.entry_quantity = ctk.CTkEntry(self.frame_step_show, height=12, width=40, justify=tk.CENTER)
+            self.entry_quantity.insert(0, "1")
+            self.entry_quantity.pack(pady = 5,side = tk.RIGHT)
+            self.entry_quantity.pack_propagate(False)
 
-        if(k == 0):
+    def change_status(self, item_step, frame, button):
+        count = item_step.quantity - item_step.number_of_made
+        if(int(self.entry_quantity.get()) < count):
+            count = int(self.entry_quantity.get())
+
+        for i in range(count):
+
             item_step.Contribute(self.info_window.username)
             self.label_step.configure(text = "Описание шага: " + item_step.name[:item_step.name.find(" ", 12)+1] + "\n" + item_step.name[item_step.name.find(" ", 12)+1:] + "\nВыполнено шагов: " + str(item_step.number_of_made) + "/" + str(item_step.quantity))
             self.info_window.products[self.info_window.prod_index].CheckIfDone()
+            item_step.isDone = True
 
         if(item_step.isDone == True):
             frame.configure(border_color= "#77bf6d")
@@ -227,3 +226,14 @@ class StepInfo(tk.Frame):
         if(self.info_window.products[self.info_window.prod_index].isDone == True):
             self.info_window.frame_product_show.configure(border_color= "#77bf6d")
             self.info_window.cur_order.CheckIfDone()
+
+        self.info_window.main_window.app.saveOrder(self.info_window.main_window.order)
+        self.info_window.main_window.app.saveNewOrderPreviews()
+       
+        
+        if(self.info_window.main_window.order.CheckIfDone() == True):
+            self.info_window.main_window.app.deleteOrderByID(self.info_window.main_window.order.id)
+            self.info_window.main_window.app.saveOrder(self.info_window.main_window.order)            
+            self.info_window.main_window.oders_previews_list.append(self.info_window.main_window.order.createPreview())
+            self.info_window.main_window.app.saveNewOrderPreviews()
+             

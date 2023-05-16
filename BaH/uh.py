@@ -40,6 +40,12 @@ class UserHandler:
 
             file.write(self.users[prelast_index].serialize(self.key))
     
+    def getUserLogins(self) -> List[str]:
+        names = list()
+        for user in self.users:
+            names.append(user)
+        return names
+
     def __ReadFromFile(self):
 
         try:
@@ -181,7 +187,7 @@ class UserHandler:
         if emailpassword == "":
             isEmailPasswordValidated, EmailPasswordErrorString = True, ""
         else:
-            isEmailPasswordValidated, EmailPasswordErrorString = self.__ValidatePassword(email)
+            isEmailPasswordValidated, EmailPasswordErrorString = self.__ValidatePassword(emailpassword)
 
         errors = list()
         didErrorOccur = False

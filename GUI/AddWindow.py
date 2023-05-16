@@ -189,7 +189,8 @@ class WindowAdd(ctk.CTkToplevel):
         if(self.check_order_field() == True):
             dat = bh_order.date.today()
             order = bh_order.Order(1, self.entry_commentariy_order.get(), dat, self.dat_of_vidacha, self.list_product, self.entry_commentariy_order.get()) #это затычка надо поменять принимаемые данные
-            self.main_window.list_order.append(order)
-            self.main_window.app.saveOrder(order)
+
             self.main_window.app.addNewOrder(order)
+            self.main_window.app.saveNewOrderPreviews()
+            self.main_window.app.saveOrder(order)
             self.close_window()
