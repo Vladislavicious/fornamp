@@ -101,6 +101,7 @@ class Product_field():  #класс продукта
 
 
     def aply(self):     #кнопка подтверждения продукта и добавление его в список
+        self.reload(tk.Event)
         if(self.chek_field()==True):
             self.product = bh_product.Product(self.entry_name.get(),
                                         int(self.entry_selling_cost.get()),

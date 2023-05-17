@@ -1,7 +1,6 @@
 ﻿import tkinter as tk
 import customtkinter as ctk
 from GUI.AddWindow import *
-from GUI.ProfileWindow import *
 from BaH.Contribution import *
 import BaH.App as application
 
@@ -15,8 +14,6 @@ class MainWindow(ctk.CTkToplevel):
         super().__init__(root)
         
         self.app = application.App()
-        #self.list_order = []
-        self.order : bh_order.Order
         self.oders_previews_list = self.app.order_previews
         self.init_main_window()
 
@@ -79,7 +76,6 @@ class MainWindow(ctk.CTkToplevel):
             self.label_order.bind('<Button-1>', lambda event, order = self.app.getOrderByID(item_order.id): self.open_info(order))
 
     def open_info(self, order):
-        self.order = order
         self.button_add_order.configure(state = "disabled")
         self.frame_order.destroy()
         self.button_close_info = ctk.CTkButton(self.frame_tools, text="Вернуться к заказам", command=self.close_info)
@@ -137,30 +133,7 @@ class WindowInfo(tk.Frame):
 
         self.products = self.cur_order.GetProducts()
         for item in self.products:
-            self.frame_product_show = ctk.CTkFrame(self.scroll_product, border_width=2, fg_color= "#b8bab9", height=90, width=150)
-            self.frame_product_show.pack(fill=tk.X, padx = 10, pady=7)
-            self.frame_product_show.pack_propagate(False)
-            self.label_product = ctk.CTkLabel(self.frame_product_show,
-                                             text =  "Название продукта: " + item.name[:item.name.find(" ", 15)+1] + "\n" + item.name[item.name.find(" ", 15)+1:] + '\nОписание продукта: ' + item.commentary[:item.commentary.find(" ", 15)+1] + "\n" + item.commentary[item.commentary.find(" ", 15)+1:] + "\nПрибыль с реализации: " + str(item.selling_cost*item.quantity - item.production_cost*item.quantity) + " ₽",
-                                            font = ctk.CTkFont(family="Arial", size=12))
-            self.label_product.pack(fill=tk.X, padx=10, pady = 10)
-            self.label_product.bind('<Button-1>', lambda event, product_index = self.products.index(item): self.open_step_info(product_index))
-            if(item.isDone == False):
-                self.frame_product_show.configure(border_color= "#bf6b6b")
-            else:
-                self.frame_product_show.configure(border_color= "#77bf6d")
-
-
-    def open_step_info(self, s_index):
-        self.prod_index = s_index
-        if(self.cure_product != self.prod_index):
-            self.frame_info_step.destroy()
-            self.create_step_frame()   
-            self.step = self.products[self.prod_index].GetSteps()
-            for item_step in self.step:
-                step_info = StepInfo(self, item_step)
-
-            self.cure_product = self.prod_index
+            self.product_info = ProductInfo(self, item)
 
 
 
@@ -170,10 +143,47 @@ class WindowInfo(tk.Frame):
         self.main_window.create_frame_order()
 
 
+class ProductInfo(tk.Frame):
+    def __init__(self, info_window, item):
+        self.info_window = info_window
+        self.prod_index = self.info_window.products.index(item)
+        self.step = self.info_window.products[self.prod_index].GetSteps()
+        self.init_stepInfo(item)
+
+    def init_stepInfo(self, item):
+        self.frame_product_show = ctk.CTkFrame(self.info_window.scroll_product, border_width=2, fg_color= "#b8bab9", height=90, width=150)
+        self.frame_product_show.pack(fill=tk.X, padx = 10, pady=7)
+        self.frame_product_show.pack_propagate(False)
+        self.label_product = ctk.CTkLabel(self.frame_product_show,
+                                            text =  "Название продукта: " + item.name[:item.name.find(" ", 15)+1] + "\n" + item.name[item.name.find(" ", 15)+1:] + '\nОписание продукта: ' + item.commentary[:item.commentary.find(" ", 15)+1] + "\n" + item.commentary[item.commentary.find(" ", 15)+1:] + "\nПрибыль с реализации: " + str(item.selling_cost*item.quantity - item.production_cost*item.quantity) + " ₽",
+                                        font = ctk.CTkFont(family="Arial", size=12))
+        self.label_product.pack(fill=tk.X, padx=10, pady = 10)
+        self.label_product.bind('<Button-1>', self.open_step_info)
+        if(item.isDone == False):
+            self.frame_product_show.configure(border_color= "#bf6b6b")
+        else:
+            self.frame_product_show.configure(border_color= "#77bf6d")
+
+
+    def open_step_info(self, event):
+        if(self.info_window.cure_product != self.prod_index):
+            self.info_window.frame_info_step.destroy()
+            self.info_window.create_step_frame()   
+            
+            for item_step in self.step:
+                step_info = StepInfo(self.info_window, item_step, self.frame_product_show, self.prod_index)
+            self.info_window.cure_product = self.prod_index
+
+
+
+
+
 class StepInfo(tk.Frame):
-    def __init__(self, info_window, item_step):
+    def __init__(self, info_window, item_step, frame_product, prod_index):
         self.info_window = info_window
         self.item_step = item_step
+        self.frame_product = frame_product
+        self.prod_index = prod_index
         self.init_stepInfo()
 
     def init_stepInfo(self):
@@ -196,7 +206,7 @@ class StepInfo(tk.Frame):
             self.label_step.pack(side = tk.TOP, padx=5, pady = 15)
 
         if(self.item_step.isDone == False):
-            self.button_redy = ctk.CTkButton(self.frame_step_show, text = "Выполнено", command = lambda: self.change_status(self.item_step, self.frame_step_show, self.button_redy))
+            self.button_redy = ctk.CTkButton(self.frame_step_show, width=10, text = "Выполнено", command = lambda: self.change_status(self.item_step, self.frame_step_show, self.button_redy))
             self.button_redy.pack(side = tk.RIGHT, padx = 5)
 
             self.entry_quantity = ctk.CTkEntry(self.frame_step_show, height=12, width=40, justify=tk.CENTER)
@@ -212,28 +222,32 @@ class StepInfo(tk.Frame):
         for i in range(count):
 
             item_step.Contribute(self.info_window.username)
-            self.label_step.configure(text = "Описание шага: " + item_step.name[:item_step.name.find(" ", 12)+1] + "\n" + item_step.name[item_step.name.find(" ", 12)+1:] + "\nВыполнено шагов: " + str(item_step.number_of_made) + "/" + str(item_step.quantity))
-            self.info_window.products[self.info_window.prod_index].CheckIfDone()
-            item_step.isDone = True
+            
+        self.label_step.configure(text = "Описание шага: " + item_step.name[:item_step.name.find(" ", 12)+1] + "\n" + item_step.name[item_step.name.find(" ", 12)+1:] + "\nВыполнено шагов: " + str(item_step.number_of_made) + "/" + str(item_step.quantity))  
+        item_step.isDone = True
 
         if(item_step.isDone == True):
             frame.configure(border_color= "#77bf6d")
             self.label_step.configure(text = "Описание шага:\n" + self.item_step.name, justify = tk.CENTER)
             self.label_step.pack(side = tk.TOP, padx=5, pady = 15)
             button.destroy()
-            self.info_window.step.append(self.info_window.step.pop( self.info_window.step.index(self.item_step)))
+            self.info_window.products[self.prod_index].CheckIfDone()
+            #self.info_window.product_info.step.append(self.info_window.product_info.step.pop( self.info_window.product_info.step.index(self.item_step)))
+            self.info_window.products[self.info_window.product_info.prod_index].DeleteStep(self.item_step.name)
+            self.info_window.products[self.info_window.product_info.prod_index].AddStep(self.item_step)
 
-        if(self.info_window.products[self.info_window.prod_index].isDone == True):
-            self.info_window.frame_product_show.configure(border_color= "#77bf6d")
+
+        if(self.info_window.products[self.prod_index].isDone == True):
+            self.frame_product.configure(border_color= "#77bf6d")
             self.info_window.cur_order.CheckIfDone()
 
-        self.info_window.main_window.app.saveOrder(self.info_window.main_window.order)
+        self.info_window.main_window.app.saveOrder(self.info_window.cur_order)
         self.info_window.main_window.app.saveNewOrderPreviews()
        
         
-        if(self.info_window.main_window.order.CheckIfDone() == True):
-            self.info_window.main_window.app.deleteOrderByID(self.info_window.main_window.order.id)
-            self.info_window.main_window.app.saveOrder(self.info_window.main_window.order)            
-            self.info_window.main_window.oders_previews_list.append(self.info_window.main_window.order.createPreview())
+        if(self.info_window.cur_order.CheckIfDone() == True):
+            self.info_window.main_window.app.deleteOrderByID(self.info_window.cur_order.id)
+            self.info_window.main_window.app.saveOrder(self.info_window.cur_order)            
+            self.info_window.main_window.oders_previews_list.append(self.info_window.cur_order.createPreview())
             self.info_window.main_window.app.saveNewOrderPreviews()
              

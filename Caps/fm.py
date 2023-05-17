@@ -98,6 +98,8 @@ class FileManager():
         return orders, filepath
 
     def __parseOrderFilenames(self):
+        os.makedirs(self.orders_dir_path, exist_ok=True)
+
         order_filenames = os.listdir(self.orders_dir_path)
 
         order_filenames = order_filenames[:-1]   # исключаем orderPreviews.b
