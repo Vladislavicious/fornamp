@@ -2,18 +2,18 @@
 import customtkinter as ctk
 from GUI.AddWindow import *
 from BaH.Contribution import *
-import BaH.App as application
+
 
 #подправить конструкторы продуктов и шагов
 #испрвить баг в котором при создании заказа с несколькими продуктами показывает у продуктов одни и те же шаги если после создание этого заказа сначала открыть другой заказ  (при переходе в show_info не меняется индекс)
 
 class MainWindow(ctk.CTkToplevel):
-    def __init__(self, root):
+    def __init__(self, root, app):
         self.root = root
 
         super().__init__(root)
         
-        self.app = application.App()
+        self.app = app
         self.oders_previews_list = self.app.order_previews
         self.init_main_window()
 
@@ -232,9 +232,10 @@ class StepInfo(tk.Frame):
             self.label_step.pack(side = tk.TOP, padx=5, pady = 15)
             button.destroy()
             self.info_window.products[self.prod_index].CheckIfDone()
-            #self.info_window.product_info.step.append(self.info_window.product_info.step.pop( self.info_window.product_info.step.index(self.item_step)))
-            self.info_window.products[self.info_window.product_info.prod_index].DeleteStep(self.item_step.name)
-            self.info_window.products[self.info_window.product_info.prod_index].AddStep(self.item_step)
+            #старая версия фичи, выкидывает исключение#self.info_window.product_info.step.append(self.info_window.product_info.step.pop( self.info_window.product_info.step.index(self.item_step)))
+            #новая версия фичи, вызывает баг перемещения заказа к последнему продукту
+            self.info_window.products[self.prod_index].DeleteStep(self.item_step.name)
+            self.info_window.products[self.prod_index].AddStep(self.item_step)
 
 
         if(self.info_window.products[self.prod_index].isDone == True):

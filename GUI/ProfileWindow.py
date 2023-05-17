@@ -1,11 +1,13 @@
 ﻿import tkinter as tk
 import customtkinter as ctk
 import GUI.MainWindow as gui
+import BaH.App as application
 
 class ProfileWindow(tk.Frame):
     def __init__(self, root):
         super().__init__(root)
         self.root = root
+        self.app = application.App()
         self.init_profile_window()
 
     def init_profile_window(self) -> None:
@@ -59,6 +61,6 @@ class ProfileWindow(tk.Frame):
         self.label_rigisration.bind("<Button-1>", self.registration)
 
     def open_main_window(self):
-        gui.MainWindow(self.root)
+        gui.MainWindow(self.root, self.app)
 
     
