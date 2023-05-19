@@ -203,7 +203,10 @@ class StepInfo(tk.Frame):
         self.frame_step_show.pack(fill=tk.X, padx = 10, pady=7)
         self.frame_step_show.pack_propagate(False)
             
-        if(self.item_step.isDone == False):
+        if(self.item_step.isDone == False and self.info_window.main_window.user.isAdministrator==True):
+            self.label_step = ctk.CTkLabel(self.frame_step_show, text = "Описание шага: " + self.item_step.name[:self.item_step.name.find(" ", 12)+1] + "\n" + self.item_step.name[self.item_step.name.find(" ", 12)+1:] + "\nВыполнено шагов: " + str(self.item_step.number_of_made) + "/" + str(self.item_step.quantity), font = ctk.CTkFont(family="Arial", size=12), justify = tk.CENTER)
+            self.label_step.pack(side = tk.TOP, padx=5, pady = 10)
+        elif(self.item_step.isDone == False and self.info_window.main_window.user.isAdministrator==False):
             self.label_step = ctk.CTkLabel(self.frame_step_show, text = "Описание шага: " + self.item_step.name[:self.item_step.name.find(" ", 12)+1] + "\n" + self.item_step.name[self.item_step.name.find(" ", 12)+1:] + "\nВыполнено шагов: " + str(self.item_step.number_of_made) + "/" + str(self.item_step.quantity), font = ctk.CTkFont(family="Arial", size=12), justify = tk.LEFT)
             self.label_step.pack(side = tk.LEFT, padx=5, pady = 10)
         else:
