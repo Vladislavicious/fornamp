@@ -14,6 +14,7 @@ class MainWindow(ctk.CTkToplevel):
         super().__init__(root)
         
         self.app = app
+        self.user = self.app.file_manager.user_handler.lastUser
         self.oders_previews_list = self.app.order_previews
         self.init_main_window()
 
@@ -28,15 +29,16 @@ class MainWindow(ctk.CTkToplevel):
         
         
 
-        button_profile = ctk.CTkButton(frame_title, text="Профиль")
-        button_profile.pack(side=tk.RIGHT, padx=10)
+        button_log_out = ctk.CTkButton(frame_title, text="Выйти", command = self.log_out)
+        button_log_out.pack(side=tk.RIGHT, padx=10)
 
         name_label = ctk.CTkLabel(frame_title, text="TASK MANAGER", fg_color="transparent",
                                   font=ctk.CTkFont(family="Arial", size=24))
         name_label.place(relx=0.37, rely=0.2)
 
         self.button_add_order = ctk.CTkButton(self.frame_tools, text="Добавить", command=self.open_window)
-        self.button_add_order.pack(anchor=tk.N, pady=6)
+        if(self.user.isAdministrator == True):
+            self.button_add_order.pack(anchor=tk.N, pady=6)
 
         self.frame_tools.pack(side=tk.LEFT, fill=tk.Y, padx=5, pady=5)
         frame_title.pack(side=tk.TOP, fill=tk.X, padx=5, pady=5)
@@ -90,6 +92,10 @@ class MainWindow(ctk.CTkToplevel):
         self.button_add_order.configure(state = "normal")
         self.button_close_info.destroy()
         
+    def log_out(self):
+        self.app.file_manager.user_handler.setNoLastUsers()
+        self.root.deiconify()
+        self.destroy()
 
 
     def open_window(self):
@@ -134,7 +140,6 @@ class WindowInfo(tk.Frame):
         self.products = self.cur_order.GetProducts()
         for item in self.products:
             self.product_info = ProductInfo(self, item)
-
 
 
     def delete_window_info(self):
@@ -205,7 +210,7 @@ class StepInfo(tk.Frame):
             self.label_step = ctk.CTkLabel(self.frame_step_show, text = "Описание шага:\n" + self.item_step.name, font = ctk.CTkFont(family="Arial", size=12), justify = tk.CENTER)
             self.label_step.pack(side = tk.TOP, padx=5, pady = 15)
 
-        if(self.item_step.isDone == False):
+        if(self.item_step.isDone == False and self.info_window.main_window.user.isAdministrator==False):
             self.button_redy = ctk.CTkButton(self.frame_step_show, width=10, text = "Выполнено", command = lambda: self.change_status(self.item_step, self.frame_step_show, self.button_redy))
             self.button_redy.pack(side = tk.RIGHT, padx = 5)
 
@@ -232,8 +237,6 @@ class StepInfo(tk.Frame):
             self.label_step.pack(side = tk.TOP, padx=5, pady = 15)
             button.destroy()
             self.info_window.products[self.prod_index].CheckIfDone()
-            #старая версия фичи, выкидывает исключение#self.info_window.product_info.step.append(self.info_window.product_info.step.pop( self.info_window.product_info.step.index(self.item_step)))
-            #новая версия фичи, вызывает баг перемещения заказа к последнему продукту
             self.info_window.products[self.prod_index].DeleteStep(self.item_step.name)
             self.info_window.products[self.prod_index].AddStep(self.item_step)
 
