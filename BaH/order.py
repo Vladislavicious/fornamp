@@ -215,9 +215,9 @@ class Order:
         
         if not os.path.exists(directory):
             return False
-        firstLetter = "N"   # V - если заказ выдан, D - если заказ сделан, N - если заказ не сделан 
+        firstLetter = "N"   # G - если заказ выдан, D - если заказ сделан, N - если заказ не сделан 
         if self.isVidan:
-            firstLetter = "V"
+            firstLetter = "G"
         elif self.isDone:
             firstLetter = "D"
 

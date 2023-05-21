@@ -226,6 +226,11 @@ class Product_field():  #класс продукта
             self.entry_quantity.configure(fg_color="#faebeb", border_color= "#e64646", placeholder_text = "Заполните все поля", placeholder_text_color="#979da2")
             self.label_name.focus()
             check =  False
+        elif(int(self.entry_quantity.get())>999 or int(self.entry_quantity.get()) <= 0):
+            self.entry_quantity.configure(fg_color="#faebeb", border_color= "#e64646", placeholder_text = "Введено недопустимое количество", placeholder_text_color="#979da2")
+            self.entry_quantity.delete(0, len(self.entry_quantity.get()))
+            self.label_name.focus()
+            check =  False
         else:
             self.entry_quantity.configure(fg_color="#f9f9fa", border_color= "#61bf0d", placeholder_text = "")
 

@@ -1,6 +1,7 @@
 ﻿import tkinter as tk
 import customtkinter as ctk
 from GUI.AddWindow import *
+from GUI.EmailWindow import *
 from BaH.Contribution import *
 
 
@@ -16,6 +17,7 @@ class MainWindow(ctk.CTkToplevel):
         self.app = app
         self.user = self.app.file_manager.user_handler.lastUser
         self.oders_previews_list = self.app.order_previews
+        self.order_visibility = False
         self.init_main_window()
 
     def init_main_window(self):
@@ -40,6 +42,17 @@ class MainWindow(ctk.CTkToplevel):
         if(self.user.isAdministrator == True):
             self.button_add_order.pack(anchor=tk.N, pady=6)
 
+        self.button_add_email = ctk.CTkButton(self.frame_tools, text="Добавить почту", command=self.add_email)
+        if(self.user.email == ""):
+            self.button_add_email.pack(anchor=tk.N, pady=6)
+
+        self.button_send_email = ctk.CTkButton(self.frame_tools, text="Отправить отчет", command=self.send_email)
+        self.button_send_email.pack(anchor=tk.N, pady=6)
+
+        self.button_change_visibility = ctk.CTkButton(self.frame_tools, text="Показать выданные\n заказы", height= 40, command=self.change_visibility)
+        self.button_change_visibility.pack(anchor=tk.N, pady=6)
+
+
         self.frame_tools.pack(side=tk.LEFT, fill=tk.Y, padx=5, pady=5)
         frame_title.pack(side=tk.TOP, fill=tk.X, padx=5, pady=5)
         frame_title.pack_propagate(False)
@@ -52,6 +65,13 @@ class MainWindow(ctk.CTkToplevel):
         self.root.withdraw()
 
 
+    def change_visibility(self):
+        self.order_visibility = not self.order_visibility
+        if(self.order_visibility == True):
+            self.button_change_visibility.configure(text = "Скрыть выданные\n заказы")
+        else:
+            self.button_change_visibility.configure(text = "Показать выданные\n заказы")
+        self.add_list_order()
 
     def create_frame_order(self):
         
@@ -64,18 +84,37 @@ class MainWindow(ctk.CTkToplevel):
         self.frame_order.destroy()
         self.create_frame_order()
         for item_order in self.oders_previews_list:
-            self.frame_order_info = ctk.CTkFrame(self.scroll, border_width=2, fg_color="#b8bab9", height=120)
-            self.frame_order_info.pack(fill=tk.X, padx = 10, pady=7)
+            
+            
+            if((item_order.isVidan == True and self.order_visibility == True) or item_order.isVidan == False):
 
-            if(item_order.isDone == False):
-                self.frame_order_info.configure(border_color = "#bf6b6b")
-            elif(item_order.isDone == True and item_order.isVidan == False):
-                self.frame_order_info.configure(border_color = "#e3a002")
-            else:
-                self.frame_order_info.configure(border_color = "#77bf6d")
-            self.label_order = ctk.CTkLabel(self.frame_order_info, text = "Заказчик: " + item_order.zakazchik + "\nОписание заказа: " + item_order.commentary + "\nДата создания: " + str(item_order.date_of_creation)+ "\nДата выдачи: " + str(item_order.date_of_vidacha), font = ctk.CTkFont(family="Arial", size=12))
-            self.label_order.pack(fill=tk.X, padx=10, pady = 10)
-            self.label_order.bind('<Button-1>', lambda event, order = self.app.getOrderByID(item_order.id): self.open_info(order))
+                self.frame_order_info = ctk.CTkFrame(self.scroll, border_width=2, fg_color="#b8bab9", height=120)
+                self.frame_order_info.pack(fill=tk.X, padx = 10, pady=7)
+
+                if(item_order.isDone == False):
+                    self.frame_order_info.configure(border_color = "#bf6b6b")
+                elif(item_order.isDone == True and item_order.isVidan == False):
+                    self.frame_order_info.configure(border_color = "#e3a002")
+                
+                    if(self.user.isAdministrator == True):
+                        self.button_vidat = ctk.CTkButton(self.frame_order_info, text = "Выдано")
+                        self.button_vidat.bind('<Button-1>', lambda event,  order = self.app.getOrderByID(item_order.id) : self.vidat_order(order, self.frame_order_info, self.button_vidat))
+                        self.button_vidat.place(relx=0.8, rely = 0.3)
+                else:
+                    self.frame_order_info.configure(border_color = "#77bf6d")
+                self.label_order = ctk.CTkLabel(self.frame_order_info, text = "Заказчик: " + item_order.zakazchik + "\nОписание заказа: " + item_order.commentary + "\nДата создания: " + str(item_order.date_of_creation)+ "\nДата выдачи: " + str(item_order.date_of_vidacha), font = ctk.CTkFont(family="Arial", size=12))
+                self.label_order.pack( padx=10, pady = 10)
+                self.label_order.bind('<Button-1>', lambda event,  order = self.app.getOrderByID(item_order.id) : self.open_info(order))
+                self.frame_order_info.bind('<Button-1>', lambda event,  order = self.app.getOrderByID(item_order.id) : self.open_info(order))
+      
+    def send_email(self):
+        dialog_window = DialogWindow(self, self.app, self)
+        dialog_window.grab_set()
+
+    def add_email(self):
+        email = SendWindow(self, self.app, self)
+        email.grab_set() 
+
 
     def open_info(self, order):
         self.button_add_order.configure(state = "disabled")
@@ -83,6 +122,18 @@ class MainWindow(ctk.CTkToplevel):
         self.button_close_info = ctk.CTkButton(self.frame_tools, text="Вернуться к заказам", command=self.close_info)
         self.button_close_info.pack(anchor=tk.N, pady=6)
         self.window_info = WindowInfo(self, order)
+
+
+        
+    def vidat_order(self, order, frame_order_info, button_vidat):
+        frame_order_info.configure(border_color = "#77bf6d")
+        button_vidat.destroy()
+        order.isVidan = True
+        self.app.deleteOrderByID(order.id)
+        self.app.saveOrder(order)
+        self.oders_previews_list.append(order.createPreview())
+        self.app.saveNewOrderPreviews()
+        
 
 
     def close_info(self):
@@ -258,3 +309,6 @@ class StepInfo(tk.Frame):
             self.info_window.main_window.oders_previews_list.append(self.info_window.cur_order.createPreview())
             self.info_window.main_window.app.saveNewOrderPreviews()
              
+
+
+

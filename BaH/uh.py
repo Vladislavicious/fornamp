@@ -168,6 +168,7 @@ class UserHandler:
                 return False, "Пароль содержит недопустимые символы"
         
         return True, ""
+
     
     def NewUser(self, login: str, password: str, email: str = "",
                 emailpassword: str = "", isLastUser=False,
@@ -238,3 +239,20 @@ class UserHandler:
             return True
 
         return False
+
+
+    def add_email(self, email, emailpassword):
+        isEmailValidated, EmailErrorString = self.__ValidateEmail(email)
+        isPasswordValidated, PasswordErrorString = self.__ValidatePassword(emailpassword)
+        errors = list()
+
+        if(not isEmailValidated):
+            errors.append({1: EmailErrorString})
+        if(not isPasswordValidated):
+            errors.append({2: PasswordErrorString})
+        if not errors:
+            for user in self.users:
+                if(user == self.lastUser):
+                    user.email = email
+                    user.emailpassword = emailpassword
+        return errors
