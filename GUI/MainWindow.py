@@ -300,3 +300,4 @@ class StepInfo(tk.Frame):
 
         self.info_window.main_window.app.saveOrder(self.info_window.cur_order)
         self.info_window.main_window.app.saveNewOrderPreviews()
+        self.info_window.main_window.app.saveNewOrderPreviews()
