@@ -113,7 +113,7 @@ class MainWindow(ctk.CTkToplevel):
 
     def add_email(self):
         email = SendWindow(self, self.app, self)
-        email.grab_set() 
+        email.grab_set()
 
 
     def open_info(self, order):

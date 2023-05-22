@@ -2,8 +2,8 @@
 import smtplib
 from typing import List
 from email import encoders
-from email.mime.multipart import MIMEMultipart 
-from email.mime.text import MIMEText 
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
 from email.mime.base import MIMEBase
 from typing import Tuple
 
@@ -47,7 +47,8 @@ class MailAccount:
             self.smtp = smtpObj
             return (False, f"{error_code}: " + error_message)
 
-    def createMessage(self, TO: str, message: str, Subject: str = "Отчёт", filepaths: List[str] = list()) -> MIMEMultipart:
+    def createMessage(self, TO: str, message: str, Subject: str = "Отчёт",
+                      filepaths: List[str] = list()) -> MIMEMultipart:
         """filepath - путь для прикрепления файла, допускаются только англоязычные названия"""
         FROM = self.login
 

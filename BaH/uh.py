@@ -30,7 +30,7 @@ class UserHandler:
 
         if len(self.users) == 0:
             return
-        
+
         with open(path, "wb") as file:
             prelast_index = len(self.users) - 1
 
@@ -39,7 +39,7 @@ class UserHandler:
                 file.write(b'next_one')
 
             file.write(self.users[prelast_index].serialize(self.key))
-    
+
     def getUsersLogins(self) -> List[str]:
         names = list()
         for user in self.users:
@@ -83,9 +83,9 @@ class UserHandler:
 
                     self.lastUser = user
                     return True
-                
+
         return False
-    
+
     def markAsLastUser(self, login: str) -> bool:
         """Возвращает True, если пользователь найден и отмечен последним"""
         self.setNoLastUsers()
@@ -117,7 +117,7 @@ class UserHandler:
         for user in self.users:
             if user.isAdministrator:
                 names.append(user.login)
-        
+
         return names
 
     def __lexicLoginValidation(self, login: str) -> bool:
@@ -130,14 +130,14 @@ class UserHandler:
         for i in login.lower():
             if i not in '1234567890qwertyuiopasdfghjklzxcvbnm':
                 return False
-            
+
         return True
 
     def __ValidateLogin(self, login: str) -> Tuple[bool, str]:
         """Проверяет можно ли создать аккаунт с таким логином"""
         if not self.__lexicLoginValidation(login):
             return False, "Логин должен состоять из цифр и/или латинских букв "\
-                           + "и быть длиной от 8 до 32 символов"     
+                           + "и быть длиной от 8 до 32 символов"
         if len(self.users) == 0:
             return True, ""
 
@@ -147,7 +147,7 @@ class UserHandler:
         """Проверяет можно ли создать аккаунт с таким логином"""
         if not self.__lexicLoginValidation(login):
             return False, "Логин должен состоять из цифр и/или букв латинского "\
-                           + "алфавита и быть длиной не меньше 4 и не больше 32 символов"     
+                           + "алфавита и быть длиной не меньше 4 и не больше 32 символов"
         if len(self.users) == 0:
             return True, ""
 

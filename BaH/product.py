@@ -35,7 +35,7 @@ class Product:
 
     @isDone.setter
     def isDone(self, value: bool):
-        self.__isDone = value 
+        self.__isDone = value
 
     @property
     def selling_cost(self):
@@ -46,7 +46,7 @@ class Product:
         if value < 0:
             raise ValueError
 
-        self.__selling_cost = value 
+        self.__selling_cost = value
 
     @property
     def production_cost(self):
@@ -86,7 +86,7 @@ class Product:
 
     @commentary.setter
     def commentary(self, value: str):
-        self.__commentary = value 
+        self.__commentary = value
 
     def GetSteps(self):
         return self.__steps
@@ -125,7 +125,8 @@ class Product:
         return True
 
     def __CountBaseVal(self) -> float:
-        """Считает сколько стоит самый простой шаг в расчете на коичество единиц товара и возвращает значение между (0 , 1)"""
+        """Считает сколько стоит самый простой шаг в расчете на
+        количество единиц товара и возвращает значение между (0,1)"""
         total = 0.
         for step in self.__steps:
             total += step.complexity
@@ -134,7 +135,7 @@ class Product:
             return 1 / total
         else:
             return None
- 
+
     def __str__(self) -> str:
         """вывод инф-и о классе для отладки"""
         step_str = "\n".join(list(step.__str__() for step in self.GetSteps()))
@@ -148,8 +149,8 @@ class Product:
 
     def __eq__(self, other):
         sc = self.__verify_data(other)
-        return self.total_cost == sc.total_cost and self.quantity == sc.quantity\
-               and self.selling_cost == sc.selling_cost and self.production_cost == sc.production_cost
+        return (self.total_cost == sc.total_cost and self.quantity == sc.quantity
+                and self.selling_cost == sc.selling_cost and self.production_cost == sc.production_cost)
 
     def __lt__(self, other):
         sc = self.__verify_data(other)
@@ -234,7 +235,7 @@ class Product:
         """Возвращает объект класса Product из строки(формата JSON)"""
         info = json.loads(json_string)
 
-        return Product.fromDict(info)            
+        return Product.fromDict(info)
 
     @classmethod
     def fromDict(cls, info: dict):

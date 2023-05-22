@@ -55,11 +55,11 @@ class FileManager():
 
     def saveNewConfig(self):
         file = open(self.__config_dir_path + "\\.ordconfig", "w", encoding="utf-8")
-        file.write("Orders Directory Path: " + self.orders_dir_path + "\n")  
+        file.write("Orders Directory Path: " + self.orders_dir_path + "\n")
         file.write("Statistics Directory Path: " + self.statistics_dir_path + "\n")
         file.write("Accounts Filepath: " + self.accounts_filepath + "\n")
-        file.write("Key: " + self.key.decode("utf-8") + "\n")     
-        file.close() 
+        file.write("Key: " + self.key.decode("utf-8") + "\n")
+        file.close()
 
     def parseOrderPreviews(self) -> List[OrderPreview]:
         order_preview_list = list()
@@ -74,9 +74,9 @@ class FileManager():
                 order_preview = order.createPreview()
                 order_preview_list.append(order_preview)
 
-            self.saveOrderPreviewList(order_preview_list) 
+            self.saveOrderPreviewList(order_preview_list)
 
-        return order_preview_list        
+        return order_preview_list
 
     def saveOrderPreviewList(self, order_preview_list: List[OrderPreview]):
         with open(self.orders_dir_path + "\\orderPreviews.b", "wb") as file:
@@ -132,7 +132,7 @@ class FileManager():
         os.remove(filename)
         del self.ordered_filenames[str(ID)]
         return True
-    
+
     def saveOrder(self, order: Order):
         """Если ордер с таким айди уже существовал, удаляет его
            При успешном выполнении возвращает True"""

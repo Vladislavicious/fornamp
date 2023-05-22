@@ -13,7 +13,7 @@ class App:
     def __init__(self) -> None:
         self.file_manager = FileManager()
 
-        self.order_previews = self.file_manager.parseOrderPreviews()     
+        self.order_previews = self.file_manager.parseOrderPreviews()
 
         self.__orders = dict()
 
@@ -149,7 +149,7 @@ class App:
     def __sendMail(self, message: MIMEMultipart):
         self.mail_account.sendMessage(message)
 
-    def sendOtchetMail(self, TO: str, msg_text: str = "")  -> Tuple[int, str]:
+    def sendOtchetMail(self, TO: str, msg_text: str = "") -> Tuple[int, str]:
         """Функция, которая отправляет на указанную почту сообщение с прикреплённым
            html-файлом со всеми заказами.
            перед использованием необходимо вызвать функцию AuthentificateMail"""

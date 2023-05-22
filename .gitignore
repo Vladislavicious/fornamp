@@ -10,6 +10,7 @@ __pycache__/
 *.prettierrc
 
 # Distribution / packaging
+.vscode
 .vs
 .Python
 build/
