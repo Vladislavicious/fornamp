@@ -102,7 +102,7 @@ class FileManager():
 
         order_filenames = os.listdir(self.orders_dir_path)
 
-        order_filenames = order_filenames[:-2]   # исключаем orderPreviews.b
+        order_filenames = order_filenames[:-1]   # исключаем orderPreviews.b
 
         self.ordered_filenames = self.__getOrderStatusPairs(order_filenames)
 

@@ -40,7 +40,7 @@ class UserHandler:
 
             file.write(self.users[prelast_index].serialize(self.key))
 
-    def getUsersLogins(self) -> List[str]:
+    def getUserLogins(self) -> List[str]:
         names = list()
         for user in self.users:
             names.append(user)
@@ -133,11 +133,12 @@ class UserHandler:
 
         return True
 
+
     def __ValidateLogin(self, login: str) -> Tuple[bool, str]:
         """Проверяет можно ли создать аккаунт с таким логином"""
         if not self.__lexicLoginValidation(login):
-            return False, "Логин должен состоять из цифр и/или латинских букв "\
-                           + "и быть длиной от 4 до 32 символов"
+            return False, "Логин должен состоять из цифр и/или букв латинского "\
+                           + "алфавита и быть длиной не меньше 8 и не больше 32 символов"
         if len(self.users) == 0:
             return True, ""
 

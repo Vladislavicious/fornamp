@@ -184,6 +184,6 @@ class Step:
 
         contr_list = list(Contribution.fromDict(contr) for contr in info["contributions"])
 
-        return Step(name=info["name"],
-                    complexity=info["complexity"], koef_value=info["koef_value"],
-                    contributions=contr_list , quantity=info["quantity"], isDone=info["isDone"])
+        return Step(name=info["name"], \
+                        complexity=info["complexity"], koef_value=info["koef_value"], \
+                           contributions=contr_list , quantity=info["quantity"], isDone=info["isDone"])
