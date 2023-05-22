@@ -10,6 +10,9 @@ class Product:
     def __init__(self, name: str, selling_cost: int, steps: List[Step] = list(),
                  quantity=1, production_cost=0, commentary="",
                  isDone=False) -> None:
+    def __init__(self, name: str, selling_cost: int, steps: List[Step] = list(),
+                 quantity=1, production_cost=0, commentary="",
+                 isDone=False) -> None:
 
         self.name = name
         self.selling_cost = selling_cost

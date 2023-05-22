@@ -130,6 +130,16 @@ class UserHandler:
         for i in login.lower():
             if i not in '1234567890qwertyuiopasdfghjklzxcvbnm':
                 return False
+            
+        return True
+
+    def __ValidateLogin(self, login: str) -> Tuple[bool, str]:
+        """Проверяет можно ли создать аккаунт с таким логином"""
+        if not self.__lexicLoginValidation(login):
+            return False, "Логин должен состоять из цифр и/или латинских букв "\
+                           + "и быть длиной от 8 до 32 символов"     
+        if len(self.users) == 0:
+            return True, ""
 
         return True
 
