@@ -109,11 +109,16 @@ class App:
         """Функция сохранения заказа в свой файл
            её необходимо вызывать при изменении заказа"""
         self.file_manager.saveOrder(order)
+        index = self.__getOrderPreviewIndexByID(order.id)
+        self.order_previews[index] = order.createPreview()
+        self.saveNewOrderPreviews()
 
     def saveOrderByID(self, ID: int):
         """то же, что и сверху"""
         order = self.__orders[ID]
         self.saveOrder(order)
+
+
 
     def AuthentificateMail(self) -> Tuple[int, str]:
         """Возвращает 0 при успешном входе, 1 при отсуствии данных о почте

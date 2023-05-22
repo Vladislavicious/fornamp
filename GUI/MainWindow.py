@@ -13,7 +13,7 @@ class MainWindow(ctk.CTkToplevel):
         self.root = root
 
         super().__init__(root)
-        
+
         self.app = app
         self.user = self.app.file_manager.user_handler.lastUser
         self.oders_previews_list = self.app.order_previews
@@ -28,8 +28,8 @@ class MainWindow(ctk.CTkToplevel):
 
         frame_title = ctk.CTkFrame(master=self, height=50, border_width=3, fg_color="#FFFFFF")
         self.frame_tools = ctk.CTkFrame(master=self, width=150, border_width=3)
-        
-        
+
+
 
         button_log_out = ctk.CTkButton(frame_title, text="Выйти", command = self.log_out)
         button_log_out.pack(side=tk.RIGHT, padx=10)
@@ -61,7 +61,7 @@ class MainWindow(ctk.CTkToplevel):
         self.create_frame_order()
         self.add_list_order()
 
-        self.protocol("WM_DELETE_WINDOW", lambda: self.close_window()) 
+        self.protocol("WM_DELETE_WINDOW", lambda: self.close_window())
         self.root.withdraw()
 
 
@@ -74,7 +74,7 @@ class MainWindow(ctk.CTkToplevel):
         self.add_list_order()
 
     def create_frame_order(self):
-        
+
         self.frame_order = ctk.CTkFrame(master=self, border_width=3)
         self.frame_order.pack(anchor=tk.SW, fill=tk.BOTH, expand=tk.TRUE, padx=5, pady=5)
         self.scroll = ctk.CTkScrollableFrame(master = self.frame_order, height=600)
@@ -84,8 +84,8 @@ class MainWindow(ctk.CTkToplevel):
         self.frame_order.destroy()
         self.create_frame_order()
         for item_order in self.oders_previews_list:
-            
-            
+
+
             if((item_order.isVidan == True and self.order_visibility == True) or item_order.isVidan == False):
 
                 self.frame_order_info = ctk.CTkFrame(self.scroll, border_width=2, fg_color="#b8bab9", height=120)
@@ -95,18 +95,18 @@ class MainWindow(ctk.CTkToplevel):
                     self.frame_order_info.configure(border_color = "#bf6b6b")
                 elif(item_order.isDone == True and item_order.isVidan == False):
                     self.frame_order_info.configure(border_color = "#e3a002")
-                
+
                     if(self.user.isAdministrator == True):
                         self.button_vidat = ctk.CTkButton(self.frame_order_info, text = "Выдано")
                         self.button_vidat.bind('<Button-1>', lambda event,  order = self.app.getOrderByID(item_order.id) : self.vidat_order(order, self.frame_order_info, self.button_vidat))
                         self.button_vidat.place(relx=0.8, rely = 0.3)
                 else:
                     self.frame_order_info.configure(border_color = "#77bf6d")
-                self.label_order = ctk.CTkLabel(self.frame_order_info, text = "Заказчик: " + item_order.zakazchik + "\nОписание заказа: " + item_order.commentary + "\nДата создания: " + str(item_order.date_of_creation)+ "\nДата выдачи: " + str(item_order.date_of_vidacha), font = ctk.CTkFont(family="Arial", size=12))
+                self.label_order = ctk.CTkLabel(self.frame_order_info, text = item_order.__repr__(), font = ctk.CTkFont(family="Arial", size=12))
                 self.label_order.pack( padx=10, pady = 10)
                 self.label_order.bind('<Button-1>', lambda event,  order = self.app.getOrderByID(item_order.id) : self.open_info(order))
                 self.frame_order_info.bind('<Button-1>', lambda event,  order = self.app.getOrderByID(item_order.id) : self.open_info(order))
-      
+
     def send_email(self):
         dialog_window = DialogWindow(self, self.app, self)
         dialog_window.grab_set()
@@ -124,7 +124,7 @@ class MainWindow(ctk.CTkToplevel):
         self.window_info = WindowInfo(self, order)
 
 
-        
+
     def vidat_order(self, order, frame_order_info, button_vidat):
         frame_order_info.configure(border_color = "#77bf6d")
         button_vidat.destroy()
@@ -133,7 +133,7 @@ class MainWindow(ctk.CTkToplevel):
         self.app.saveOrder(order)
         self.oders_previews_list.append(order.createPreview())
         self.app.saveNewOrderPreviews()
-        
+
 
 
     def close_info(self):
@@ -142,7 +142,7 @@ class MainWindow(ctk.CTkToplevel):
         self.add_list_order()
         self.button_add_order.configure(state = "normal")
         self.button_close_info.destroy()
-        
+
     def log_out(self):
         self.app.file_manager.user_handler.setNoLastUsers()
         self.root.deiconify()
@@ -166,11 +166,11 @@ class WindowInfo(tk.Frame):
         self.cure_product = -1
         self.username = "Igor"
         self.init_window_info()
-        
-        
+
+
 
     def init_window_info(self):
-        self.frame_info_product = ctk.CTkFrame(self.main_window, border_width=3, width=410)     
+        self.frame_info_product = ctk.CTkFrame(self.main_window, border_width=3, width=410)
         self.frame_info_product.pack(fill=tk.BOTH, padx=5, pady = 5, side=tk.LEFT)
         self.frame_info_product.pack_propagate(False)
         self.scroll_product = ctk.CTkScrollableFrame(master = self.frame_info_product, height=600)
@@ -224,8 +224,8 @@ class ProductInfo(tk.Frame):
     def open_step_info(self, event):
         if(self.info_window.cure_product != self.prod_index):
             self.info_window.frame_info_step.destroy()
-            self.info_window.create_step_frame()   
-            
+            self.info_window.create_step_frame()
+
             for item_step in self.step:
                 step_info = StepInfo(self.info_window, item_step, self.frame_product_show, self.prod_index)
             self.info_window.cure_product = self.prod_index
@@ -245,7 +245,7 @@ class StepInfo(tk.Frame):
     def init_stepInfo(self):
 
         self.frame_step_show = ctk.CTkFrame(self.info_window.scroll_step, border_width=2, fg_color= "#b8bab9", height=60, width=150)
-                
+
         if(self.item_step.isDone == False):
             self.frame_step_show.configure(border_color= "#b86161")
         else:
@@ -253,7 +253,7 @@ class StepInfo(tk.Frame):
 
         self.frame_step_show.pack(fill=tk.X, padx = 10, pady=7)
         self.frame_step_show.pack_propagate(False)
-            
+
         if(self.item_step.isDone == False and self.info_window.main_window.user.isAdministrator==True):
             self.label_step = ctk.CTkLabel(self.frame_step_show, text = "Описание шага: " + self.item_step.name[:self.item_step.name.find(" ", 12)+1] + "\n" + self.item_step.name[self.item_step.name.find(" ", 12)+1:] + "\nВыполнено шагов: " + str(self.item_step.number_of_made) + "/" + str(self.item_step.quantity), font = ctk.CTkFont(family="Arial", size=12), justify = tk.CENTER)
             self.label_step.pack(side = tk.TOP, padx=5, pady = 10)
@@ -281,8 +281,8 @@ class StepInfo(tk.Frame):
         for i in range(count):
 
             item_step.Contribute(self.info_window.username)
-            
-        self.label_step.configure(text = "Описание шага: " + item_step.name[:item_step.name.find(" ", 12)+1] + "\n" + item_step.name[item_step.name.find(" ", 12)+1:] + "\nВыполнено шагов: " + str(item_step.number_of_made) + "/" + str(item_step.quantity))  
+
+        self.label_step.configure(text = "Описание шага: " + item_step.name[:item_step.name.find(" ", 12)+1] + "\n" + item_step.name[item_step.name.find(" ", 12)+1:] + "\nВыполнено шагов: " + str(item_step.number_of_made) + "/" + str(item_step.quantity))
         item_step.isDone = True
 
         if(item_step.isDone == True):
@@ -301,14 +301,3 @@ class StepInfo(tk.Frame):
 
         self.info_window.main_window.app.saveOrder(self.info_window.cur_order)
         self.info_window.main_window.app.saveNewOrderPreviews()
-       
-        
-        if(self.info_window.cur_order.CheckIfDone() == True):
-            self.info_window.main_window.app.deleteOrderByID(self.info_window.cur_order.id)
-            self.info_window.main_window.app.saveOrder(self.info_window.cur_order)            
-            self.info_window.main_window.oders_previews_list.append(self.info_window.cur_order.createPreview())
-            self.info_window.main_window.app.saveNewOrderPreviews()
-             
-
-
-
