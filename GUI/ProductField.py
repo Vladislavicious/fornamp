@@ -101,6 +101,7 @@ class Product_field():  #класс продукта
 
 
     def aply(self):     #кнопка подтверждения продукта и добавление его в список
+        self.reload(tk.Event)
         if(self.chek_field()==True):
             self.product = bh_product.Product(self.entry_name.get(),
                                         int(self.entry_selling_cost.get()),
@@ -223,6 +224,11 @@ class Product_field():  #класс продукта
 
         if(not(self.entry_quantity.get().isdigit())):
             self.entry_quantity.configure(fg_color="#faebeb", border_color= "#e64646", placeholder_text = "Заполните все поля", placeholder_text_color="#979da2")
+            self.label_name.focus()
+            check =  False
+        elif(int(self.entry_quantity.get())>999 or int(self.entry_quantity.get()) <= 0):
+            self.entry_quantity.configure(fg_color="#faebeb", border_color= "#e64646", placeholder_text = "Введено недопустимое количество", placeholder_text_color="#979da2")
+            self.entry_quantity.delete(0, len(self.entry_quantity.get()))
             self.label_name.focus()
             check =  False
         else:

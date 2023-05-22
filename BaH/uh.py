@@ -40,7 +40,7 @@ class UserHandler:
 
             file.write(self.users[prelast_index].serialize(self.key))
     
-    def getUserLogins(self) -> List[str]:
+    def getUsersLogins(self) -> List[str]:
         names = list()
         for user in self.users:
             names.append(user)
@@ -61,9 +61,8 @@ class UserHandler:
             self.users = Users
         except FileNotFoundError:
             print("Файл с аккаунтами ещё не создан")
-    
+
     def __seekLastUser(self):
-        
         lastUser = None
 
         for user in self.users:
@@ -125,9 +124,9 @@ class UserHandler:
         """Проверяет символы в логине"""
         login_len = len(login)
 
-        if login_len > 32 or login_len < 8:
+        if login_len > 32 or login_len < 4:
             return False
-        
+
         for i in login.lower():
             if i not in '1234567890qwertyuiopasdfghjklzxcvbnm':
                 return False
@@ -137,8 +136,18 @@ class UserHandler:
     def __ValidateLogin(self, login: str) -> Tuple[bool, str]:
         """Проверяет можно ли создать аккаунт с таким логином"""
         if not self.__lexicLoginValidation(login):
+            return False, "Логин должен состоять из цифр и/или латинских букв "\
+                           + "и быть длиной от 8 до 32 символов"     
+        if len(self.users) == 0:
+            return True, ""
+
+        return True
+
+    def __ValidateLogin(self, login: str) -> Tuple[bool, str]:
+        """Проверяет можно ли создать аккаунт с таким логином"""
+        if not self.__lexicLoginValidation(login):
             return False, "Логин должен состоять из цифр и/или букв латинского "\
-                           + "алфавита и быть длиной не меньше 8 и не больше 32 символов"     
+                           + "алфавита и быть длиной не меньше 4 и не больше 32 символов"     
         if len(self.users) == 0:
             return True, ""
 
@@ -146,7 +155,7 @@ class UserHandler:
             if login == user.login:
                 return False, "Логин уже существует"
         return True, ""
-    
+
     def __ValidateEmail(self, email: str) -> Tuple[bool, str]:
         """Проверка синтаксическая, без проверки на существование такого адреса"""
         pattern = r'^[a-zA-Z0-9]+@[a-zA-Z0-9]+\.[a-zA-Z]{2,}$'
@@ -154,7 +163,7 @@ class UserHandler:
         if re.match(pattern, email):
             return True, ""
         return False, "Невозможный email"
-    
+
     def __ValidatePassword(self, password: str) -> Tuple[bool, str]:
         password_len = len(password)
 
@@ -162,13 +171,41 @@ class UserHandler:
             return False, "Длина пароля больше 32 символов"
         if password_len < 8:
             return False, "Длина пароля меньше 8 символов"
-        
+
         for i in password.lower():
             if i not in '1234567890qwertyuiopasdfghjklzxcvbnm!@#%&*?%№':
                 return False, "Пароль содержит недопустимые символы"
-        
+
         return True, ""
-    
+
+    def addEmailInfo(self, user: User, email: str, emailpassword: str) -> List[Dict[int, str]]:
+        """Интерфейс для добавления почты для существующего пользователя
+           Возвращает список словрей {int: str}, где int - аргумент, в котором была найдена ошибка
+           0 - ошибок нет, 1 - email, 2 - Пароль
+           str - описание ошибки"""
+
+        isEmailValidated, EmailErrorString = self.__ValidateEmail(email)
+        isEmailPasswordValidated, EmailPasswordErrorString = self.__ValidatePassword(emailpassword)
+
+        errors = list()
+        didErrorOccur = False
+
+        if not isEmailValidated:
+            errors.append({1: EmailErrorString})
+            didErrorOccur = True
+
+        if not isEmailPasswordValidated:
+            errors.append({2: EmailPasswordErrorString})
+            didErrorOccur = True
+
+        if not didErrorOccur:
+            errors.append({0: "Ошибок не выявлено"})
+            user.email = email
+            user.emailpassword = emailpassword
+            self.SaveToFile()
+
+        return errors
+
     def NewUser(self, login: str, password: str, email: str = "",
                 emailpassword: str = "", isLastUser=False,
                 isAdministrator=False) -> List[Dict[int, str]]:
@@ -178,7 +215,7 @@ class UserHandler:
            str - описание ошибки"""
         isLoginValidated, LoginErrorString = self.__ValidateLogin(login)
         isPasswordValidated, PasswordErrorString = self.__ValidatePassword(password)
-        
+
         if email == "":
             isEmailValidated, EmailErrorString = True, ""
         else:
@@ -211,7 +248,7 @@ class UserHandler:
             if email == "":
                 errors.append({3: "Не заполнен логин почты"})
             didErrorOccur = True
-        
+
         if not didErrorOccur:
             errors.append({0: "Ошибок не выявлено"})
             newUser = User(email=email, login=login, password=password,

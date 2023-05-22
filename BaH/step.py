@@ -5,8 +5,9 @@ from typing import List
 from BaH.Contribution import Contribution
 from BaH.Contribution import simpleEncoder
 
+
 class Step:
-    def __init__(self, name: str, contributions: List[Contribution] = list(), \
+    def __init__(self, name: str, contributions: List[Contribution] = list(),
                  quantity: int = 1, isDone=False, complexity=1, koef_value=1) -> None:
         self.name = name
         self.complexity = complexity
@@ -31,7 +32,7 @@ class Step:
     @property
     def name(self):
         return self.__name
-    
+
     @name.setter
     def name(self, name: str):
         self.__name = name.lower()
@@ -39,7 +40,7 @@ class Step:
     @property
     def complexity(self):
         return self.__complexity
-    
+
     @complexity.setter
     def complexity(self, complexity: int):
         """Сложность шага, 1 - лёгкий, 3 - средний, 5 - тяжёлый"""
@@ -53,7 +54,7 @@ class Step:
     @property
     def koef_value(self):
         return self.__koef_value
-    
+
     @koef_value.setter
     def koef_value(self, koef_value: float):
         """Цена шага отосительно товара"""
@@ -61,11 +62,11 @@ class Step:
 
         if koef_value < 0 or koef_value > 1:
             raise ValueError                # Для отладки
-        
+
     @property
     def total_koef(self):
         return self.koef_value * self.number_of_made
-    
+
     @property
     def quantity(self):
         """Общее число повторений шага, равно количеству товара"""
@@ -86,19 +87,19 @@ class Step:
             for contr in self.__contributions:
                 number += contr.number_of_made
         return number
-    
+
     @property
     def koef_value_done(self) -> float:
         """То, сколько стоит шаг на данный момент"""
         return self.number_of_made * self.koef_value
-    
+
     def Contribute(self, contributor: str, number_of_made: int = 1, date_of_creation: date = date.today()):
         """Метод, используемый для создания контрибушнов извне.
            contributor - логин пользователя, number_of_made - сколько 
            экземпляров шага выполнено."""
         contr = Contribution(contributor, number_of_made, date_of_creation)
         self.__AddContr(contr)
-    
+
     def __AddContr(self, contr: Contribution):
         """Позволяет 'переполнять' quantity, потому что в этом нет чего-то плохого"""
         self.__contributions.append(contr)
@@ -113,14 +114,14 @@ class Step:
         if self.isDone:
             return f"Шаг {self.name} в количестве {self.quantity} исполнен. Исполнители: \n{contributors_str}"
         return f"Шаг {self.name} не выполнен, текущий прогресс: {self.number_of_made} из {self.quantity}"
-    
+
     def __hash__(self) -> int:
         return id(self)*self.complexity*self.quantity
 
     def __eq__(self, other): 
         sc = self.__verify_data(other)
         return self.koef_value == sc.koef_value and self.quantity == sc.quantity and self.complexity == sc.complexity and self.name == sc.name
-    
+
     def __lt__(self, other):
         sc = self.__verify_data(other)
         if self.koef_value == sc.koef_value:
@@ -132,7 +133,7 @@ class Step:
                 return self.complexity < sc.complexity
             return self.quantity < sc.quantity
         return self.koef_value < sc.koef_value
-    
+
     def __gt__(self, other):
         sc = self.__verify_data(other)
         if self.koef_value == sc.koef_value:
@@ -144,20 +145,20 @@ class Step:
                 return self.complexity > sc.complexity
             return self.quantity > sc.quantity
         return self.koef_value > sc.koef_value
-    
+
     def __le__(self, other):
         sc = self.__verify_data(other)
         return self < sc or self == sc
-    
+
     def __ge__(self, other):
         sc = self.__verify_data(other)
         return self > sc or self == sc
-    
+
     @classmethod
     def __verify_data(cls, other):
         if not isinstance(other, cls):
             raise TypeError(f"Операнд справа должен иметь тип {cls}")
-        
+
         return other
 
     def toHTML(self) -> str:
@@ -174,7 +175,7 @@ class Step:
     def fromJSON(cls, json_string: str):
         """Возвращает объект класса Step из строки(формата JSON)"""
         info = json.loads(json_string)
-        
+
         return Step.fromDict(info)
 
     @classmethod
@@ -183,6 +184,6 @@ class Step:
 
         contr_list = list(Contribution.fromDict(contr) for contr in info["contributions"])
 
-        return Step(name=info["name"], \
-                        complexity=info["complexity"], koef_value=info["koef_value"], \
-                           contributions=contr_list , quantity=info["quantity"], isDone=info["isDone"])
+        return Step(name=info["name"],
+                    complexity=info["complexity"], koef_value=info["koef_value"],
+                    contributions=contr_list , quantity=info["quantity"], isDone=info["isDone"])

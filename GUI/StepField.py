@@ -66,7 +66,7 @@ class Step_field():     #класс шага
         if(self.is_saved == 0):
             self.button_aply = ctk.CTkButton(self.frame_step_field, text= self.text_button, fg_color = self.color_button, command = self.aply)
         else:
-            self.button_aply = ctk.CTkButton(self.frame_step_field, text= self.text_button, fg_color = self.color_button, hover_color = "#189e3b", state = self.state_entry, command = self.edit)
+            self.button_aply = ctk.CTkButton(self.frame_step_field, text= self.text_button, fg_color = self.color_button, hover_color = "#189e3b", command = self.edit)
         self.button_aply.pack(side = tk.LEFT, padx = 10)
 
         if(self.is_saved == 0):
@@ -148,9 +148,9 @@ class Step_field():     #класс шага
             self.entry_name.configure(fg_color="#faebeb", border_color= "#e64646", placeholder_text = "Заполните все поля", placeholder_text_color="#979da2")
             self.label_name.focus()
             check = False
-        elif(len(self.entry_name.get()) > 35):
+        elif(len(self.entry_name.get()) > 25):
             self.entry_name.delete(first_index=0, last_index= len(self.entry_name.get()))
-            self.entry_name.configure(fg_color="#faebeb", border_color= "#e64646", placeholder_text = "Длина названия должна быть не более 35 символов", placeholder_text_color="#979da2")
+            self.entry_name.configure(fg_color="#faebeb", border_color= "#e64646", placeholder_text = "Длина названия должна быть не более 25 символов", placeholder_text_color="#979da2")
             self.label_name.focus()
             check = False
         else:

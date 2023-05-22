@@ -81,31 +81,34 @@ class App:
         self.__orders[order.id] = order
         self.order_previews.append(order.createPreview())
 
-    def deleteOrderByID(self, ID: int) -> bool:
-        """Возвращает True, если удаление прошло успешно
+    def deleteOrderByID(self, ID: int) -> Tuple[bool, bool, bool]:
+        """Возвращает три була, если bool is True, то удаление успешно.
+           Первый бул - удаление как файла
+           Второй бул - удаление как Превью Заказа
+           Третий бул - удаление заказа из оперативной памяти
            Сам вызывает сохранение нужных файлов"""
-        success = True
+        success1 = success2 = success3 = True
         if not self.file_manager.deleteOrderByID(ID):
-            success = False
+            success1 = False
 
         index = self.__getOrderPreviewIndexByID(ID)
 
         if index != -1:
             self.order_previews.pop(index)
-            self.saveNewOrderReviews()
+            self.saveNewOrderPreviews()
         else:
-            success = False
+            success2 = False
         try:
             del self.__orders[ID]
         except KeyError:        # На случай, если мы ещё не загрузили в оперативу заказ
-            success = False
+            success3 = False
 
-        return success
+        return (success1, success2, success3)
 
     def saveOrder(self, order: Order):
         """Функция сохранения заказа в свой файл
            её необходимо вызывать при изменении заказа"""
-        Order.toFile(order, self.file_manager.orders_dir_path)
+        self.file_manager.saveOrder(order)
 
     def saveOrderByID(self, ID: int):
         """то же, что и сверху"""

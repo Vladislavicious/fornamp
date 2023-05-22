@@ -76,7 +76,7 @@ class FileManager():
 
             self.saveOrderPreviewList(order_preview_list) 
 
-        return order_preview_list           
+        return order_preview_list        
 
     def saveOrderPreviewList(self, order_preview_list: List[OrderPreview]):
         with open(self.orders_dir_path + "\\orderPreviews.b", "wb") as file:
@@ -98,6 +98,8 @@ class FileManager():
         return orders, filepath
 
     def __parseOrderFilenames(self):
+        os.makedirs(self.orders_dir_path, exist_ok=True)
+
         order_filenames = os.listdir(self.orders_dir_path)
 
         order_filenames = order_filenames[:-2]   # исключаем orderPreviews.b
@@ -130,6 +132,15 @@ class FileManager():
         os.remove(filename)
         del self.ordered_filenames[str(ID)]
         return True
+    
+    def saveOrder(self, order: Order):
+        """Если ордер с таким айди уже существовал, удаляет его
+           При успешном выполнении возвращает True"""
+        previous_order_filename = self.__getOrderFilename(order.id)
+        if previous_order_filename != "":
+            os.remove(previous_order_filename)
+
+        Order.toFile(order, self.orders_dir_path)
 
     def __getOrderFilename(self, ID: int):
         """Возвращает имя файла, либо '' """
