@@ -1,4 +1,4 @@
-﻿import tkinter as tk
+import tkinter as tk
 import customtkinter as ctk
 from GUI.AddWindow import *
 from GUI.EmailWindow import *
