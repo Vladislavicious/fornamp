@@ -115,9 +115,6 @@ class MainWindow(ctk.CTkToplevel):
         email = EmailWindow(self, self.app, self)
         email.grab_set()
 
-    def add_email(self):
-        email = EmailWindow(self, self.app, self)
-        email.grab_set()
 
     def open_info(self, order):
         self.button_add_order.configure(state = "disabled")
@@ -223,29 +220,15 @@ class ProductInfo(tk.Frame):
         else:
             self.frame_product_show.configure(border_color= "#77bf6d")
 
-        self.frame_step_show.pack(fill=tk.X, padx = 10, pady=7)
-        self.frame_step_show.pack_propagate(False)
 
-        if(self.item_step.isDone == False):
-            self.label_step = ctk.CTkLabel(self.frame_step_show, text = "Описание шага: " + self.item_step.name[:self.item_step.name.find(" ", 12)+1] + "\n" + self.item_step.name[self.item_step.name.find(" ", 12)+1:] + "\nВыполнено шагов: " + str(self.item_step.number_of_made) + "/" + str(self.item_step.quantity), font = ctk.CTkFont(family="Arial", size=12), justify = tk.LEFT)
-            self.label_step.pack(side = tk.LEFT, padx=5, pady = 10)
-        else:
-            self.label_step = ctk.CTkLabel(self.frame_step_show, text = "Описание шага:\n" + self.item_step.name, font = ctk.CTkFont(family="Arial", size=12), justify = tk.CENTER)
-            self.label_step.pack(side = tk.TOP, padx=5, pady = 15)
+    def open_step_info(self, event):
+        if(self.info_window.cure_product != self.prod_index):
+            self.info_window.frame_info_step.destroy()
+            self.info_window.create_step_frame()
 
-        if(self.item_step.isDone == False):
-            self.button_redy = ctk.CTkButton(self.frame_step_show, text = "Выполнено", command = lambda: self.change_status(self.item_step, self.frame_step_show, self.button_redy))
-            self.button_redy.pack(side = tk.RIGHT, padx = 5)
-
-    def change_status(self, item_step, frame, button):
-        k = 0
-        for item in item_step.GetContr():
-            if(item.contributor == self.info_window.username):
-                item.number_of_made += 1
-                self.label_step.configure(text = "Описание шага: " + item_step.name[:item_step.name.find(" ", 12)+1] + "\n" + item_step.name[item_step.name.find(" ", 12)+1:] + "\nВыполнено шагов: " + str(item_step.number_of_made) + "/" + str(item_step.quantity))
-                item_step.isDone = True
-                self.info_window.products[self.info_window.prod_index].CheckIfDone()
-                k = 1
+            for item_step in self.step:
+                step_info = StepInfo(self.info_window, item_step, self.frame_product_show, self.prod_index)
+            self.info_window.cure_product = self.prod_index
 
 
 
@@ -271,7 +254,10 @@ class StepInfo(tk.Frame):
         self.frame_step_show.pack(fill=tk.X, padx = 10, pady=7)
         self.frame_step_show.pack_propagate(False)
 
-        if(self.item_step.isDone == False):
+        if(self.item_step.isDone == False and self.info_window.main_window.user.isAdministrator==True):
+            self.label_step = ctk.CTkLabel(self.frame_step_show, text = "Описание шага: " + self.item_step.name[:self.item_step.name.find(" ", 12)+1] + "\n" + self.item_step.name[self.item_step.name.find(" ", 12)+1:] + "\nВыполнено шагов: " + str(self.item_step.number_of_made) + "/" + str(self.item_step.quantity), font = ctk.CTkFont(family="Arial", size=12), justify = tk.CENTER)
+            self.label_step.pack(side = tk.TOP, padx=5, pady = 10)
+        elif(self.item_step.isDone == False and self.info_window.main_window.user.isAdministrator==False):
             self.label_step = ctk.CTkLabel(self.frame_step_show, text = "Описание шага: " + self.item_step.name[:self.item_step.name.find(" ", 12)+1] + "\n" + self.item_step.name[self.item_step.name.find(" ", 12)+1:] + "\nВыполнено шагов: " + str(self.item_step.number_of_made) + "/" + str(self.item_step.quantity), font = ctk.CTkFont(family="Arial", size=12), justify = tk.LEFT)
             self.label_step.pack(side = tk.LEFT, padx=5, pady = 10)
         else:
@@ -312,5 +298,6 @@ class StepInfo(tk.Frame):
         if(self.info_window.products[self.prod_index].isDone == True):
             self.frame_product.configure(border_color= "#77bf6d")
             self.info_window.cur_order.CheckIfDone()
+
         self.info_window.main_window.app.saveOrder(self.info_window.cur_order)
         self.info_window.main_window.app.saveNewOrderPreviews()
