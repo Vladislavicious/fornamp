@@ -12,7 +12,7 @@ from BaH.Contribution import simpleEncoder
 from BaH.product import Product
 
 
-@dataclass
+@dataclass(repr=False)
 class OrderPreview:
     id: int
     date_of_creation: date
@@ -21,6 +21,31 @@ class OrderPreview:
     zakazchik: str
     isDone: bool
     isVidan: bool
+
+    def __repr__(self) -> str:
+        zakazchik = f"Заказчик: {self.zakazchik}\n"
+        descr = f"Описание: {self.commentary}\n"
+        date_beg = f"Дата создания: {getValidData(self.date_of_creation)}\n"
+        date_end = f"Дата выдачи: {getValidData(self.date_of_vidacha)}"
+        return zakazchik + descr + date_beg + date_end
+
+
+class OrderPreviewSorter:
+    """Абстрактный класс, нужен только чтобы скомпоновать методы"""
+    @classmethod
+    def ByVidachaDate(cls, ord_prevs: List[OrderPreview], reverse=False) -> List[OrderPreview]:
+        return sorted(ord_prevs,
+                      key=lambda order_preview: order_preview.date_of_vidacha, reverse=reverse)
+
+    @classmethod
+    def ByCreationDate(cls, ord_prevs: List[OrderPreview], reverse=False) -> List[OrderPreview]:
+        return sorted(ord_prevs,
+                      key=lambda order_preview: order_preview.date_of_creation, reverse=reverse)
+
+    @classmethod
+    def ByName(cls, ord_prevs: List[OrderPreview], reverse=False) -> List[OrderPreview]:
+        return sorted(ord_prevs,
+                      key=lambda order_preview: order_preview.zakazchik, reverse=reverse)
 
 
 class Order:
