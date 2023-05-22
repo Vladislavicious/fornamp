@@ -112,7 +112,7 @@ class MainWindow(ctk.CTkToplevel):
         dialog_window.grab_set()
 
     def add_email(self):
-        email = SendWindow(self, self.app, self)
+        email = EmailWindow(self, self.app, self)
         email.grab_set() 
 
 
