@@ -76,7 +76,7 @@ class FileManager():
 
             self.saveOrderPreviewList(order_preview_list) 
 
-        return order_preview_list        
+        return order_preview_list           
 
     def saveOrderPreviewList(self, order_preview_list: List[OrderPreview]):
         with open(self.orders_dir_path + "\\orderPreviews.b", "wb") as file:
@@ -102,7 +102,7 @@ class FileManager():
 
         order_filenames = os.listdir(self.orders_dir_path)
 
-        order_filenames = order_filenames[:-2]   # исключаем orderPreviews.b
+        order_filenames = order_filenames[:-1]   # исключаем orderPreviews.b
 
         self.ordered_filenames = self.__getOrderStatusPairs(order_filenames)
 
@@ -139,9 +139,10 @@ class FileManager():
         previous_order_filename = self.__getOrderFilename(order.id)
         if previous_order_filename != "":
             os.remove(previous_order_filename)
-
+        
         Order.toFile(order, self.orders_dir_path)
-
+        self.__parseOrderFilenames()
+        
     def __getOrderFilename(self, ID: int):
         """Возвращает имя файла, либо '' """
         id_str = str(ID)

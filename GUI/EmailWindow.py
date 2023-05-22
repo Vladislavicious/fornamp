@@ -48,16 +48,16 @@ class EmailWindow(ctk.CTkToplevel):
 
 
     def registration(self):
-        errors = self.user_handler.AddEmailInfo(self.user_handler.lastUser,
+        errors = self.user_handler.addEmailInfo(self.user_handler.lastUser,
                                        self.entry_email.get(),self.entry_email_password.get())
         text = ""
-        if not errors:
-            self.user_handler.SaveToFile()
-            self.main_window.button_add_email.destroy()
-            self.destroy()
-            return
         for error in errors:
             key = list(error)
+            if(key[0] == 0):
+                self.user_handler.SaveToFile()
+                self.main_window.button_add_email.destroy()
+                self.destroy()
+                return
             if(key[0] == 1):
                 self.entry_email.configure(fg_color="#faebeb", border_color= "#e64646")
                 text = error[1]
