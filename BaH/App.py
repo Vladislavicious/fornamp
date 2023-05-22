@@ -118,8 +118,6 @@ class App:
         order = self.__orders[ID]
         self.saveOrder(order)
 
-
-
     def AuthentificateMail(self) -> Tuple[int, str]:
         """Возвращает 0 при успешном входе, 1 при отсуствии данных о почте
            2 при неудачном входе"""

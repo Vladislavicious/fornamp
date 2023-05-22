@@ -1,4 +1,4 @@
-import tkinter as tk
+﻿import tkinter as tk
 import customtkinter as ctk
 from GUI.AddWindow import *
 from GUI.EmailWindow import *
@@ -112,9 +112,8 @@ class MainWindow(ctk.CTkToplevel):
         dialog_window.grab_set()
 
     def add_email(self):
-        email = SendWindow(self, self.app, self)
+        email = EmailWindow(self, self.app, self)
         email.grab_set()
-
 
     def open_info(self, order):
         self.button_add_order.configure(state = "disabled")

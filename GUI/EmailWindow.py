@@ -23,7 +23,7 @@ class EmailWindow(ctk.CTkToplevel):
         self.font_ = ctk.CTkFont(family="Arial", size=16)
         self.fontmini = ctk.CTkFont(family="Arial", size=12)
 
-        self.frame_user_data = ctk.CTkFrame(self, width=500, height=200) 
+        self.frame_user_data = ctk.CTkFrame(self, width=500, height=200)
         self.frame_user_data.pack(side=tk.TOP)
         self.frame_user_data.pack_propagate(False)
 
@@ -48,7 +48,7 @@ class EmailWindow(ctk.CTkToplevel):
 
 
     def registration(self):
-        errors = self.user_handler.AddEmailInfo(self.user_handler.lastUser,
+        errors = self.user_handler.addEmailInfo(self.user_handler.lastUser,
                                        self.entry_email.get(),self.entry_email_password.get())
         text = ""
         if not errors:
