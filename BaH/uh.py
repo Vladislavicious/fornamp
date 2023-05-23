@@ -149,7 +149,7 @@ class UserHandler:
 
     def __ValidateEmail(self, email: str) -> Tuple[bool, str]:
         """Проверка синтаксическая, без проверки на существование такого адреса"""
-        pattern = r'^[a-zA-Z0-9]+@[a-zA-Z0-9]+\.[a-zA-Z]{2,}$'
+        pattern = r'^[a-zA-Z0-9-_]+@[a-zA-Z0-9]+\.[a-zA-Z]{2,}$'
 
         if re.match(pattern, email):
             return True, ""

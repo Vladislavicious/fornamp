@@ -19,7 +19,7 @@ def listToHTML(orders: List[Order], title: str = "Отчёт") -> str:
             greentext = greentext + txt
         else:
             redtext = redtext + txt
-        
+
     text = \
     '<!DOCTYPE html>' + "\n"\
     '<html lang="ru" dir="ltr">' + "\n\n"\
@@ -58,7 +58,7 @@ def listToPlainHTML(orders: List[Order], title: str = "Отчёт") -> str:
             greentext = greentext + txt
         else:
             redtext = redtext + txt
-        
+
     text = \
     '<!DOCTYPE html>' + "\n"\
     '<html lang="ru" dir="ltr">' + "\n\n"\
@@ -112,7 +112,7 @@ def listToJSONfile(orders: List[Order], filename: str):
     filepath = filename.lower()
     if not filename.endswith(".json"):
         filepath += ".json"
-    
+
     with open(filepath, "w", encoding="utf-8") as opened_file:
         opened_file.write(listToJSON(orders))
 
@@ -121,10 +121,10 @@ def listFromJSONfile(filename: str) -> List[Order]:
     filepath = filename.lower()
     if not filename.endswith(".json"):
         filepath += ".json"
-    
+
     with open(filepath, "r", encoding="utf-8") as opened_file:
         loaded_list = json.load(opened_file)
-        
+
     return listFromJSONstr(loaded_list)
 
 
@@ -132,7 +132,7 @@ def listFromJSONstr(info: list) -> List[Order]:
     list_of_orders = list()
     for order in info:
         list_of_orders.append(Order.fromDict(order))
-        
+
     return list_of_orders
 
 
@@ -143,7 +143,7 @@ def createHTMLfromJSON(jsonPath: str, htmlPath: str, htmlTitle: str = "Отчё�
         file.write(content)
 
 
-def createHTMLfromList(orders: List[Order], htmlPath: str, htmlTitle: str = "Отчёт"):
+def createHTMLfromList(orders: List[Order], htmlPath: str, htmlTitle: str = "Отчёт") -> str:
     """Сохраняет HTML файл по указанному пути"""
     content = listToPlainHTML(orders, htmlTitle)
 
@@ -154,6 +154,8 @@ def createHTMLfromList(orders: List[Order], htmlPath: str, htmlTitle: str = "О�
     with open(filepath, "w", encoding="utf-8") as file:
         file.write(content)
 
+    return filepath
+
 
 def ContributionsFromOrdersList(orders: List[Order]):
     Contrs = list()
@@ -161,7 +163,7 @@ def ContributionsFromOrdersList(orders: List[Order]):
         for product in order.GetProducts():
             for step in product.GetSteps():
                 Contrs = Contrs + step.GetContr()
-    
+
     return Contrs
 
 
@@ -170,7 +172,7 @@ def StepsFromOrdersList(orders: List[Order]):
     for order in orders:
         for product in order.GetProducts():
             Steps = Steps + product.GetSteps()
-    
+
     return Steps
 
 
@@ -178,5 +180,5 @@ def ProductsFromOrdersList(orders: List[Order]):
     Products = list()
     for order in orders:
         Products = Products + order.GetProducts()
-    
+
     return Products
