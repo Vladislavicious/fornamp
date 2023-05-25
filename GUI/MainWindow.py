@@ -42,12 +42,14 @@ class MainWindow(ctk.CTkToplevel):
         if(self.user.isAdministrator == True):
             self.button_add_order.pack(anchor=tk.N, pady=6)
 
-        self.button_add_email = ctk.CTkButton(self.frame_tools, text="Добавить почту", command=self.add_email)
-        if(self.user.email == ""):
-            self.button_add_email.pack(anchor=tk.N, pady=6)
-
         self.button_send_email = ctk.CTkButton(self.frame_tools, text="Отправить отчет", command=self.send_email)
         self.button_send_email.pack(anchor=tk.N, pady=6)
+
+        if(self.user.email == ""):
+            self.button_add_email = ctk.CTkButton(self.frame_tools, text="Добавить почту", command=self.add_email)
+        else:
+            self.button_add_email = ctk.CTkButton(self.frame_tools, text="Редактировать\n данные почты", command=self.add_email)
+        self.button_add_email.pack(anchor=tk.N, pady=6)
 
         self.button_change_visibility = ctk.CTkButton(self.frame_tools, text="Показать выданные\n заказы", height= 40, command=self.change_visibility)
         self.button_change_visibility.pack(anchor=tk.N, pady=6)
@@ -130,11 +132,6 @@ class MainWindow(ctk.CTkToplevel):
         button_vidat.destroy()
         order.isVidan = True
         self.app.deleteOrderByID(order.id)
-        self.app.saveOrder(order)
-        self.oders_previews_list.append(order.createPreview())
-        self.app.saveNewOrderPreviews()
-
-
 
     def close_info(self):
         self.window_info.delete_window_info()
@@ -153,6 +150,7 @@ class MainWindow(ctk.CTkToplevel):
         self.window_add = WindowAdd(self, self)
 
     def close_window(self):
+        del self.app
         self.destroy()
         self.root.destroy()
 
@@ -300,4 +298,3 @@ class StepInfo(tk.Frame):
             self.info_window.cur_order.CheckIfDone()
 
         self.info_window.main_window.app.saveOrder(self.info_window.cur_order)
-        self.info_window.main_window.app.saveNewOrderPreviews()
