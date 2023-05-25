@@ -2,6 +2,7 @@
 from turtle import width
 import customtkinter as ctk
 
+
 class EmailWindow(ctk.CTkToplevel):
     def __init__(self, root, app, main_window):
         self.root = root
@@ -55,7 +56,7 @@ class EmailWindow(ctk.CTkToplevel):
             key = list(error)
             if(key[0] == 0):
                 self.user_handler.SaveToFile()
-                self.main_window.button_add_email.destroy()
+                self.main_window.button_add_email.configure(text = "Редактировать\n данные почты")
                 self.destroy()
                 return
             if(key[0] == 1):
@@ -81,18 +82,32 @@ class DialogWindow(ctk.CTkToplevel):
     def init_dialog_window(self):
 
         self.title("Подтверждение действия")
-        self.geometry("300x100+550+365")
+        self.geometry("450x200+525+340")
         self.resizable(False, False)
         self.transient(self.main_window)
 
-        label_confirm = ctk.CTkLabel(self, text = "Подтвердить отправку отчета?")
-        label_confirm.pack(anchor = tk.N)
+        self.fontmini = ctk.CTkFont(family="Arial", size=12)
 
-        self.button_yes = ctk.CTkButton(self, text = "Да", command = self.send_report, width = 100)
-        self.button_yes.pack(side = tk.LEFT, padx = 20, pady = 20)
+        label_recipient = ctk.CTkLabel(self, text = "Введите почту получателя")
+        label_recipient.pack(anchor = tk.CENTER, pady = 2)
 
-        self.button_no = ctk.CTkButton(self, text = "Нет", command = self.close_window , width = 100)
-        self.button_no.pack(side = tk.RIGHT, padx = 20, pady = 20)
+        self.entry_recipient = ctk.CTkEntry(self, width = 375)
+        self.entry_recipient.pack(anchor = tk.CENTER, pady=2)
+
+        label_message = ctk.CTkLabel(self, text = "Введите сообщение")
+        label_message.pack(anchor = tk.CENTER, pady = 2)
+
+        self.entry_message = ctk.CTkEntry(self, width = 375)
+        self.entry_message.pack(anchor = tk.CENTER, pady=2)
+
+        self.button_send = ctk.CTkButton(self, text = "Отправить", command = lambda: self.send_report(self.entry_recipient.get()))
+        self.button_send.place(relx=0.1, rely=0.75)
+
+        self.button_send_me = ctk.CTkButton(self, text = "Отправить себе", command = lambda: self.send_report(self.user.email))
+        self.button_send_me.place(relx=0.575, rely=0.75)
+
+        self.label_warning = ctk.CTkLabel(self, text = "", font=self.fontmini, width = 450, height=5, text_color = "#d11515", justify = tk.CENTER)
+        self.label_warning.place(relx=0, rely=0.9)
 
     def close_window(self):
         self.destroy()

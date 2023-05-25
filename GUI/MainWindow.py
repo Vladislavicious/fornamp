@@ -42,12 +42,14 @@ class MainWindow(ctk.CTkToplevel):
         if(self.user.isAdministrator == True):
             self.button_add_order.pack(anchor=tk.N, pady=6)
 
-        self.button_add_email = ctk.CTkButton(self.frame_tools, text="Добавить почту", command=self.add_email)
-        if(self.user.email == ""):
-            self.button_add_email.pack(anchor=tk.N, pady=6)
-
         self.button_send_email = ctk.CTkButton(self.frame_tools, text="Отправить отчет", command=self.send_email)
         self.button_send_email.pack(anchor=tk.N, pady=6)
+
+        if(self.user.email == ""):
+            self.button_add_email = ctk.CTkButton(self.frame_tools, text="Добавить почту", command=self.add_email)
+        else:
+            self.button_add_email = ctk.CTkButton(self.frame_tools, text="Редактировать\n данные почты", command=self.add_email)
+        self.button_add_email.pack(anchor=tk.N, pady=6)
 
         self.button_change_visibility = ctk.CTkButton(self.frame_tools, text="Показать выданные\n заказы", height= 40, command=self.change_visibility)
         self.button_change_visibility.pack(anchor=tk.N, pady=6)

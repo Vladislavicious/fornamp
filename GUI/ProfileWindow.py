@@ -39,7 +39,7 @@ class ProfileWindow(tk.Frame):
         label_password = ctk.CTkLabel(self.frame_user_data,text = "Ведите пароль", font=self.font_, width = 400)
         label_password.pack(anchor = tk.CENTER, pady=2)
 
-        self.entry_password = ctk.CTkEntry(self.frame_user_data, width = 400)
+        self.entry_password = ctk.CTkEntry(self.frame_user_data, width = 400, show = '*')
         self.entry_password.pack(anchor = tk.CENTER, pady=2)
 
         
@@ -121,6 +121,9 @@ class ProfileWindow(tk.Frame):
     def autorization(self):
         if(self.user_handler.Authorize(self.entry_login.get(), self.entry_password.get()) == True):
             self.user_handler.markAsLastUser(self.entry_login.get())
+            self.entry_login.delete(0, len(self.entry_login.get()))
+            self.entry_password.delete(0, len(self.entry_password.get()))
+            self.cancel_error()
             self.open_main_window()
         else:
             self.entry_login.configure(fg_color="#faebeb", border_color= "#e64646")
