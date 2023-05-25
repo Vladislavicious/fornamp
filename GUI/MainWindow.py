@@ -104,10 +104,12 @@ class MainWindow(ctk.CTkToplevel):
                         self.button_vidat.place(relx=0.8, rely = 0.3)
                 else:
                     self.frame_order_info.configure(border_color = "#77bf6d")
-                self.label_order = ctk.CTkLabel(self.frame_order_info, text = "Заказчик: " + item_order.zakazchik + "\nОписание заказа: " + item_order.commentary + "\nДата создания: " + str(item_order.date_of_creation)+ "\nДата выдачи: " + str(item_order.date_of_vidacha), font = ctk.CTkFont(family="Arial", size=12))
+                self.label_order = ctk.CTkLabel(self.frame_order_info, text = item_order.__str__(), font = ctk.CTkFont(family="Arial", size=12))
                 self.label_order.pack( padx=10, pady = 10)
                 self.label_order.bind('<Button-1>', lambda event,  order = self.app.getOrderByID(item_order.id) : self.open_info(order))
                 self.frame_order_info.bind('<Button-1>', lambda event,  order = self.app.getOrderByID(item_order.id) : self.open_info(order))
+            else:
+                print("ещё")
 
     def send_email(self):
         dialog_window = DialogWindow(self, self.app, self)
@@ -131,7 +133,8 @@ class MainWindow(ctk.CTkToplevel):
         frame_order_info.configure(border_color = "#77bf6d")
         button_vidat.destroy()
         order.isVidan = True
-        self.app.deleteOrderByID(order.id)
+        self.app.saveOrder(order)
+        self.add_list_order()
 
     def close_info(self):
         self.window_info.delete_window_info()

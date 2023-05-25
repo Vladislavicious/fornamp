@@ -21,6 +21,7 @@ class App:
         self.__orders = dict()
 
     def __del__(self):
+        print("dadka")
         self.__saveNewOrderPreviews()
         self.__saveTemplates()
 
