@@ -59,6 +59,7 @@ class App:
         self.__product_templates = value
 
     def makeNewProductTemplate(self, product: Product):
+        """Вызывается для добавления нового шаблона"""
         template = product.GetAsTemplate()
         self.product_templates.append(template)
 
@@ -87,7 +88,7 @@ class App:
 
         return order
 
-    def mergeOrders(self, orders: List[Order]):
+    def __mergeOrders(self, orders: List[Order]):
         self.__orders = self.__orders | orders
 
     def __saveNewOrderPreviews(self):
@@ -141,7 +142,7 @@ class App:
 
     def saveOrder(self, order: Order):
         """Функция сохранения заказа в свой файл
-           её необходимо вызывать при изменении заказа"""
+           её необходимо вызывать при изменении существующего заказа"""
         self.file_manager.saveOrder(order)
         index = self.__getOrderPreviewIndexByID(order.id)
         self.order_previews[index] = order.createPreview()
@@ -174,7 +175,7 @@ class App:
         dict()
         orders_dict = dict(list((order.id, order) for order in orders))
 
-        self.mergeOrders(orders_dict)
+        self.__mergeOrders(orders_dict)
 
         message = self.mail_account.createMessage(TO=TO, message=msg_text,
                                                   filepaths=[filepath])

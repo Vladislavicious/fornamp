@@ -114,6 +114,9 @@ class FileManager():
         except FileNotFoundError:
             with open(self.orders_dir_path + "\\Templates.b", "wb") as file:
                 pass
+        except EOFError:
+            print("Файл с шаблонами пуст")
+            pass
 
         return templates
 

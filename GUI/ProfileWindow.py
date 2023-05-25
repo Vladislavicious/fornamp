@@ -26,7 +26,7 @@ class ProfileWindow(tk.Frame):
 
 
 
-        self.frame_user_data = ctk.CTkFrame(self.root, width=500, height=220) 
+        self.frame_user_data = ctk.CTkFrame(self.root, width=500, height=220)
         self.frame_user_data.pack(side=tk.TOP)
         self.frame_user_data.pack_propagate(False)
 
@@ -42,7 +42,7 @@ class ProfileWindow(tk.Frame):
         self.entry_password = ctk.CTkEntry(self.frame_user_data, width = 400, show = '*')
         self.entry_password.pack(anchor = tk.CENTER, pady=2)
 
-        
+
         self.combobox_post = ctk.CTkComboBox(self.frame_user_data, width = 160, state = "readonly", values=["Рабочий", "Начальник"])
         self.combobox_post.set("Рабочий")
 
@@ -53,7 +53,7 @@ class ProfileWindow(tk.Frame):
         self.label_warning.place(relx=0, rely=0.9)
 
 
-        
+
 
     def color_enter(self, event):
         self.label_rigisration.configure(text_color = "#2113bf")
@@ -85,7 +85,7 @@ class ProfileWindow(tk.Frame):
 
     def check_fielde(self):
         check = True
-        
+
 
 
         return check
@@ -94,7 +94,7 @@ class ProfileWindow(tk.Frame):
         self.entry_login.configure(fg_color="#f9f9fa", border_color= "#979da2")
         self.entry_password.configure(fg_color="#f9f9fa", border_color= "#979da2")
         self.label_warning.configure(text = "")
-    
+
 
     def registration(self):
         self.cancel_error()
@@ -103,7 +103,7 @@ class ProfileWindow(tk.Frame):
         if(self.combobox_post.get() == "Рабочий"):
             list_errors = self.user_handler.NewUser(self.entry_login.get(), self.entry_password.get())
         else:
-              list_errors = self.user_handler.NewUser(self.entry_login.get(), self.entry_password.get(), isAdministrator = True)
+            list_errors = self.user_handler.NewUser(self.entry_login.get(), self.entry_password.get(), isAdministrator = True)
 
         for error in list_errors:
             key = list(error)
@@ -116,7 +116,7 @@ class ProfileWindow(tk.Frame):
             elif(key[0] == 0):
                 self.autorization()
 
-            
+
 
     def autorization(self):
         if(self.user_handler.Authorize(self.entry_login.get(), self.entry_password.get()) == True):
@@ -129,11 +129,9 @@ class ProfileWindow(tk.Frame):
             self.entry_login.configure(fg_color="#faebeb", border_color= "#e64646")
             self.entry_password.configure(fg_color="#faebeb", border_color= "#e64646")
             self.label_warning.configure( text = "Неправильный логин или пароль")
-        
 
 
 
-    def open_main_window(self):      
+
+    def open_main_window(self):
         gui.MainWindow(self.root, self.app)
-
-    

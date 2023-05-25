@@ -132,7 +132,6 @@ class MainWindow(ctk.CTkToplevel):
         button_vidat.destroy()
         order.isVidan = True
         self.app.deleteOrderByID(order.id)
-        self.app.saveOrder(order)
 
     def close_info(self):
         self.window_info.delete_window_info()
