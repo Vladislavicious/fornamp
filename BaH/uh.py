@@ -133,7 +133,6 @@ class UserHandler:
 
         return True
 
-
     def __ValidateLogin(self, login: str) -> Tuple[bool, str]:
         """Проверяет можно ли создать аккаунт с таким логином"""
         if not self.__lexicLoginValidation(login):
@@ -267,19 +266,18 @@ class UserHandler:
 
         return False
 
-
     def add_email(self, email, emailpassword):
         isEmailValidated, EmailErrorString = self.__ValidateEmail(email)
         isPasswordValidated, PasswordErrorString = self.__ValidatePassword(emailpassword)
         errors = list()
 
-        if(not isEmailValidated):
+        if not isEmailValidated:
             errors.append({1: EmailErrorString})
-        if(not isPasswordValidated):
+        if not isPasswordValidated:
             errors.append({2: PasswordErrorString})
         if not errors:
             for user in self.users:
-                if(user == self.lastUser):
+                if user == self.lastUser:
                     user.email = email
                     user.emailpassword = emailpassword
         return errors

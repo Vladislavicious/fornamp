@@ -112,9 +112,6 @@ class DialogWindow(ctk.CTkToplevel):
     def close_window(self):
         self.destroy()
 
-    def send_report(self):
-        self.app.AuthentificateMail()
-
     def send_report(self, user):
         error = self.app.AuthentificateMail()
         if(error[0] != 0):

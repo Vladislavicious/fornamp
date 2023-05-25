@@ -132,11 +132,6 @@ class MainWindow(ctk.CTkToplevel):
         button_vidat.destroy()
         order.isVidan = True
         self.app.deleteOrderByID(order.id)
-        self.app.saveOrder(order)
-        self.oders_previews_list.append(order.createPreview())
-        self.app.saveNewOrderPreviews()
-
-
 
     def close_info(self):
         self.window_info.delete_window_info()
@@ -155,6 +150,7 @@ class MainWindow(ctk.CTkToplevel):
         self.window_add = WindowAdd(self, self)
 
     def close_window(self):
+        del self.app
         self.destroy()
         self.root.destroy()
 
@@ -302,4 +298,3 @@ class StepInfo(tk.Frame):
             self.info_window.cur_order.CheckIfDone()
 
         self.info_window.main_window.app.saveOrder(self.info_window.cur_order)
-        self.info_window.main_window.app.saveNewOrderPreviews()

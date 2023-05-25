@@ -228,8 +228,9 @@ class Order:
             beginning = '<em class="green">'
         else:
             beginning = '<em class="red">'
-        text = beginning + f"Заказ {self.id} стоит {self.total_cost}, его надо выдать {getValidData(self.date_of_vidacha)}</em>\
-                    \n<br>Он состоит из следующих товаров: \n{prods_str}"
+        text = beginning + f"Заказ {self.id} стоит {self.total_cost}, его" + \
+                           f" надо выдать {getValidData(self.date_of_vidacha)}</em>" + \
+                           f"\n<br>Он состоит из следующих товаров: \n{prods_str}"
 
         return text
 

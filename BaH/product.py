@@ -142,7 +142,8 @@ class Product:
 
         self.CheckIfDone()
 
-        return f"Товар {self.name} стоит {self.selling_cost}. Для выполнения {self.quantity} штук нужно выполнить следующие шаги: \n{step_str}"
+        return f"Товар {self.name} стоит {self.selling_cost}. Для выполнения {self.quantity}" + \
+               f" штук нужно выполнить следующие шаги: \n{step_str}"
 
     def __hash__(self) -> int:
         return id(self)*self.selling_cost*self.quantity
@@ -200,7 +201,8 @@ class Product:
         else:
             beginning = f'<li class="red">Товар {self.name} не готов. '
 
-        stroka = f"Стоимость {self.selling_cost}. <br>Для выполнения {self.quantity} штук нужно выполнить следующие шаги: \n{step_str}"
+        stroka = f"Стоимость {self.selling_cost}. <br>Для выполнения {self.quantity}" + \
+                 f" штук нужно выполнить следующие шаги: \n{step_str}"
 
         text = beginning + stroka + "\n</li>"
         return text
@@ -208,27 +210,16 @@ class Product:
     def toJSON(self):
         return json.dumps(self, cls=simpleEncoder, indent=4, ensure_ascii=False)
 
-    def SaveAsTemplate(self) -> None:
+    def GetAsTemplate(self):
+        """Возвращает 'пустую' копию """
         copy = deepcopy(self)  # Чтобы не калечить нынешний товар
-
+        copy.commentary = ""
+        copy.isDone = False
+        copy.quantity = 1
         for step in copy.GetSteps():
             step.GetContr().clear()
 
-        filename = copy.name.lower() + ".json"
-        with open(filename, "w", encoding="utf-8") as file:
-            file.write(copy.toJSON())
-
-    @classmethod
-    def fromTemplate(cls, template_name: str):
-        """Возвращает объект по шаблону, не имеет каких-либо проверок на существование файла"""
-        filename = template_name.lower()
-        if not filename.endswith(".json"):
-            filename = filename + ".json"
-
-        with open(filename, "r", encoding="utf-8") as file:
-            obj = Product.fromJSON(file.read())
-        # если понадобится, то уже здесь можно будет кастомизировать Товар
-        return obj
+        return copy
 
     @classmethod
     def fromJSON(cls, json_string: str):
