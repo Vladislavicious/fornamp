@@ -18,7 +18,7 @@ def SaveBarplot(data: pd.Series, startDate: datetime, endDate: datetime, title: 
     if (series.size > 75):
         label_rotation = 90
 
-    fig, ax = plt.subplots(figsize=(16, 8))    
+    fig, ax = plt.subplots(figsize=(16, 8))
     fig = sns.barplot(x=series.index, y=series.values, ax=ax)
 
     x_labels = series.index.strftime('%d-%m-%Y')
@@ -35,14 +35,14 @@ def SaveLinechartComparison(startDate: datetime, endDate: datetime, series_list:
     series = list()
     for ser in series_list:
         series.append(ser[startDate: endDate])
-    
+
     x_labels = pd.date_range(startDate, endDate, freq="D")
 
     df = pd.DataFrame(index=x_labels)
     for ser in series:
         df[ser.name] = ser
 
-    fig, ax = plt.subplots(figsize=(16, 8))    
+    fig, ax = plt.subplots(figsize=(16, 8))
     fig = sns.lineplot(data=df, ax=ax)
 
     ax.set_title(title)

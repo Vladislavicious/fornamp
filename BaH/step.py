@@ -1,5 +1,5 @@
-from datetime import date
 import json
+from datetime import date
 from typing import List
 
 from BaH.Contribution import Contribution
@@ -95,7 +95,7 @@ class Step:
 
     def Contribute(self, contributor: str, number_of_made: int = 1, date_of_creation: date = date.today()):
         """Метод, используемый для создания контрибушнов извне.
-           contributor - логин пользователя, number_of_made - сколько 
+           contributor - логин пользователя, number_of_made - сколько
            экземпляров шага выполнено."""
         contr = Contribution(contributor, number_of_made, date_of_creation)
         self.__AddContr(contr)
@@ -118,9 +118,10 @@ class Step:
     def __hash__(self) -> int:
         return id(self)*self.complexity*self.quantity
 
-    def __eq__(self, other): 
+    def __eq__(self, other):
         sc = self.__verify_data(other)
-        return self.koef_value == sc.koef_value and self.quantity == sc.quantity and self.complexity == sc.complexity and self.name == sc.name
+        return (self.koef_value == sc.koef_value and self.quantity == sc.quantity
+                and self.complexity == sc.complexity and self.name == sc.name)
 
     def __lt__(self, other):
         sc = self.__verify_data(other)
@@ -164,9 +165,9 @@ class Step:
     def toHTML(self) -> str:
         if self.isDone:
             return '<li class="green">' + f"Шаг {self.name} в количестве "\
-            f"{self.quantity} исполнен." + '</li>'
+                    f"{self.quantity} исполнен." + '</li>'
         return '<li class="red">' + f"Шаг {self.name} не выполнен, " \
-        f"текущий прогресс: {self.number_of_made} из {self.quantity}" + '</li>'
+               f"текущий прогресс: {self.number_of_made} из {self.quantity}" + '</li>'
 
     def toJSON(self) -> str:
         return json.dumps(self, cls=simpleEncoder, indent=4, ensure_ascii=False)
@@ -184,6 +185,5 @@ class Step:
 
         contr_list = list(Contribution.fromDict(contr) for contr in info["contributions"])
 
-        return Step(name=info["name"],
-                    complexity=info["complexity"], koef_value=info["koef_value"],
-                    contributions=contr_list , quantity=info["quantity"], isDone=info["isDone"])
+        return Step(name=info["name"], complexity=info["complexity"], koef_value=info["koef_value"],
+                    contributions=contr_list, quantity=info["quantity"], isDone=info["isDone"])

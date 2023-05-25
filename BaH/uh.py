@@ -30,7 +30,7 @@ class UserHandler:
 
         if len(self.users) == 0:
             return
-        
+
         with open(path, "wb") as file:
             prelast_index = len(self.users) - 1
 
@@ -39,8 +39,8 @@ class UserHandler:
                 file.write(b'next_one')
 
             file.write(self.users[prelast_index].serialize(self.key))
-    
-    def getUsersLogins(self) -> List[str]:
+
+    def getUserLogins(self) -> List[str]:
         names = list()
         for user in self.users:
             names.append(user)
@@ -83,9 +83,9 @@ class UserHandler:
 
                     self.lastUser = user
                     return True
-                
+
         return False
-    
+
     def markAsLastUser(self, login: str) -> bool:
         """Возвращает True, если пользователь найден и отмечен последним"""
         self.setNoLastUsers()
@@ -117,7 +117,7 @@ class UserHandler:
         for user in self.users:
             if user.isAdministrator:
                 names.append(user.login)
-        
+
         return names
 
     def __lexicLoginValidation(self, login: str) -> bool:
@@ -130,15 +130,14 @@ class UserHandler:
         for i in login.lower():
             if i not in '1234567890qwertyuiopasdfghjklzxcvbnm':
                 return False
-            
-        return True
 
+        return True
 
     def __ValidateLogin(self, login: str) -> Tuple[bool, str]:
         """Проверяет можно ли создать аккаунт с таким логином"""
         if not self.__lexicLoginValidation(login):
-            return False, "Логин должен состоять из цифр и/или латинских букв "\
-                           + "и быть длиной от 8 до 32 символов"     
+            return False, "Логин должен состоять из цифр и/или букв латинского "\
+                           + "алфавита и быть длиной не меньше 8 и не больше 32 символов"
         if len(self.users) == 0:
             return True, ""
 
@@ -149,7 +148,7 @@ class UserHandler:
 
     def __ValidateEmail(self, email: str) -> Tuple[bool, str]:
         """Проверка синтаксическая, без проверки на существование такого адреса"""
-        pattern = r'^[a-zA-Z0-9]+@[a-zA-Z0-9]+\.[a-zA-Z]{2,}$'
+        pattern = r'^[a-zA-Z0-9-_]+@[a-zA-Z0-9]+\.[a-zA-Z]{2,}$'
 
         if re.match(pattern, email):
             return True, ""
@@ -266,3 +265,19 @@ class UserHandler:
             return True
 
         return False
+
+    def add_email(self, email, emailpassword):
+        isEmailValidated, EmailErrorString = self.__ValidateEmail(email)
+        isPasswordValidated, PasswordErrorString = self.__ValidatePassword(emailpassword)
+        errors = list()
+
+        if not isEmailValidated:
+            errors.append({1: EmailErrorString})
+        if not isPasswordValidated:
+            errors.append({2: PasswordErrorString})
+        if not errors:
+            for user in self.users:
+                if user == self.lastUser:
+                    user.email = email
+                    user.emailpassword = emailpassword
+        return errors

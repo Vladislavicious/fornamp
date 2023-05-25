@@ -15,27 +15,27 @@ class WindowAdd(ctk.CTkToplevel):
         self.main_window = app
         self.list_frame_product = []
         self.list_product = []
-        
+
         self.current_product = 0
 
         self.init_window_add()
 
     def init_window_add(self) -> None:
         self.geometry("1000x600+250+100")
-        self.resizable(False, False)  
+        self.resizable(False, False)
 
         self.font_ = ctk.CTkFont(family="Arial", size=16)
         self.fontmini = ctk.CTkFont(family="Arial", size=12)
 
-        self.protocol("WM_DELETE_WINDOW", lambda: self.close_window()) 
+        self.protocol("WM_DELETE_WINDOW", lambda: self.close_window())
 
-        
+
         self.panel_add()
         self.add_area_order()
         self.add_area_product()
         self.add_area_step()
-        
-        
+
+
         self.main_window.withdraw()
 
 
@@ -51,19 +51,19 @@ class WindowAdd(ctk.CTkToplevel):
 
         self.frame_order_panel.pack(side=tk.LEFT)
         self.frame_order_panel.pack_propagate(False)
-        
 
-        
+
+
         self.frame_product_panel.pack(side = tk.LEFT)
         self.frame_product_panel.pack_propagate(False)
-        
-        
+
+
         self.frame_step_panel.pack(side = tk.LEFT)
         self.frame_step_panel.pack_propagate(False)
-        
 
 
-        self.button_add_order = ctk.CTkButton(self.frame_order_panel, text="Добавить заказ", 
+
+        self.button_add_order = ctk.CTkButton(self.frame_order_panel, text="Добавить заказ",
                                               command=self.add_new_order, state = "disabled")#, width=40, height=10)
         self.button_add_order.pack(side=tk.TOP, pady=7)
 
@@ -71,7 +71,7 @@ class WindowAdd(ctk.CTkToplevel):
                                            command=self.add_product_field)#, width=40, height=10)
         button_add_product.pack(side=tk.TOP, pady=7)
 
-        self.button_add_step = ctk.CTkButton(self.frame_step_panel, text="Добавить шаг", 
+        self.button_add_step = ctk.CTkButton(self.frame_step_panel, text="Добавить шаг",
                                              command=self.add_step_field)#, width=40, height=10)
         self.button_add_step.pack(side=tk.TOP, pady=7)
 
@@ -136,7 +136,7 @@ class WindowAdd(ctk.CTkToplevel):
     def add_product_field(self): #добавление новго продукта и добавление шага в список
         self.product_field = Product_field(self.number_product, self.main_window)
         self.number_product += 1
-        
+
         self.list_frame_product.append(self.product_field)
         self.product_field.reload(tk.Event)
         self.add_step_field()
@@ -164,7 +164,7 @@ class WindowAdd(ctk.CTkToplevel):
             check = False
         else:
             self.entry_commentariy_order.configure(fg_color="#f9f9fa", border_color= "#61bf0d", placeholder_text = "")
-        
+
         is_valid_date = lambda d: date.fromisoformat(d) >= date.today()
         try:
             if(is_valid_date(self.entry_data_order.get()[:10])):
@@ -178,19 +178,17 @@ class WindowAdd(ctk.CTkToplevel):
             check = False
 
         return check
-        
+
 
     def edit_data(self, event):
         length = len(event.widget.get())
         if( length > 10):
            self.entry_data_order.delete(10, length)
-            
+
     def add_new_order(self):
         if(self.check_order_field() == True):
             dat = bh_order.date.today()
             order = bh_order.Order(1, self.main_window.user.login, dat, self.dat_of_vidacha, self.list_product, self.entry_commentariy_order.get()) #это затычка надо поменять принимаемые данные
 
             self.main_window.app.addNewOrder(order)
-            self.main_window.app.saveNewOrderPreviews()
-            self.main_window.app.saveOrder(order)
             self.close_window()

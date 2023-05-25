@@ -12,7 +12,7 @@ class User:
 
         self.isAdministrator = isAdministrator
         self.isLastUser = isLastUser
-    
+
     def __str__(self) -> str:
         return f"email: {self.email}\
                  \nlogin: {self.login}\

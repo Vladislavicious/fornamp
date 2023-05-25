@@ -7,10 +7,12 @@ from typing import List
 from random import Random
 
 
-from BaH.Contribution import *
-from BaH.product import *
+from BaH.Contribution import getValidData
+from BaH.Contribution import simpleEncoder
+from BaH.product import Product
 
-@dataclass
+
+@dataclass(repr=False)
 class OrderPreview:
     id: int
     date_of_creation: date
@@ -20,12 +22,37 @@ class OrderPreview:
     isDone: bool
     isVidan: bool
 
+    def __repr__(self) -> str:
+        zakazchik = f"Заказчик: {self.zakazchik}\n"
+        descr = f"Описание: {self.commentary}\n"
+        date_beg = f"Дата создания: {getValidData(self.date_of_creation)}\n"
+        date_end = f"Дата выдачи: {getValidData(self.date_of_vidacha)}"
+        return zakazchik + descr + date_beg + date_end
+
+
+class OrderPreviewSorter:
+    """Абстрактный класс, нужен только чтобы скомпоновать методы"""
+    @classmethod
+    def ByVidachaDate(cls, ord_prevs: List[OrderPreview], reverse=False) -> List[OrderPreview]:
+        return sorted(ord_prevs,
+                      key=lambda order_preview: order_preview.date_of_vidacha, reverse=reverse)
+
+    @classmethod
+    def ByCreationDate(cls, ord_prevs: List[OrderPreview], reverse=False) -> List[OrderPreview]:
+        return sorted(ord_prevs,
+                      key=lambda order_preview: order_preview.date_of_creation, reverse=reverse)
+
+    @classmethod
+    def ByName(cls, ord_prevs: List[OrderPreview], reverse=False) -> List[OrderPreview]:
+        return sorted(ord_prevs,
+                      key=lambda order_preview: order_preview.zakazchik, reverse=reverse)
+
 
 class Order:
-    def __init__(self, id: int, zakazchik: str, date_of_creation: date, \
-                    date_of_vidacha: date, products: List[Product]=list(), commentary="", isDone=False, \
-                        isVidan=False) -> None:
-        self.id = id    
+    def __init__(self, id: int, zakazchik: str, date_of_creation: date,
+                 date_of_vidacha: date, products: List[Product] = list(), commentary="",
+                 isDone=False, isVidan=False) -> None:
+        self.id = id
         self.zakazchik = zakazchik
         self.date_of_creation = date_of_creation
         self.date_of_vidacha = date_of_vidacha
@@ -39,7 +66,7 @@ class Order:
     def id(self):
         """Случайное одиннадцатизначное число, задаваемое seed'ом"""
         return self.__id
-    
+
     @id.setter
     def id(self, id: int):
         if id <= 10000000000 or id >= 99999999999:
@@ -83,7 +110,7 @@ class Order:
 
     @commentary.setter
     def commentary(self, value: str):
-        self.__commentary = value 
+        self.__commentary = value
 
     @property
     def isDone(self):
@@ -91,15 +118,15 @@ class Order:
 
     @isDone.setter
     def isDone(self, value: bool):
-        self.__isDone = value 
-    
+        self.__isDone = value
+
     @property
     def isVidan(self):
         return self.__isVidan
 
     @isVidan.setter
     def isVidan(self, value: bool):
-        self.__isVidan = value 
+        self.__isVidan = value
 
     @property
     def total_cost(self) -> float:
@@ -107,7 +134,7 @@ class Order:
         for prod in self.GetProducts():
             sum += prod.total_cost
         return sum
-    
+
     def CheckIfDone(self) -> bool:
         """проверяет Готовность всех товаров"""
         for product in self.GetProducts():
@@ -116,7 +143,7 @@ class Order:
                 return False
         self.isDone = True
         return True
-    
+
     def GetProducts(self):
         return self.__products
 
@@ -129,8 +156,8 @@ class Order:
         for product in self.GetProducts():
             if product.name == product_name.capitalize():
                 product_for_deletion = product
-        
-        if product_for_deletion != None:
+
+        if product_for_deletion is not None:
             self.__products.remove(product_for_deletion)
 
         self.CheckIfDone()
@@ -141,14 +168,15 @@ class Order:
 
         return f"Заказ {self.id} стоит {self.total_cost}, его надо выдать {getValidData(self.date_of_vidacha)}.\
                     \nОн состоит из следующих товаров: \n{prods_str}"
-    
+
     def __hash__(self) -> int:
         return id(self)*self.date_of_vidacha.day + self.id
 
     def __eq__(self, other):
         sc = self.__verify_data(other)
-        return self.total_cost == sc.total_cost and self.date_of_vidacha == sc.date_of_vidacha and self.date_of_creation == sc.date_of_creation
-    
+        return (self.total_cost == sc.total_cost and self.date_of_vidacha == sc.date_of_vidacha
+                and self.date_of_creation == sc.date_of_creation)
+
     def __lt__(self, other):
         """Сортировка в порядке: дата выдачи, общая цена, дата создания"""
         sc = self.__verify_data(other)
@@ -159,7 +187,7 @@ class Order:
                 return self.date_of_creation < sc.date_of_creation
             return self.total_cost < sc.total_cost
         return self.date_of_vidacha < sc.date_of_vidacha
-    
+
     def __gt__(self, other):
         sc = self.__verify_data(other)
         if self.date_of_vidacha == sc.date_of_vidacha:
@@ -169,28 +197,28 @@ class Order:
                 return self.date_of_creation > sc.date_of_creation
             return self.total_cost > sc.total_cost
         return self.date_of_vidacha > sc.date_of_vidacha
-    
+
     def __le__(self, other):
         sc = self.__verify_data(other)
         return self < sc or self == sc
-    
+
     def __ge__(self, other):
         sc = self.__verify_data(other)
         return self > sc or self == sc
-    
+
     @classmethod
     def __verify_data(cls, other):
         if not isinstance(other, cls):
             raise TypeError(f"Операнд справа должен иметь тип {cls}")
-        
+
         return other
-    
+
     def createPreview(self) -> OrderPreview:
         return OrderPreview(id=self.id, date_of_creation=self.date_of_creation,
                             date_of_vidacha=self.date_of_vidacha, isDone=self.isDone,
                             zakazchik=self.zakazchik, isVidan=self.isVidan,
                             commentary=self.commentary)
-    
+
     def toHTML(self) -> str:
         prod = "\n".join(list(prod.toHTML() for prod in self.GetProducts()))
 
@@ -200,22 +228,23 @@ class Order:
             beginning = '<em class="green">'
         else:
             beginning = '<em class="red">'
-        text = beginning + f"Заказ {self.id} стоит {self.total_cost}, его надо выдать {getValidData(self.date_of_vidacha)}</em>\
-                    \n<br>Он состоит из следующих товаров: \n{prods_str}"
-        
+        text = beginning + f"Заказ {self.id} стоит {self.total_cost}, его" + \
+                           f" надо выдать {getValidData(self.date_of_vidacha)}</em>" + \
+                           f"\n<br>Он состоит из следующих товаров: \n{prods_str}"
+
         return text
-    
+
     def toJSON(self):
         return json.dumps(self, cls=simpleEncoder, indent=4, ensure_ascii=False)
-    
+
     def toFile(self, directory: str = ""):
         """Сохраняет заказ в указанной директории, по умолчанию в рабочей. указывать абсолютный путь"""
         if directory == "":
             directory = os.getcwd()
-        
+
         if not os.path.exists(directory):
             return False
-        firstLetter = "N"   # G - если заказ выдан, D - если заказ сделан, N - если заказ не сделан 
+        firstLetter = "N"   # V - если заказ выдан, D - если заказ сделан, N - если заказ не сделан
         if self.isVidan:
             firstLetter = "G"
         elif self.isDone:
@@ -225,7 +254,7 @@ class Order:
 
         with open(filename, "w", encoding="utf-8") as file:
             file.write(self.toJSON())
-        return True        
+        return True
 
     @classmethod
     def fromFile(cls, filepath: str):
@@ -236,7 +265,7 @@ class Order:
     def fromJSON(cls, json_string: str):
         """Возвращает объект класса Order из строки(формата JSON)"""
         info = json.loads(json_string)
-        
+
         return Order.fromDict(info)
 
     @classmethod
@@ -248,9 +277,6 @@ class Order:
         data_creat = date.fromisoformat(info["date_of_creation"])
         data_vid = date.fromisoformat(info["date_of_vidacha"])
 
-        return Order(zakazchik=info["zakazchik"], id=info["id"], date_of_creation=data_creat, \
-                        date_of_vidacha=data_vid, commentary=info["commentary"], \
-                        isDone=info["isDone"], isVidan=info["isVidan"], products=product_list)
-    
-
-
+        return Order(zakazchik=info["zakazchik"], id=info["id"], date_of_creation=data_creat,
+                     date_of_vidacha=data_vid, commentary=info["commentary"],
+                     isDone=info["isDone"], isVidan=info["isVidan"], products=product_list)

@@ -10,6 +10,7 @@ __pycache__/
 *.prettierrc
 
 # Distribution / packaging
+.vscode
 .vs
 .Python
 build/
@@ -82,7 +83,7 @@ docs/_build/
 target/
 
 # Jupyter Notebook
-*.ipynb 
+*.ipynb
 .ipynb_checkpoints
 
 # IPython

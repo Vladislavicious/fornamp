@@ -54,14 +54,15 @@ class Contribution:
 
     def __str__(self) -> str:
         return f"{getValidData(self.date_of_creation)} {self.contributor} выполнил {self.number_of_made}"
-    
+
     def __hash__(self) -> int:
         return id(self)*self.date_of_creation.day*(self.number_of_made**len(self.contributor))
 
     def __eq__(self, other):
         sc = self.__verify_data(other)
-        return self.number_of_made == sc.number_of_made and self.contributor == sc.contributor and self.date_of_creation == sc.date_of_creation
-    
+        return (self.number_of_made == sc.number_of_made and self.contributor == sc.contributor
+                and self.date_of_creation == sc.date_of_creation)
+
     def __lt__(self, other):
         sc = self.__verify_data(other)
         if self.date_of_creation == sc.date_of_creation:
@@ -71,7 +72,7 @@ class Contribution:
                 return self.contributor < sc.contributor
             return self.number_of_made < sc.number_of_made
         return self.date_of_creation < sc.date_of_creation
-    
+
     def __gt__(self, other):
         sc = self.__verify_data(other)
         if self.date_of_creation == sc.date_of_creation:
@@ -81,20 +82,20 @@ class Contribution:
                 return self.contributor > sc.contributor
             return self.number_of_made > sc.number_of_made
         return self.date_of_creation > sc.date_of_creation
-    
+
     def __le__(self, other):
         sc = self.__verify_data(other)
         return self < sc or self == sc
-    
+
     def __ge__(self, other):
         sc = self.__verify_data(other)
         return self > sc or self == sc
-    
+
     @classmethod
     def __verify_data(cls, other):
         if not isinstance(other, cls):
             raise TypeError(f"Операнд справа должен иметь тип {cls}")
-        
+
         return other
 
     def toJSON(self):
@@ -104,15 +105,15 @@ class Contribution:
     def fromJSON(cls, json_string: str):
         """Возвращает объект класса Contribution из строки(формата JSON)"""
         info = json.loads(json_string)
-        
+
         return Contribution.fromDict(info)
-    
+
     @classmethod
     def fromDict(cls, info: dict):
         """Возвращает объект класса Contribution из словаря"""
         data_dat = date.fromisoformat(info["date_of_creation"])
 
-        return Contribution(contributor=info["contributor"], \
+        return Contribution(contributor=info["contributor"],
                             number_of_made=info["number_of_made"], date_of_creation=data_dat)
 
 

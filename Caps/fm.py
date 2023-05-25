@@ -5,6 +5,7 @@ from cryptography.fernet import Fernet
 
 from BaH.order import Order
 from BaH.order import OrderPreview
+from BaH.product import Product
 from BaH.uh import UserHandler
 from Caps.listFuncs import createHTMLfromList
 
@@ -37,7 +38,7 @@ class FileManager():
             self.statistics_dir_path = self.working_directory + "\\statistics"
             self.accounts_filepath = self.__config_dir_path + "\\accs.b"
             self.key = Fernet.generate_key()
-            self.saveNewConfig()
+            self.__saveNewConfig()
 
             return
 
@@ -53,13 +54,38 @@ class FileManager():
         self.accounts_filepath = (config_lines[2].split(": "))[1].strip()
         self.key = bytes((config_lines[3].split(": "))[1].strip(), encoding="utf-8")
 
-    def saveNewConfig(self):
+    def __saveNewConfig(self):
         file = open(self.__config_dir_path + "\\.ordconfig", "w", encoding="utf-8")
-        file.write("Orders Directory Path: " + self.orders_dir_path + "\n")  
+        file.write("Orders Directory Path: " + self.orders_dir_path + "\n")
         file.write("Statistics Directory Path: " + self.statistics_dir_path + "\n")
         file.write("Accounts Filepath: " + self.accounts_filepath + "\n")
-        file.write("Key: " + self.key.decode("utf-8") + "\n")     
-        file.close() 
+        file.write("Key: " + self.key.decode("utf-8") + "\n")
+        file.close()
+
+    def changeConfig(self, orders_dir_path: str = None, statistics_dir_path: str = None,
+                     accounts_filepath: str = None) -> bool:
+        """Интерфейс для изменения элементов конфига пользователя
+           позволяет изменять места хранения заказов, статистик и аккаунтов
+           Возвращает True, если хоть что-то сохранил"""
+        need_to_save = False
+        if orders_dir_path is not None:
+            if os.path.isdir(orders_dir_path):
+                self.orders_dir_path = orders_dir_path
+                need_to_save = True
+
+        if statistics_dir_path is not None:
+            if os.path.isdir(statistics_dir_path):
+                self.statistics_dir_path = statistics_dir_path
+                need_to_save = True
+
+        if accounts_filepath is not None:
+            if os.path.isdir(accounts_filepath):
+                self.accounts_filepath = accounts_filepath
+                need_to_save = True
+        if need_to_save:
+            self.__saveNewConfig()
+
+        return need_to_save
 
     def parseOrderPreviews(self) -> List[OrderPreview]:
         order_preview_list = list()
@@ -74,9 +100,29 @@ class FileManager():
                 order_preview = order.createPreview()
                 order_preview_list.append(order_preview)
 
-            self.saveOrderPreviewList(order_preview_list) 
+            self.saveOrderPreviewList(order_preview_list)
 
-        return order_preview_list           
+        return order_preview_list
+
+    def parseTemplates(self) -> List[Product]:
+        """Считывает файл с шаблонами из папки с заказами"""
+        templates = list()
+        try:
+            with open(self.orders_dir_path + "\\Templates.b", "rb") as file:
+                text = file.read()
+                templates = pickle.loads(text)
+        except FileNotFoundError:
+            with open(self.orders_dir_path + "\\Templates.b", "wb") as file:
+                pass
+        except EOFError:
+            print("Файл с шаблонами пуст")
+            pass
+
+        return templates
+
+    def saveTemplates(self, templates: List[Product]):
+        with open(self.orders_dir_path + "\\Templates.b", "wb") as file:
+            file.write(pickle.dumps(templates))
 
     def saveOrderPreviewList(self, order_preview_list: List[OrderPreview]):
         with open(self.orders_dir_path + "\\orderPreviews.b", "wb") as file:
@@ -102,7 +148,7 @@ class FileManager():
 
         order_filenames = os.listdir(self.orders_dir_path)
 
-        order_filenames = order_filenames[:-1]   # исключаем orderPreviews.b
+        order_filenames = [order for order in order_filenames if order.endswith(".order")]
 
         self.ordered_filenames = self.__getOrderStatusPairs(order_filenames)
 
@@ -132,17 +178,16 @@ class FileManager():
         os.remove(filename)
         del self.ordered_filenames[str(ID)]
         return True
-    
+
     def saveOrder(self, order: Order):
         """Если ордер с таким айди уже существовал, удаляет его
            При успешном выполнении возвращает True"""
         previous_order_filename = self.__getOrderFilename(order.id)
         if previous_order_filename != "":
             os.remove(previous_order_filename)
-        
+
         Order.toFile(order, self.orders_dir_path)
-        self.__parseOrderFilenames()
-        
+
     def __getOrderFilename(self, ID: int):
         """Возвращает имя файла, либо '' """
         id_str = str(ID)
