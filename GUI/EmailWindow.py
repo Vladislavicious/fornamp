@@ -112,5 +112,13 @@ class DialogWindow(ctk.CTkToplevel):
     def close_window(self):
         self.destroy()
 
-    def send_report(self):
-        self.app.AuthentificateMail()
+    def send_report(self, user):
+        error = self.app.AuthentificateMail()
+        if(error[0] != 0):
+            self.label_warning.configure(text = error[1])
+        elif(user == ""):
+            self.label_warning.configure(text = "Введите почту получателя")
+        else:
+            text = self.entry_message.get()
+            self.close_window()
+            self.app.sendOtchetMail(user, text)
