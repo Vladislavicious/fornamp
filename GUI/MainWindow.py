@@ -150,6 +150,7 @@ class MainWindow(ctk.CTkToplevel):
         self.window_add = WindowAdd(self, self)
 
     def close_window(self):
+        del self.app
         self.destroy()
         self.root.destroy()
 

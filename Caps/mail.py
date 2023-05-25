@@ -42,14 +42,16 @@ class MailAccount:
             if (error_code == 535):
                 error_message = "Для входа необходим пароль приложения"
             elif (error_code == 553):
-                error_message = "Проверь все адреса в Кому, CC и BCC полях. Где-то должна быть ошибка или неправильное написание"
+                error_message = ("Проверь все адреса в Кому, CC и BCC полях. " +
+                                 "Где-то должна быть ошибка или неправильное написание")
 
             self.smtp = smtpObj
             return (False, f"{error_code}: " + error_message)
 
     def createMessage(self, TO: str, message: str, Subject: str = "Отчёт",
                       filepaths: List[str] = list()) -> MIMEMultipart:
-        """filepath - путь для прикрепления файла, допускаются только англоязычные названия"""
+        """filepaths - список путей для прикрепления файла, допускаются только англоязычные названия.
+           не проверяет существование файлов"""
         FROM = self.login
 
         msg = MIMEMultipart()

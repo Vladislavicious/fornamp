@@ -142,7 +142,8 @@ class Product:
 
         self.CheckIfDone()
 
-        return f"Товар {self.name} стоит {self.selling_cost}. Для выполнения {self.quantity} штук нужно выполнить следующие шаги: \n{step_str}"
+        return f"Товар {self.name} стоит {self.selling_cost}. Для выполнения {self.quantity}" + \
+               f" штук нужно выполнить следующие шаги: \n{step_str}"
 
     def __hash__(self) -> int:
         return id(self)*self.selling_cost*self.quantity
@@ -200,7 +201,8 @@ class Product:
         else:
             beginning = f'<li class="red">Товар {self.name} не готов. '
 
-        stroka = f"Стоимость {self.selling_cost}. <br>Для выполнения {self.quantity} штук нужно выполнить следующие шаги: \n{step_str}"
+        stroka = f"Стоимость {self.selling_cost}. <br>Для выполнения {self.quantity}" + \
+                 f" штук нужно выполнить следующие шаги: \n{step_str}"
 
         text = beginning + stroka + "\n</li>"
         return text
