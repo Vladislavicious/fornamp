@@ -116,6 +116,14 @@ class App:
         self.__orders[order.id] = order
         self.order_previews.append(order.createPreview())
 
+        firstLetter = "N"   # G - если заказ выдан, D - если заказ сделан, N - если заказ не сделан
+        if order.isDone:
+            firstLetter = "D"
+        if order.isVidan:
+            firstLetter = "G"
+        self.file_manager.ordered_filenames[order.id] = firstLetter
+
+
     def deleteOrderByID(self, ID: int) -> Tuple[bool, bool, bool]:
         """Возвращает три була, если bool is True, то удаление успешно.
            Первый бул - удаление как файла
