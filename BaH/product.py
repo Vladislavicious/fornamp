@@ -208,27 +208,16 @@ class Product:
     def toJSON(self):
         return json.dumps(self, cls=simpleEncoder, indent=4, ensure_ascii=False)
 
-    def SaveAsTemplate(self) -> None:
+    def GetAsTemplate(self):
+        """Возвращает 'пустую' копию """
         copy = deepcopy(self)  # Чтобы не калечить нынешний товар
-
+        copy.commentary = ""
+        copy.isDone = False
+        copy.quantity = 1
         for step in copy.GetSteps():
             step.GetContr().clear()
 
-        filename = copy.name.lower() + ".json"
-        with open(filename, "w", encoding="utf-8") as file:
-            file.write(copy.toJSON())
-
-    @classmethod
-    def fromTemplate(cls, template_name: str):
-        """Возвращает объект по шаблону, не имеет каких-либо проверок на существование файла"""
-        filename = template_name.lower()
-        if not filename.endswith(".json"):
-            filename = filename + ".json"
-
-        with open(filename, "r", encoding="utf-8") as file:
-            obj = Product.fromJSON(file.read())
-        # если понадобится, то уже здесь можно будет кастомизировать Товар
-        return obj
+        return copy
 
     @classmethod
     def fromJSON(cls, json_string: str):

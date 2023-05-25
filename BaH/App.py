@@ -5,6 +5,7 @@ from typing import List, Tuple
 
 from BaH.order import Order
 from BaH.order import OrderPreview
+from BaH.product import Product
 from Caps.fm import FileManager
 from Caps.mail import MailAccount
 
@@ -15,7 +16,13 @@ class App:
 
         self.order_previews = self.file_manager.parseOrderPreviews()
 
+        self.product_templates = self.file_manager.parseTemplates()
+
         self.__orders = dict()
+
+    def __del__(self):
+        self.__saveNewOrderPreviews()
+        self.__saveTemplates()
 
     @property
     def current_user(self):
@@ -42,6 +49,35 @@ class App:
     def order_previews(self, value: List[OrderPreview]):
         self.__order_previews = value
 
+    @property
+    def product_templates(self):
+        """Список шаблонов товаров"""
+        return self.__product_templates
+
+    @product_templates.setter
+    def product_templates(self, value: List[Product]):
+        self.__product_templates = value
+
+    def makeNewProductTemplate(self, product: Product):
+        template = product.GetAsTemplate()
+        self.product_templates.append(template)
+
+    def deleteTemplate(self, template: Product) -> bool:
+        index = -1
+        for i, prod in enumerate(self.product_templates):
+            if prod == template:
+                index = i
+                break
+        if index == -1:
+            return False
+        self.product_templates.pop(index)
+        return True
+
+    def __saveTemplates(self):
+        """Сохраняет шаблоны
+           Вызывается при закрытии приложения"""
+        self.file_manager.saveTemplates(self.product_templates)
+
     def getOrderByID(self, ID: int):
         """Возвращает None, если Order не найден."""
         try:
@@ -54,11 +90,9 @@ class App:
     def mergeOrders(self, orders: List[Order]):
         self.__orders = self.__orders | orders
 
-    def saveNewOrderPreviews(self):
+    def __saveNewOrderPreviews(self):
         """Эта функция 'обновляет' файл в превью
-           её надо вызывать при любых изменениях нынешних заказов
-           или при появлении новых заказов,
-           то есть почти при каждом действии"""
+           вызывается при закрытии приложения"""
         self.file_manager.saveOrderPreviewList(self.order_previews)
 
     def __getOrderPreviewIndexByID(self, ID: int):
@@ -95,7 +129,7 @@ class App:
 
         if index != -1:
             self.order_previews.pop(index)
-            self.saveNewOrderPreviews()
+            self.__saveNewOrderPreviews()
         else:
             success2 = False
         try:
@@ -111,7 +145,7 @@ class App:
         self.file_manager.saveOrder(order)
         index = self.__getOrderPreviewIndexByID(order.id)
         self.order_previews[index] = order.createPreview()
-        self.saveNewOrderPreviews()
+        self.__saveNewOrderPreviews()
 
     def saveOrderByID(self, ID: int):
         """то же, что и сверху"""
@@ -119,8 +153,8 @@ class App:
         self.saveOrder(order)
 
     def AuthentificateMail(self) -> Tuple[int, str]:
-        """Возвращает 0 при успешном входе, 1 при отсуствии данных о почте
-           2 при неудачном входе"""
+        """Возвращает 0 при успешном входе; 1 при отсуствии данных о почте;
+           2 при неудачном входе."""
 
         self.mail_account = (self.current_user.email,
                              self.current_user.emailpassword)

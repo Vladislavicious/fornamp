@@ -133,7 +133,6 @@ class UserHandler:
 
         return True
 
-
     def __ValidateLogin(self, login: str) -> Tuple[bool, str]:
         """Проверяет можно ли создать аккаунт с таким логином"""
         if not self.__lexicLoginValidation(login):
