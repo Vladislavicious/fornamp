@@ -186,6 +186,13 @@ class FileManager():
         if previous_order_filename != "":
             os.remove(previous_order_filename)
 
+        firstLetter = "N"   # G - если заказ выдан, D - если заказ сделан, N - если заказ не сделан
+        if order.isDone:
+            firstLetter = "D"
+        if order.isVidan:
+            firstLetter = "G"
+        self.ordered_filenames[order.id] = firstLetter
+
         Order.toFile(order, self.orders_dir_path)
 
     def __getOrderFilename(self, ID: int):

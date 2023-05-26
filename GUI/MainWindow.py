@@ -108,8 +108,7 @@ class MainWindow(ctk.CTkToplevel):
                 self.label_order.pack( padx=10, pady = 10)
                 self.label_order.bind('<Button-1>', lambda event,  order = self.app.getOrderByID(item_order.id) : self.open_info(order))
                 self.frame_order_info.bind('<Button-1>', lambda event,  order = self.app.getOrderByID(item_order.id) : self.open_info(order))
-            else:
-                print("ещё")
+
 
     def send_email(self):
         dialog_window = DialogWindow(self, self.app, self)
@@ -153,7 +152,7 @@ class MainWindow(ctk.CTkToplevel):
         self.window_add = WindowAdd(self, self)
 
     def close_window(self):
-        del self.app
+        self.app.destroy()
         self.destroy()
         self.root.destroy()
 

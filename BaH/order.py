@@ -1,9 +1,10 @@
 from dataclasses import dataclass
 import json
 import datetime
+from operator import attrgetter
 import os
 from datetime import date
-from typing import List
+from typing import List, Tuple
 from random import Random
 
 
@@ -46,6 +47,15 @@ class OrderPreviewSorter:
     def ByName(cls, ord_prevs: List[OrderPreview], reverse=False) -> List[OrderPreview]:
         return sorted(ord_prevs,
                       key=lambda order_preview: order_preview.zakazchik, reverse=reverse)
+
+    @classmethod
+    def Multisort(cls, ord_prevs: List[OrderPreview], sorting_params: List[Tuple[str, bool]]) -> List[OrderPreview]:
+        """сортировка по нескольким аргументам
+           в параметрах указывать кортеж из название поля и обратная/прямая сортировка,
+           например: ('date_of_vidacha', True) - сортируем по полю даты выдачи в восходящем порядке"""
+        for key, reverse in reversed(sorting_params):
+            ord_prevs.sort(key=attrgetter(key), reverse=reverse)
+        return ord_prevs
 
 
 class Order:

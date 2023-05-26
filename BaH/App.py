@@ -3,9 +3,10 @@ from email.mime.multipart import MIMEMultipart
 import os
 from typing import List, Tuple
 
-from BaH.order import Order
+from BaH.order import Order, OrderPreviewSorter
 from BaH.order import OrderPreview
 from BaH.product import Product
+from BaH.user import User
 from Caps.fm import FileManager
 from Caps.mail import MailAccount
 
@@ -20,12 +21,14 @@ class App:
 
         self.__orders = dict()
 
-    def __del__(self):
+    def destroy(self):
+        """Вызывается при закрытии приложения
+           сохраняет всё, что ещё не было сохранено"""
         self.__saveNewOrderPreviews()
         self.__saveTemplates()
 
     @property
-    def current_user(self):
+    def current_user(self) -> User:
         return self.file_manager.user_handler.lastUser
 
     @property
@@ -41,16 +44,18 @@ class App:
             self.__mail_account = None
 
     @property
-    def order_previews(self):
-        """Список структур для предварительного просмотра заказа"""
-        return self.__order_previews
+    def order_previews(self) -> List[OrderPreview]:
+        """Список структур для предварительного просмотра заказа
+           по умолчанию возвращает отсортированным"""
+        return OrderPreviewSorter.Multisort(self.__order_previews,
+                                            [("isVidan", True), ("isDone", True), ("date_of_vidacha", False)])
 
     @order_previews.setter
     def order_previews(self, value: List[OrderPreview]):
         self.__order_previews = value
 
     @property
-    def product_templates(self):
+    def product_templates(self) -> List[Product]:
         """Список шаблонов товаров"""
         return self.__product_templates
 
@@ -116,13 +121,7 @@ class App:
         self.__orders[order.id] = order
         self.order_previews.append(order.createPreview())
 
-        firstLetter = "N"   # G - если заказ выдан, D - если заказ сделан, N - если заказ не сделан
-        if order.isDone:
-            firstLetter = "D"
-        if order.isVidan:
-            firstLetter = "G"
-        self.file_manager.ordered_filenames[order.id] = firstLetter
-
+        self.file_manager.saveOrder(order)
 
     def deleteOrderByID(self, ID: int) -> Tuple[bool, bool, bool]:
         """Возвращает три була, если bool is True, то удаление успешно.
@@ -154,7 +153,6 @@ class App:
         self.file_manager.saveOrder(order)
         index = self.__getOrderPreviewIndexByID(order.id)
         self.order_previews[index] = order.createPreview()
-        self.__saveNewOrderPreviews()
 
     def saveOrderByID(self, ID: int):
         """то же, что и сверху"""
