@@ -6,6 +6,7 @@ import os
 from datetime import date
 from typing import List, Tuple
 from random import Random
+from customtkinter import BooleanVar
 
 
 from BaH.Contribution import getValidData

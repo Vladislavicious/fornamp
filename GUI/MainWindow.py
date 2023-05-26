@@ -1,5 +1,6 @@
 ﻿import tkinter as tk
 import customtkinter as ctk
+from BaH.order import OrderPreviewSorter
 from GUI.AddWindow import *
 from GUI.EmailWindow import *
 from BaH.Contribution import *
@@ -54,6 +55,27 @@ class MainWindow(ctk.CTkToplevel):
         self.button_change_visibility = ctk.CTkButton(self.frame_tools, text="Показать выданные\n заказы", height= 40, command=self.change_visibility)
         self.button_change_visibility.pack(anchor=tk.N, pady=6)
 
+        self.__viewDone = ctk.BooleanVar()
+        self.checkbox_Done = ctk.CTkCheckBox(self.frame_tools, text="Cделанные",
+                                             command=self.checkbox_Done_command, variable=self.__viewDone,
+                                             onvalue=True, offvalue=False)
+
+        self.checkbox_Done.pack(anchor=tk.N, pady=6)
+
+        self.__viewVidan = ctk.BooleanVar()
+        self.checkbox_Vidan = ctk.CTkCheckBox(self.frame_tools, text="Выданные",
+                                             command=self.checkbox_Vidan_command, variable=self.__viewVidan,
+                                             onvalue=True, offvalue=False)
+
+        self.checkbox_Vidan.pack(anchor=tk.N, pady=6)
+
+        self.__viewUndone = ctk.BooleanVar(value=True)
+        self.checkbox_Undone = ctk.CTkCheckBox(self.frame_tools, text="Несделанные",
+                                             command=self.checkbox_Undone_command, variable=self.__viewUndone,
+                                             onvalue=True, offvalue=False)
+
+        self.checkbox_Undone.pack(anchor=tk.N, pady=6)
+
 
         self.frame_tools.pack(side=tk.LEFT, fill=tk.Y, padx=5, pady=5)
         frame_title.pack(side=tk.TOP, fill=tk.X, padx=5, pady=5)
@@ -66,6 +88,18 @@ class MainWindow(ctk.CTkToplevel):
         self.protocol("WM_DELETE_WINDOW", lambda: self.close_window())
         self.root.withdraw()
 
+    def checkbox_Done_command(self):
+
+        print("checkbox Done, current value:", self.__viewDone.get())
+        self.add_list_order()
+
+    def checkbox_Vidan_command(self):
+        print("checkbox Vidan, current value:", self.__viewVidan.get())
+        self.add_list_order()
+
+    def checkbox_Undone_command(self):
+        print("checkbox Undone, current value:", self.__viewUndone.get())
+        self.add_list_order()
 
     def change_visibility(self):
         self.order_visibility = not self.order_visibility
@@ -86,29 +120,49 @@ class MainWindow(ctk.CTkToplevel):
         self.frame_order.destroy()
         self.create_frame_order()
         for item_order in self.oders_previews_list:
-
-
-            if((item_order.isVidan == True and self.order_visibility == True) or item_order.isVidan == False):
+            shown = False
+            if (self.__viewDone.get() and item_order.isDone and not item_order.isVidan) or \
+               (self.__viewUndone.get() and not item_order.isDone) or \
+               (self.__viewVidan.get() and item_order.isVidan):
 
                 self.frame_order_info = ctk.CTkFrame(self.scroll, border_width=2, fg_color="#b8bab9", height=120)
-                self.frame_order_info.pack(fill=tk.X, padx = 10, pady=7)
+                self.frame_order_info.pack(fill=tk.X, padx=10, pady=7)
+                shown = True
 
-                if(item_order.isDone == False):
-                    self.frame_order_info.configure(border_color = "#bf6b6b")
-                elif(item_order.isDone == True and item_order.isVidan == False):
-                    self.frame_order_info.configure(border_color = "#e3a002")
-
-                    if(self.user.isAdministrator == True):
-                        self.button_vidat = ctk.CTkButton(self.frame_order_info, text = "Выдано")
-                        self.button_vidat.bind('<Button-1>', lambda event,  order = self.app.getOrderByID(item_order.id) : self.vidat_order(order, self.frame_order_info, self.button_vidat))
-                        self.button_vidat.place(relx=0.8, rely = 0.3)
+            if item_order.isVidan is True:
+                if self.__viewVidan.get():  # показываем его как выданный
+                    self.frame_order_info.configure(border_color="#77bf6d")
                 else:
-                    self.frame_order_info.configure(border_color = "#77bf6d")
-                self.label_order = ctk.CTkLabel(self.frame_order_info, text = item_order.__str__(), font = ctk.CTkFont(family="Arial", size=12))
-                self.label_order.pack( padx=10, pady = 10)
-                self.label_order.bind('<Button-1>', lambda event,  order = self.app.getOrderByID(item_order.id) : self.open_info(order))
-                self.frame_order_info.bind('<Button-1>', lambda event,  order = self.app.getOrderByID(item_order.id) : self.open_info(order))
+                    continue
 
+            elif item_order.isDone is True:
+                if self.__viewDone.get():  # показываем его как выполненный
+                    self.frame_order_info.configure(border_color="#e3a002")
+
+                    if self.user.isAdministrator is True:
+                        self.button_vidat = ctk.CTkButton(self.frame_order_info, text="Выдано")
+                        self.button_vidat.bind('<Button-1>', lambda event,
+                                               order=self.app.getOrderByID(item_order.id):
+                                               self.vidat_order(order, self.frame_order_info, self.button_vidat))
+
+                        self.button_vidat.place(relx=0.8, rely=0.3)
+                else:
+                    continue
+
+            elif item_order.isDone is False:
+                if self.__viewUndone.get():  # показываем его как невыполненный
+                    self.frame_order_info.configure(border_color="#bf6b6b")
+                else:
+                    continue
+
+            if shown:
+                self.label_order = ctk.CTkLabel(self.frame_order_info, text=item_order.__str__(),
+                                                font=ctk.CTkFont(family="Arial", size=12))
+                self.label_order.pack(padx=10, pady=10)
+                self.label_order.bind('<Button-1>', lambda event,
+                                      order=self.app.getOrderByID(item_order.id): self.open_info(order))
+                self.frame_order_info.bind('<Button-1>', lambda event,
+                                           order=self.app.getOrderByID(item_order.id): self.open_info(order))
 
     def send_email(self):
         dialog_window = DialogWindow(self, self.app, self)

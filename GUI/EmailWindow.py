@@ -28,20 +28,20 @@ class EmailWindow(ctk.CTkToplevel):
         self.frame_user_data.pack(side=tk.TOP)
         self.frame_user_data.pack_propagate(False)
 
-        label_email = ctk.CTkLabel(self.frame_user_data,text = "Ведите почту", font=self.font_, width = 400)
+        label_email = ctk.CTkLabel(self.frame_user_data,text = "Введите почту", font=self.font_, width = 400)
         label_email.pack(anchor = tk.CENTER, pady=2)
 
         self.entry_email = ctk.CTkEntry(self.frame_user_data, width = 400)
         self.entry_email.pack(anchor = tk.CENTER, pady=2)
 
-        label_email_password = ctk.CTkLabel(self.frame_user_data,text = "Ведите пароль от почты", font=self.font_, width = 400)
+        label_email_password = ctk.CTkLabel(self.frame_user_data,text = "Введите пароль от почты", font=self.font_, width = 400)
         label_email_password.pack(anchor = tk.CENTER, pady=2)
 
         self.entry_email_password = ctk.CTkEntry(self.frame_user_data, width = 400)
         self.entry_email_password.pack(anchor = tk.CENTER, pady=2)
 
 
-        self.button_autorization = ctk.CTkButton(self.frame_user_data, text = "Зарегестрировать",command = self.registration)
+        self.button_autorization = ctk.CTkButton(self.frame_user_data, text = "Зарегистрировать", command = self.registration)
         self.button_autorization.pack(anchor = tk.S, pady = 10)
 
         self.label_warning = ctk.CTkLabel(self.frame_user_data, text = "", font=self.fontmini, width = 500, height=5, text_color = "#d11515", justify = tk.CENTER)
