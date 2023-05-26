@@ -4,6 +4,7 @@ from BaH.order import OrderPreviewSorter
 from GUI.AddWindow import *
 from GUI.EmailWindow import *
 from BaH.Contribution import *
+from GUI.ConfigWindow import ConfigWindow
 
 
 #подправить конструкторы продуктов и шагов
@@ -39,8 +40,8 @@ class MainWindow(ctk.CTkToplevel):
                                   font=ctk.CTkFont(family="Arial", size=24))
         name_label.place(relx=0.37, rely=0.2)
 
-        self.button_add_order = ctk.CTkButton(self.frame_tools, text="Добавить", command=self.open_window)
-        if(self.user.isAdministrator == True):
+        if self.user.isAdministrator is True:
+            self.button_add_order = ctk.CTkButton(self.frame_tools, text="Добавить", command=self.open_window)
             self.button_add_order.pack(anchor=tk.N, pady=6)
 
         self.button_send_email = ctk.CTkButton(self.frame_tools, text="Отправить отчет", command=self.send_email)
@@ -55,27 +56,30 @@ class MainWindow(ctk.CTkToplevel):
         self.button_change_visibility = ctk.CTkButton(self.frame_tools, text="Показать выданные\n заказы", height= 40, command=self.change_visibility)
         self.button_change_visibility.pack(anchor=tk.N, pady=6)
 
+        self.button_change_route = ctk.CTkButton(self.frame_tools, text="Изменить папку\n сохранения заказов",
+                                                 height=40, command=self.change_route)
+        self.button_change_route.pack(anchor=tk.N, pady=6)
+
         self.__viewDone = ctk.BooleanVar()
         self.checkbox_Done = ctk.CTkCheckBox(self.frame_tools, text="Cделанные",
-                                             command=self.checkbox_Done_command, variable=self.__viewDone,
+                                             command=self.__checkbox_Refresh_list, variable=self.__viewDone,
                                              onvalue=True, offvalue=False)
 
         self.checkbox_Done.pack(anchor=tk.N, pady=6)
 
         self.__viewVidan = ctk.BooleanVar()
         self.checkbox_Vidan = ctk.CTkCheckBox(self.frame_tools, text="Выданные",
-                                             command=self.checkbox_Vidan_command, variable=self.__viewVidan,
-                                             onvalue=True, offvalue=False)
+                                              command=self.__checkbox_Refresh_list, variable=self.__viewVidan,
+                                              onvalue=True, offvalue=False)
 
         self.checkbox_Vidan.pack(anchor=tk.N, pady=6)
 
         self.__viewUndone = ctk.BooleanVar(value=True)
         self.checkbox_Undone = ctk.CTkCheckBox(self.frame_tools, text="Несделанные",
-                                             command=self.checkbox_Undone_command, variable=self.__viewUndone,
-                                             onvalue=True, offvalue=False)
+                                               command=self.__checkbox_Refresh_list, variable=self.__viewUndone,
+                                               onvalue=True, offvalue=False)
 
         self.checkbox_Undone.pack(anchor=tk.N, pady=6)
-
 
         self.frame_tools.pack(side=tk.LEFT, fill=tk.Y, padx=5, pady=5)
         frame_title.pack(side=tk.TOP, fill=tk.X, padx=5, pady=5)
@@ -88,17 +92,7 @@ class MainWindow(ctk.CTkToplevel):
         self.protocol("WM_DELETE_WINDOW", lambda: self.close_window())
         self.root.withdraw()
 
-    def checkbox_Done_command(self):
-
-        print("checkbox Done, current value:", self.__viewDone.get())
-        self.add_list_order()
-
-    def checkbox_Vidan_command(self):
-        print("checkbox Vidan, current value:", self.__viewVidan.get())
-        self.add_list_order()
-
-    def checkbox_Undone_command(self):
-        print("checkbox Undone, current value:", self.__viewUndone.get())
+    def __checkbox_Refresh_list(self):
         self.add_list_order()
 
     def change_visibility(self):
@@ -108,6 +102,10 @@ class MainWindow(ctk.CTkToplevel):
         else:
             self.button_change_visibility.configure(text = "Показать выданные\n заказы")
         self.add_list_order()
+
+    def change_route(self):
+        config_window = ConfigWindow(self, self.app, self)
+        config_window.grab_set()
 
     def create_frame_order(self):
 
