@@ -27,6 +27,9 @@ class FileManager():
 
         self.user_handler = UserHandler(self.key, self.accounts_filepath)
 
+    def clearOrderFilenames(self):
+        self.ordered_filenames.clear()
+
     def __readConfig(self):
         dir_name = self.__config_dir_path
         in_dir_path = "\\.ordconfig"

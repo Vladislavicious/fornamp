@@ -26,6 +26,10 @@ class App:
            сохраняет всё, что ещё не было сохранено"""
         self.__saveNewOrderPreviews()
         self.__saveTemplates()
+        self.file_manager.clearOrderFilenames()
+        self.__clearOrderPreviews()
+        self.__clearOrders()
+        self.__clearProductTemplates()
 
     @property
     def current_user(self) -> User:
@@ -54,6 +58,9 @@ class App:
     def order_previews(self, value: List[OrderPreview]):
         self.__order_previews = value
 
+    def __clearOrderPreviews(self):
+        self.__order_previews.clear()
+
     @property
     def product_templates(self) -> List[Product]:
         """Список шаблонов товаров"""
@@ -62,6 +69,9 @@ class App:
     @product_templates.setter
     def product_templates(self, value: List[Product]):
         self.__product_templates = value
+
+    def __clearProductTemplates(self):
+        self.__product_templates.clear()
 
     def makeNewProductTemplate(self, product: Product):
         """Вызывается для добавления нового шаблона"""
@@ -92,6 +102,9 @@ class App:
             order = self.__parseOrderByID(ID)
 
         return order
+
+    def __clearOrders(self):
+        self.__orders.clear()
 
     def __mergeOrders(self, orders: List[Order]):
         self.__orders = self.__orders | orders
@@ -146,6 +159,15 @@ class App:
             success3 = False
 
         return (success1, success2, success3)
+
+    def PreChangeOrderDir(self):
+        """Вызывается перед изменением папки хранения заказов"""
+        self.destroy()
+
+    def PostChangeOrderDir(self):
+        """Вызывается сразу после изменения папки хранения заказов"""
+        self.order_previews = self.file_manager.parseOrderPreviews()
+        self.product_templates = self.file_manager.parseTemplates()
 
     def saveOrder(self, order: Order):
         """Функция сохранения заказа в свой файл

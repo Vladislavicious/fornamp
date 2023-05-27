@@ -18,8 +18,6 @@ class MainWindow(ctk.CTkToplevel):
 
         self.app = app
         self.user = self.app.file_manager.user_handler.lastUser
-        self.oders_previews_list = self.app.order_previews
-        self.order_visibility = False
         self.init_main_window()
 
     def init_main_window(self):
@@ -52,9 +50,6 @@ class MainWindow(ctk.CTkToplevel):
         else:
             self.button_add_email = ctk.CTkButton(self.frame_tools, text="Редактировать\n данные почты", command=self.add_email)
         self.button_add_email.pack(anchor=tk.N, pady=6)
-
-        self.button_change_visibility = ctk.CTkButton(self.frame_tools, text="Показать выданные\n заказы", height= 40, command=self.change_visibility)
-        self.button_change_visibility.pack(anchor=tk.N, pady=6)
 
         self.button_change_route = ctk.CTkButton(self.frame_tools, text="Изменить папку\n сохранения заказов",
                                                  height=40, command=self.change_route)
@@ -95,14 +90,6 @@ class MainWindow(ctk.CTkToplevel):
     def __checkbox_Refresh_list(self):
         self.add_list_order()
 
-    def change_visibility(self):
-        self.order_visibility = not self.order_visibility
-        if(self.order_visibility == True):
-            self.button_change_visibility.configure(text = "Скрыть выданные\n заказы")
-        else:
-            self.button_change_visibility.configure(text = "Показать выданные\n заказы")
-        self.add_list_order()
-
     def change_route(self):
         config_window = ConfigWindow(self, self.app, self)
         config_window.grab_set()
@@ -117,7 +104,7 @@ class MainWindow(ctk.CTkToplevel):
     def add_list_order(self):
         self.frame_order.destroy()
         self.create_frame_order()
-        for item_order in self.oders_previews_list:
+        for item_order in self.app.order_previews:
             shown = False
             if (self.__viewDone.get() and item_order.isDone and not item_order.isVidan) or \
                (self.__viewUndone.get() and not item_order.isDone) or \
@@ -140,8 +127,8 @@ class MainWindow(ctk.CTkToplevel):
                     if self.user.isAdministrator is True:
                         self.button_vidat = ctk.CTkButton(self.frame_order_info, text="Выдано")
                         self.button_vidat.bind('<Button-1>', lambda event,
-                                               order=self.app.getOrderByID(item_order.id):
-                                               self.vidat_order(order, self.frame_order_info, self.button_vidat))
+                                               ID=item_order.id:
+                                               self.vidat_order(ID, self.frame_order_info, self.button_vidat))
 
                         self.button_vidat.place(relx=0.8, rely=0.3)
                 else:
@@ -157,10 +144,8 @@ class MainWindow(ctk.CTkToplevel):
                 self.label_order = ctk.CTkLabel(self.frame_order_info, text=item_order.__str__(),
                                                 font=ctk.CTkFont(family="Arial", size=12))
                 self.label_order.pack(padx=10, pady=10)
-                self.label_order.bind('<Button-1>', lambda event,
-                                      order=self.app.getOrderByID(item_order.id): self.open_info(order))
-                self.frame_order_info.bind('<Button-1>', lambda event,
-                                           order=self.app.getOrderByID(item_order.id): self.open_info(order))
+                self.label_order.bind('<Button-1>', lambda event, ID=item_order.id: self.open_info(ID))
+                self.frame_order_info.bind('<Button-1>', lambda event, ID=item_order.id: self.open_info(ID))
 
     def send_email(self):
         dialog_window = DialogWindow(self, self.app, self)
@@ -170,19 +155,27 @@ class MainWindow(ctk.CTkToplevel):
         email = EmailWindow(self, self.app, self)
         email.grab_set()
 
+    def open_info(self, order_id):
+        if self.user.isAdministrator is True:
+            self.button_add_order.configure(state="disabled")
 
-    def open_info(self, order):
-        self.button_add_order.configure(state = "disabled")
+        self.checkbox_Done.configure(state="disabled")
+        self.checkbox_Undone.configure(state="disabled")
+        self.checkbox_Vidan.configure(state="disabled")
+
         self.frame_order.destroy()
+
         self.button_close_info = ctk.CTkButton(self.frame_tools, text="Вернуться к заказам", command=self.close_info)
         self.button_close_info.pack(anchor=tk.N, pady=6)
+
+        order = self.app.getOrderByID(order_id)
         self.window_info = WindowInfo(self, order)
 
-
-
-    def vidat_order(self, order, frame_order_info, button_vidat):
-        frame_order_info.configure(border_color = "#77bf6d")
+    def vidat_order(self, order_id, frame_order_info, button_vidat):
+        frame_order_info.configure(border_color="#77bf6d")
         button_vidat.destroy()
+
+        order = self.app.getOrderByID(order_id)
         order.isVidan = True
         self.app.saveOrder(order)
         self.add_list_order()
@@ -191,7 +184,14 @@ class MainWindow(ctk.CTkToplevel):
         self.window_info.delete_window_info()
         del self.window_info
         self.add_list_order()
-        self.button_add_order.configure(state = "normal")
+
+        if self.user.isAdministrator is True:
+            self.button_add_order.configure(state="normal")
+
+        self.checkbox_Done.configure(state="normal")
+        self.checkbox_Undone.configure(state="normal")
+        self.checkbox_Vidan.configure(state="normal")
+
         self.button_close_info.destroy()
 
     def log_out(self):
