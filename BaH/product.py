@@ -210,6 +210,12 @@ class Product:
     def toJSON(self):
         return json.dumps(self, cls=simpleEncoder, indent=4, ensure_ascii=False)
 
+    def getAppView(self) -> str:
+        comment = ""
+        if self.commentary != "":
+            comment = f"Описание: {self.commentary}\n"
+        return f"Название товара: {self.name}\n{comment}Прибыль с реализации: {self.profit} ₽"
+
     def GetAsTemplate(self):
         """Возвращает 'пустую' копию """
         copy = deepcopy(self)  # Чтобы не калечить нынешний товар
