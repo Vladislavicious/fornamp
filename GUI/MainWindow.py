@@ -226,7 +226,7 @@ class WindowInfo(tk.Frame):
         self.main_window = main_win
         self.cur_order = order
         self.current_product = -1
-        self.username = main_win.user
+        self.username = main_win.user.login
         self.init_window_info()
 
     def init_window_info(self):
