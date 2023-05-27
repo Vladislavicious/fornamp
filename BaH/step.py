@@ -108,6 +108,11 @@ class Step:
     def GetContr(self):
         return self.__contributions
 
+    def getAppView(self) -> str:
+        if self.isDone:
+            return f"Название шага:\n{self.name}"
+        return f"Название шага: {self.name}\nВыполнено шагов {self.number_of_made}/{self.quantity}"
+
     def __str__(self) -> str:
         contributors_str = "\n".join(list(contr.__str__() for contr in self.__contributions))
 
