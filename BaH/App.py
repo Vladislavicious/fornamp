@@ -101,6 +101,11 @@ class App:
         except KeyError:
             order = self.__parseOrderByID(ID)
 
+        if order is not None:    # Проверяется на случай, если заказ был изменён извне приложения
+            previous_state = order.isDone
+            if previous_state is not order.CheckIfDone():
+                self.saveOrder(order)
+
         return order
 
     def __clearOrders(self):

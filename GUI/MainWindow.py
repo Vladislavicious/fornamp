@@ -28,15 +28,15 @@ class MainWindow(ctk.CTkToplevel):
         self.geometry("1000x600+250+100")
         self.resizable(False, False)
 
-        frame_title = ctk.CTkFrame(master=self, height=50, border_width=3, fg_color="#FFFFFF")
+        self.topbar = ctk.CTkFrame(master=self, height=50, border_width=3, fg_color="#FFFFFF")
         self.frame_tools = ctk.CTkFrame(master=self, width=150, border_width=3)
 
-        button_log_out = ctk.CTkButton(frame_title, text="Выйти", command=self.log_out)
+        button_log_out = ctk.CTkButton(self.topbar, text="Выйти", command=self.log_out)
         button_log_out.pack(side=tk.RIGHT, padx=10)
 
-        name_label = ctk.CTkLabel(frame_title, text="TASK MANAGER", fg_color="transparent",
-                                  font=ctk.CTkFont(family="Arial", size=24))
-        name_label.place(relx=0.37, rely=0.2)
+        self.title_name_label = ctk.CTkLabel(self.topbar, text="Просмотр заказов", fg_color="transparent",
+                                             font=ctk.CTkFont(family="Arial", size=24))
+        self.title_name_label.place(relx=0.37, rely=0.2)
 
         self.button_add_order = ctk.CTkButton(self.frame_tools, text="Добавить", command=self.open_window)
         self.button_add_order.pack(anchor=tk.N, pady=6)
@@ -77,8 +77,8 @@ class MainWindow(ctk.CTkToplevel):
         self.checkbox_Undone.pack(anchor=tk.N, pady=6)
 
         self.frame_tools.pack(side=tk.LEFT, fill=tk.Y, padx=5, pady=5)
-        frame_title.pack(side=tk.TOP, fill=tk.X, padx=5, pady=5)
-        frame_title.pack_propagate(False)
+        self.topbar.pack(side=tk.TOP, fill=tk.X, padx=5, pady=5)
+        self.topbar.pack_propagate(False)
         self.frame_tools.pack_propagate(False)
 
         self.create_frame_order()
@@ -155,6 +155,13 @@ class MainWindow(ctk.CTkToplevel):
         email.grab_set()
 
     def open_info(self, order_id):
+        self.title_name_label.configure(text="Заказ " + str(order_id))
+
+        if self.user.isAdministrator is True:
+            self.delete_order_button = ctk.CTkButton(self.topbar, text="Удалить",
+                                                     command=lambda ID=order_id: self.delete_order(ID))
+            self.delete_order_button.pack(side=tk.LEFT, padx=10)
+
         self.button_add_order.configure(state="disabled")
 
         self.checkbox_Done.configure(state="disabled")
@@ -168,6 +175,10 @@ class MainWindow(ctk.CTkToplevel):
 
         order = self.app.getOrderByID(order_id)
         self.window_info = WindowInfo(self, order)
+
+    def delete_order(self, order_id):
+        self.app.deleteOrderByID(order_id)
+        self.close_info()
 
     def vidat_order(self, order_id, frame_order_info, button_vidat):
         frame_order_info.configure(border_color="#77bf6d")
@@ -183,6 +194,8 @@ class MainWindow(ctk.CTkToplevel):
         del self.window_info
         self.add_list_order()
 
+        self.title_name_label.configure(text="Просмотр заказов")
+
         self.button_add_order.configure(state="normal")
 
         self.checkbox_Done.configure(state="normal")
@@ -190,6 +203,9 @@ class MainWindow(ctk.CTkToplevel):
         self.checkbox_Vidan.configure(state="normal")
 
         self.button_close_info.destroy()
+
+        if self.user.isAdministrator is True:
+            self.delete_order_button.destroy()
 
     def log_out(self):
         self.app.file_manager.user_handler.setNoLastUsers()
