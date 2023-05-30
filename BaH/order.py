@@ -158,8 +158,8 @@ class Order:
     def GetProducts(self):
         return self.__products
 
-    def AddProduct(self, step: Product):
-        self.__products.append(step)
+    def AddProduct(self, product: Product):
+        self.__products.append(product)
         self.CheckIfDone()
 
     def DeleteProduct(self, product_name: str):

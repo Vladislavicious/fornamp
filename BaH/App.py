@@ -58,6 +58,12 @@ class App:
     def order_previews(self, value: List[OrderPreview]):
         self.__order_previews = value
 
+    def append_order_previews(self, order_preview: OrderPreview):
+        self.__order_previews.append(order_preview)
+
+    def pop_order_previews(self, id: int):
+        self.__order_previews.pop(id)
+
     def __clearOrderPreviews(self):
         self.__order_previews.clear()
 
@@ -137,7 +143,7 @@ class App:
 
     def addNewOrder(self, order: Order):
         self.__orders[order.id] = order
-        self.order_previews.append(order.createPreview())
+        self.append_order_previews(order.createPreview())
 
         self.file_manager.saveOrder(order)
 
@@ -154,7 +160,7 @@ class App:
         index = self.__getOrderPreviewIndexByID(ID)
 
         if index != -1:
-            self.order_previews.pop(index)
+            self.pop_order_previews(index)
             self.__saveNewOrderPreviews()
         else:
             success2 = False

@@ -3,7 +3,7 @@ import customtkinter as ctk
 import BaH.step as bh_step
 
 
-class Step_field():     #класс шага
+class Step_field():     #  класс отображения шага в приложении
     def __init__(self, app) -> None:
         self.main_window = app
         self.window_add = self.main_window.window_add
@@ -85,8 +85,8 @@ class Step_field():     #класс шага
                                      self.window_add.number_step,
                                      False,
                                      int(self.entry_complexity.get()),
-                                     1)# ЭТО КОСТЫЛЬ НАДО ПЕРЕДЕЛАТЬ  
-            self.window_add.list_frame_product[self.window_add.current_product].list_step.append(self.step) 
+                                     1)# ЭТО КОСТЫЛЬ НАДО ПЕРЕДЕЛАТЬ
+            self.window_add.list_frame_product[self.window_add.current_product].list_step.append(self.step)
             self.is_saved = 1
             self.color_button = "#2dba52"
             self.text_button = "Редактировать"
@@ -97,8 +97,8 @@ class Step_field():     #класс шага
             self.entry_name.configure(state =  "disabled")
             self.entry_complexity.configure(state =  "disabled")
             self.index_list_steps =  self.window_add.list_frame_product[self.window_add.current_product].list_step.index(self.step)
-            
-            
+
+
 
 
     def edit(self):
@@ -106,7 +106,7 @@ class Step_field():     #класс шага
         self.entry_name.configure(state = "normal")
         self.entry_complexity.configure(state = "normal")
         self.is_saved = 2
-        
+
 
 
     def apply_edit(self):
@@ -138,7 +138,7 @@ class Step_field():     #класс шага
         self.frame_step_field.destroy()
         self.window_add.number_step -= 1
         del self.window_add.list_frame_product[self.window_add.current_product].list_frame_step[self.index]
-        
+
 
 
 
@@ -167,4 +167,3 @@ class Step_field():     #класс шага
             else:
                 self.entry_complexity.configure(fg_color="#f9f9fa", border_color= "#61bf0d", placeholder_text = "")
         return check
-
