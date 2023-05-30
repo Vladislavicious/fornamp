@@ -59,13 +59,14 @@ class ProductField():  # класс продукта
 
         self.add_product()
 
-    def create_step_field(self, frame_step_panel: ctk.CTkFrame, step: Step = None):
+    def create_step_field(self, step_scroll_panel: ctk.CTkFrame, step: Step = None, step_shown: bool = True):
+
         steps_count = len(self.step_field_list)
 
-        self.current_step_field = StepField(app=self.app, master=frame_step_panel,
+        self.current_step_field = StepField(app=self.app, master=step_scroll_panel,
                                             add_window=self.add_window, parental_product=self.product,
                                             step=step, personal_number=steps_count + 1,
-                                            master_product_field=self)
+                                            master_product_field=self, step_shown=step_shown)
 
         self.step_field_list.append(self.current_step_field)
 
@@ -96,7 +97,7 @@ class ProductField():  # класс продукта
         self.label_selling_cost.bind('<Button-1>', self.reload)
 
         self.entry_selling_cost = ctk.CTkEntry(self.frame_product_field)
-        self.entry_name.insert(0, self.selling_cost_text)
+        self.entry_selling_cost.insert(0, self.selling_cost_text)
         self.entry_selling_cost.pack(fill=tk.X, pady=5, padx=5)
         self.entry_selling_cost.bind('<Button-1>', self.reload)
 

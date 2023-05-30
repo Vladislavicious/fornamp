@@ -20,19 +20,21 @@ class WindowAdd(ctk.CTkToplevel):
         ###
         self.zakazchik_text = ""
         self.date_text = ""
-        self.prev_order = order
+        self.order = order
         self.title_text = "Добавление заказа"
-        if self.prev_order is not None:
+        if self.order is not None:
             self.title_text = "Редактирование заказа"
-            self.zakazchik_text = self.prev_order.zakazchik
-            self.date_text = self.prev_order.date_of_vidacha.strftime("%d-%m-%Y")
+            self.zakazchik_text = self.order.zakazchik
+            self.date_text = self.order.date_of_vidacha.strftime("%d-%m-%Y")
 
         self.product_field_list: List[ProductField] = list()
         self.current_product_field: ProductField = None
-
         ###
 
         self.init_window_add()
+
+        if self.order is not None:
+            self.parse_order()
 
     def init_window_add(self) -> None:
         self.geometry("1000x600+250+100")
@@ -155,12 +157,21 @@ class WindowAdd(ctk.CTkToplevel):
                                             command=self.confirm_order, width=40, height=10)
         self.button_confirm.pack(side=tk.BOTTOM, anchor=tk.E)
 
-    def add_step_field(self, step: Step = None):   # добавление новго шага
-        self.current_product_field.create_step_field(self.scroll_step, step)
+    def add_step_field(self, step: Step = None, product_field=None):   # добавление новго шага
+        if product_field is None:
+            self.current_product_field.create_step_field(self.scroll_step, step, step_shown=True)
+        else:  # В случае, если мы откуда-то берём уже готовые товары ( редактируем или шаблоны )
+            product_field.create_step_field(self.scroll_step, step, step_shown=False)
+
+    def parse_order(self):
+        for product in self.order.GetProducts():
+            product_field = self.add_product_field(product)
+            for step in product.GetSteps():
+                self.add_step_field(step, product_field)
 
     def add_product_field(self, product: Product = None):  # добавление новго продукта и добавление шага в список
         products_count = len(self.product_field_list)
-        product_field = ProductField(app=self.app, parental_order=self.prev_order,
+        product_field = ProductField(app=self.app, parental_order=self.order,
                                      personal_number=products_count + 1, add_window=self,
                                      product=product, button_add_step=self.button_add_step)
         if products_count == 0:
@@ -168,15 +179,17 @@ class WindowAdd(ctk.CTkToplevel):
 
         self.product_field_list.append(product_field)
 
+        return product_field
+
     def confirm_order(self):
         if self.check_order_field():
-            if self.prev_order is None:
-                self.prev_order = Order(id=0, zakazchik=self.zakazchik_text, date_of_creation=date.today(),
-                                        date_of_vidacha=self.dat_of_vidacha, products=list())
+            if self.order is None:
+                self.order = Order(id=0, zakazchik=self.zakazchik_text, date_of_creation=date.today(),
+                                   date_of_vidacha=self.dat_of_vidacha, products=list())
             else:
-                self.prev_order.zakazchik = self.zakazchik_text
-                self.prev_order.date_of_creation = date.today()
-                self.prev_order.date_of_vidacha = self.dat_of_vidacha
+                self.order.zakazchik = self.zakazchik_text
+                self.order.date_of_creation = date.today()
+                self.order.date_of_vidacha = self.dat_of_vidacha
             self.button_add_product.configure(state="normal")
             self.button_add_step.configure(state="normal")
 
@@ -195,7 +208,7 @@ class WindowAdd(ctk.CTkToplevel):
         for product in self.product_field_list:
             product.destroy()
         self.product_field_list.clear()
-        del self.prev_order
+
         self.MainWindow.add_list_order()
         self.MainWindow.deiconify()
         self.destroy()
@@ -273,10 +286,8 @@ class WindowAdd(ctk.CTkToplevel):
                 step = step_field.step
                 product.AddStep(step)
 
-            self.prev_order.AddProduct(product)
+            self.order.AddProduct(product)
 
-        print(self.prev_order.toJSON())
-
-        self.app.addNewOrder(self.prev_order)
+        self.app.addNewOrder(self.order)
 
         self.close_window()

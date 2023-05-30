@@ -220,7 +220,9 @@ class MainWindow(ctk.CTkToplevel):
         self.window_add = new_window
 
     def edit_order(self, order_id: int):
-        print(f"Кнопка редактирования заказа {order_id}")
+        order = self.app.getOrderByID(order_id)
+        new_window = WindowAdd(self, self.app, order)
+        self.window_add = new_window
 
     def close_window(self):
         self.app.destroy()

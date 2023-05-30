@@ -8,7 +8,7 @@ from BaH.step import Step
 class StepField():     # класс отображения шага в приложении
     def __init__(self, app, master_product_field,
                  master, add_window, parental_product: Product,
-                 step: Step = None, personal_number: int = 1) -> None:
+                 step: Step = None, personal_number: int = 1, step_shown: bool = True) -> None:
 
         self.master_product_field = master_product_field
         self.main_window = app
@@ -46,9 +46,15 @@ class StepField():     # класс отображения шага в прил�
         self.button_aply: ctk.CTkButton
         self.button_delete: ctk.CTkButton
 
-        self.add_step()
+        self.initialized = False
+        self.is_shown = step_shown
+
+        if self.is_shown:
+            self.add_step()
 
     def add_step(self):     # создание поля нового пустого шага
+        self.is_shown = True
+        self.initialized = True
         self.label_count = ctk.CTkLabel(self.master, text="Шаг № " + str(self.personal_number),
                                         font=self.font_)
         self.label_count.pack(anchor=tk.CENTER, pady=5)
@@ -129,8 +135,10 @@ class StepField():     # класс отображения шага в прил�
         self.master_product_field.delete_step_field(self)
 
     def destroy(self):
-        self.label_count.destroy()
-        self.frame_step_field.destroy()
+        if self.initialized:
+            self.label_count.destroy()
+            self.frame_step_field.destroy()
+            self.is_shown = False
 
     def check_field(self):   # проверка на введеные поля
         check = True
