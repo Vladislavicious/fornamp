@@ -210,8 +210,13 @@ class WindowAdd(ctk.CTkToplevel):
             self.product_field_list.pop(index)
             product_field.destroy()
 
-    def enumerate_product_fields(self):
-        pass
+        self.__reenumerate_product_fields()
+        self.button_add_step.configure(state="disabled")
+
+    def __reenumerate_product_fields(self):
+        for i, prod_f in enumerate(self.product_field_list):
+            prod_f.personal_number = i + 1
+            prod_f.reconfigure_personal_number()
 
     def edit_data_vidachi_field(self):  # редактирование поля ввода даты, если она введена неверно
         self.entry_data_order.delete(first_index=0, last_index=len(self.entry_data_order.get()))
@@ -225,7 +230,8 @@ class WindowAdd(ctk.CTkToplevel):
         self.date_text = self.entry_data_order.get()
         if self.zakazchik_text == "":
             self.entry_zakazchik_order.configure(fg_color="#faebeb", border_color="#e64646",
-                                                 placeholder_text="Заполните это поле", placeholder_text_color="#979da2")
+                                                 placeholder_text="Заполните это поле",
+                                                 placeholder_text_color="#979da2")
             self.label_zakazchik.focus()
             check = False
         elif len(self.entry_zakazchik_order.get()) >= 25:

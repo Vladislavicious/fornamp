@@ -63,8 +63,9 @@ class ProductField():  # класс продукта
         steps_count = len(self.step_field_list)
 
         self.current_step_field = StepField(app=self.app, master=frame_step_panel,
-                                                 add_window=self.add_window, parental_product=self.product,
-                                                 step=step, personal_number=steps_count + 1)
+                                            add_window=self.add_window, parental_product=self.product,
+                                            step=step, personal_number=steps_count + 1,
+                                            master_product_field=self)
 
         self.step_field_list.append(self.current_step_field)
 
@@ -198,6 +199,26 @@ class ProductField():  # класс продукта
         self.label_count.destroy()
         self.frame_product_field.destroy()
 
+    def delete_step_field(self, step_field: StepField):
+        index = -1
+        for i, step_f in enumerate(self.step_field_list):
+            if step_field is step_f:
+                index = i
+                break
+        if index != -1:
+            self.step_field_list.pop(index)
+            step_field.destroy()
+
+        self.__reenumerate_step_fields()
+
+    def __reenumerate_step_fields(self):
+        for i, step_f in enumerate(self.step_field_list):
+            step_f.personal_number = i + 1
+            step_f.reconfigure_personal_number()
+
+    def reconfigure_personal_number(self):
+        self.label_count.configure(text="Товар № " + str(self.personal_number))
+
     def edit_state_step_button(self, state_aply: str):
         self.entry_name.configure(state=state_aply)
         self.entry_selling_cost.configure(state=state_aply)
@@ -293,4 +314,3 @@ class ProductField():  # класс продукта
                 step_field.add_step()
 
             self.add_window.current_product_field = self
-            print("reload")

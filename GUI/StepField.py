@@ -6,9 +6,11 @@ from BaH.step import Step
 
 
 class StepField():     # класс отображения шага в приложении
-    def __init__(self, app, master, add_window, parental_product: Product,
+    def __init__(self, app, master_product_field,
+                 master, add_window, parental_product: Product,
                  step: Step = None, personal_number: int = 1) -> None:
 
+        self.master_product_field = master_product_field
         self.main_window = app
         self.font_ = ctk.CTkFont(family="Arial", size=16)
         self.fontmini = ctk.CTkFont(family="Arial", size=12)
@@ -80,7 +82,7 @@ class StepField():     # класс отображения шага в прил�
                                              fg_color=self.color_button, hover_color="#189e3b", command=self.edit)
         self.button_aply.pack(side=tk.LEFT, padx=10)
 
-        self.button_delete = ctk.CTkButton(self.frame_step_field, text="Удалить", command=self.destroy,
+        self.button_delete = ctk.CTkButton(self.frame_step_field, text="Удалить", command=self.delete,
                                            fg_color="#d9071c", hover_color="#ad0314")
 
         self.button_delete.pack(side=tk.RIGHT, padx=10)
@@ -119,6 +121,12 @@ class StepField():     # класс отображения шага в прил�
             self.button_aply.configure(fg_color="#2dba52", hover_color="#189e3b",
                                        text="Редактировать", command=self.edit)
             self.is_saved = True
+
+    def reconfigure_personal_number(self):
+        self.label_count.configure(text="Шаг № " + str(self.personal_number))
+
+    def delete(self):
+        self.master_product_field.delete_step_field(self)
 
     def destroy(self):
         self.label_count.destroy()
