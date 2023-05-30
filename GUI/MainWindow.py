@@ -159,6 +159,7 @@ class MainWindow(ctk.CTkToplevel):
 
         if self.user.isAdministrator is True:
             self.delete_order_button = ctk.CTkButton(self.topbar, text="Удалить",
+                                                     fg_color="#ba3434", hover_color="#bf6b6b",
                                                      command=lambda ID=order_id: self.delete_order(ID))
             self.delete_order_button.pack(side=tk.LEFT, padx=10)
 
