@@ -1,17 +1,12 @@
-﻿import tkinter as tk
+import tkinter as tk
 import customtkinter as ctk
 from BaH.App import App
-from BaH.order import OrderPreviewSorter
 from BaH.step import Step
-from GUI.AddWindow import *
-from altGUI.NewWindowAdd import NewWindowAdd
-from GUI.EmailWindow import *
-from BaH.Contribution import *
+from GUI.WindowAdd import WindowAdd
+from GUI.EmailWindow import EmailWindow
+from GUI.EmailWindow import DialogWindow
 from GUI.ConfigWindow import ConfigWindow
 
-
-#подправить конструкторы продуктов и шагов
-#испрвить баг в котором при создании заказа с несколькими продуктами показывает у продуктов одни и те же шаги если после создание этого заказа сначала открыть другой заказ  (при переходе в show_info не меняется индекс)
 
 class MainWindow(ctk.CTkToplevel):
     def __init__(self, root, app: App):
@@ -106,7 +101,7 @@ class MainWindow(ctk.CTkToplevel):
     def add_list_order(self):
         self.frame_order.destroy()
         self.create_frame_order()
-        for item_order in self.app.order_previews:
+        for item_order in self.app.sorted_order_previews:
             shown = False
             if (self.__viewDone.get() and item_order.isDone and not item_order.isVidan) or \
                (self.__viewUndone.get() and not item_order.isDone) or \
@@ -221,7 +216,8 @@ class MainWindow(ctk.CTkToplevel):
         self.destroy()
 
     def open_window(self):
-        self.window_add = WindowAdd(self, self)
+        new_window = WindowAdd(self, self.app)
+        self.window_add = new_window
 
     def edit_order(self, order_id: int):
         print(f"Кнопка редактирования заказа {order_id}")

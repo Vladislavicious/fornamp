@@ -48,21 +48,23 @@ class App:
             self.__mail_account = None
 
     @property
-    def order_previews(self) -> List[OrderPreview]:
+    def sorted_order_previews(self) -> List[OrderPreview]:
         """Список структур для предварительного просмотра заказа
            по умолчанию возвращает отсортированным"""
-        return OrderPreviewSorter.Multisort(self.__order_previews,
-                                            [("isVidan", True), ("isDone", True), ("date_of_vidacha", False)])
+        sorted_previews = OrderPreviewSorter.Multisort(self.__order_previews,
+                                                       [("isVidan", True), ("isDone", True),
+                                                        ("date_of_vidacha", False)])
+        self.order_previews = sorted_previews
+        return sorted_previews
+
+    @property
+    def order_previews(self) -> List[OrderPreview]:
+        """Список структур для предварительного просмотра заказа"""
+        return self.__order_previews
 
     @order_previews.setter
     def order_previews(self, value: List[OrderPreview]):
         self.__order_previews = value
-
-    def append_order_previews(self, order_preview: OrderPreview):
-        self.__order_previews.append(order_preview)
-
-    def pop_order_previews(self, id: int):
-        self.__order_previews.pop(id)
 
     def __clearOrderPreviews(self):
         self.__order_previews.clear()
@@ -143,7 +145,7 @@ class App:
 
     def addNewOrder(self, order: Order):
         self.__orders[order.id] = order
-        self.append_order_previews(order.createPreview())
+        self.order_previews.append(order.createPreview())
 
         self.file_manager.saveOrder(order)
 
@@ -160,7 +162,7 @@ class App:
         index = self.__getOrderPreviewIndexByID(ID)
 
         if index != -1:
-            self.pop_order_previews(index)
+            self.order_previews.pop(index)
             self.__saveNewOrderPreviews()
         else:
             success2 = False
@@ -211,7 +213,6 @@ class App:
 
     def __CreateOtchetMessage(self, TO: str, msg_text: str = ""):
         orders, filepath = self.file_manager.CreateStatusHTML()
-        dict()
         orders_dict = dict(list((order.id, order) for order in orders))
 
         self.__mergeOrders(orders_dict)

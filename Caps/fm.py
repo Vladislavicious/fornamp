@@ -194,7 +194,7 @@ class FileManager():
             firstLetter = "D"
         if order.isVidan:
             firstLetter = "G"
-        self.ordered_filenames[order.id] = firstLetter
+        self.ordered_filenames[str(order.id)] = firstLetter
 
         Order.toFile(order, self.orders_dir_path)
 

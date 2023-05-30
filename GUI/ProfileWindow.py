@@ -1,13 +1,15 @@
 ﻿import tkinter as tk
 import customtkinter as ctk
-import GUI.MainWindow as gui
-import BaH.App as application
+
+from BaH.App import App
+from GUI.MainWindow import MainWindow
+
 
 class ProfileWindow(tk.Frame):
     def __init__(self, root):
         super().__init__(root)
         self.root = root
-        self.app = application.App()
+        self.app = App()
         self.user_handler = self.app.file_manager.user_handler
         self.init_profile_window()
 
@@ -128,10 +130,10 @@ class ProfileWindow(tk.Frame):
         else:
             self.entry_login.configure(fg_color="#faebeb", border_color= "#e64646")
             self.entry_password.configure(fg_color="#faebeb", border_color= "#e64646")
-            self.label_warning.configure( text = "Неправильный логин или пароль")
+            self.label_warning.configure(text="Неправильный логин или пароль")
 
 
 
 
     def open_main_window(self):
-        gui.MainWindow(self.root, self.app)
+        MainWindow(self.root, self.app)

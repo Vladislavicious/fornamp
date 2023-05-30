@@ -2,19 +2,17 @@ from datetime import date
 import tkinter as tk
 from typing import List
 import customtkinter as ctk
-from BaH import App
 
+from BaH import App
 from BaH.order import Order
 from BaH.product import Product
 from BaH.step import Step
 from Caps.listFuncs import ValidateDate
-from altGUI import NewMainWindow
-from altGUI.NewProductField import New_Product_field
-from altGUI.NewStepField import new_Step_field
+from GUI.ProductField import ProductField
 
 
-class NewWindowAdd(ctk.CTkToplevel):
-    def __init__(self, MainWindow: NewMainWindow, app: App, order: Order = None):
+class WindowAdd(ctk.CTkToplevel):
+    def __init__(self, MainWindow, app: App, order: Order = None):
         super().__init__(MainWindow)
 
         self.app = app
@@ -29,8 +27,8 @@ class NewWindowAdd(ctk.CTkToplevel):
             self.zakazchik_text = self.prev_order.zakazchik
             self.date_text = self.prev_order.date_of_vidacha.strftime("%d-%m-%Y")
 
-        self.product_field_list: List[New_Product_field] = list()
-        self.current_product_field: New_Product_field = None
+        self.product_field_list: List[ProductField] = list()
+        self.current_product_field: ProductField = None
 
         ###
 
@@ -162,9 +160,9 @@ class NewWindowAdd(ctk.CTkToplevel):
 
     def add_product_field(self, product: Product = None):  # добавление новго продукта и добавление шага в список
         products_count = len(self.product_field_list)
-        product_field = New_Product_field(app=self.app, parental_order=self.prev_order,
-                                          personal_number=products_count + 1, add_window=self,
-                                          product=product, button_add_step=self.button_add_step)
+        product_field = ProductField(app=self.app, parental_order=self.prev_order,
+                                     personal_number=products_count + 1, add_window=self,
+                                     product=product, button_add_step=self.button_add_step)
         if products_count == 0:
             self.current_product_field = product_field
 
@@ -202,7 +200,7 @@ class NewWindowAdd(ctk.CTkToplevel):
         self.MainWindow.deiconify()
         self.destroy()
 
-    def delete_product_field(self, product_field: New_Product_field):
+    def delete_product_field(self, product_field: ProductField):
         index = -1
         for i, prod_f in enumerate(self.product_field_list):
             if product_field is prod_f:

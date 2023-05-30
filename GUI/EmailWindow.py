@@ -1,5 +1,4 @@
 ﻿import tkinter as tk
-from turtle import width
 import customtkinter as ctk
 
 
