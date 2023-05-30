@@ -158,10 +158,14 @@ class MainWindow(ctk.CTkToplevel):
         self.title_name_label.configure(text="Заказ " + str(order_id))
 
         if self.user.isAdministrator is True:
+            self.edit_order_button = ctk.CTkButton(self.topbar, text="Редактировать",
+                                                   command=lambda ID=order_id: self.edit_order(ID))
+            self.edit_order_button.pack(side=tk.LEFT, padx=10)
             self.delete_order_button = ctk.CTkButton(self.topbar, text="Удалить",
                                                      fg_color="#ba3434", hover_color="#bf6b6b",
                                                      command=lambda ID=order_id: self.delete_order(ID))
             self.delete_order_button.pack(side=tk.LEFT, padx=10)
+
 
         self.button_add_order.configure(state="disabled")
 
@@ -207,6 +211,7 @@ class MainWindow(ctk.CTkToplevel):
 
         if self.user.isAdministrator is True:
             self.delete_order_button.destroy()
+            self.edit_order_button.destroy()
 
     def log_out(self):
         self.app.file_manager.user_handler.setNoLastUsers()
@@ -215,6 +220,9 @@ class MainWindow(ctk.CTkToplevel):
 
     def open_window(self):
         self.window_add = WindowAdd(self, self)
+
+    def edit_order(self, order_id: int):
+        print(f"Кнопка редактирования заказа {order_id}")
 
     def close_window(self):
         self.app.destroy()

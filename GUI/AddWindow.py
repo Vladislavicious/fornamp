@@ -53,9 +53,12 @@ class WindowAdd(ctk.CTkToplevel):
         self.frame_common_panel.pack(anchor=tk.W, side=tk.TOP)
         self.frame_common_panel.pack_propagate(False)
 
-        self.frame_order_panel = ctk.CTkFrame(self.frame_common_panel, border_width=1, width=250, corner_radius=0, height=40)
-        self.frame_product_panel = ctk.CTkFrame(self.frame_common_panel, border_width=1, width=375, corner_radius=0, height=40)
-        self.frame_step_panel = ctk.CTkFrame(self.frame_common_panel, border_width=1, width=375, corner_radius=0, height=40)
+        self.frame_order_panel = ctk.CTkFrame(self.frame_common_panel, border_width=1,
+                                              width=250, corner_radius=0, height=40)
+        self.frame_product_panel = ctk.CTkFrame(self.frame_common_panel, border_width=1,
+                                                width=375, corner_radius=0, height=40)
+        self.frame_step_panel = ctk.CTkFrame(self.frame_common_panel, border_width=1,
+                                             width=375, corner_radius=0, height=40)
 
         self.frame_order_panel.pack(side=tk.LEFT)
         self.frame_order_panel.pack_propagate(False)

@@ -26,7 +26,6 @@ class Product_field():  #класс продукта
         self.label_production_cost: ctk.CTkLabel
         self.entry_production_cost: ctk.CTkEntry
         self.label_commentariy: ctk.CTkLabel
-        self.entry_commentariy: ctk.CTkEntry
         self.label_quantity: ctk.CTkLabel
         self.entry_quantity: ctk.CTkEntry
 
@@ -47,7 +46,7 @@ class Product_field():  #класс продукта
         self.frame_product_field.pack(side=tk.TOP, padx=1, pady=1)
         self.frame_product_field.pack_propagate(False)
         self.frame_product_field.bind('<Button-1>', self.reload)
-        
+
 
         self.label_name = ctk.CTkLabel(self.frame_product_field, text="Введите название товара", font=self.fontmini)
         self.label_name.pack(anchor=tk.CENTER, pady=5)
@@ -114,10 +113,10 @@ class Product_field():  #класс продукта
             self.edit_state_step_button("disabled")
             self.is_saved = 1
             self.check_button_add_order()
-                
 
 
-            
+
+
 
 
     def edit(self):
@@ -141,7 +140,7 @@ class Product_field():  #класс продукта
             self.edit_state_step_button("disabled")
             self.button_aply.configure(fg_color = "#2dba52", hover_color = "#189e3b", text = "Редактировать", command = self.edit)
             self.check_button_add_order()
-        
+
 
 
     def delete_product(self):
@@ -153,7 +152,7 @@ class Product_field():  #класс продукта
                 self.window_add.list_frame_product[i].count = self.window_add.list_frame_product[i].count - 1
                 self.window_add.list_frame_product[i].label_count.configure(text = "Продукт №" + str(self.window_add.list_frame_product[i].count))
 
-               
+
 
         self.label_count.destroy()
         self.frame_product_field.destroy()
@@ -165,8 +164,8 @@ class Product_field():  #класс продукта
             self.window_add.current_product = 1
             self.window_add.list_frame_product[0].reload(tk.Event)
         self.check_button_add_order()
-            
-        
+
+
 
     def check_button_add_order(self):
         for item in self.window_add.list_frame_product:
@@ -175,7 +174,7 @@ class Product_field():  #класс продукта
                 break
             else:
                 self.window_add.button_add_order.configure(state = "normal")
-        
+
 
 
     def edit_state_step_button(self, state_aply: str):
@@ -251,7 +250,7 @@ class Product_field():  #класс продукта
                     check = False
                 else:
                     item.frame_step_field.configure(border_color = "#979da2")
-        
+
         if(not(check)):
             self.frame_product_field.configure(border_color = "#e64646")
         else:
@@ -271,4 +270,3 @@ class Product_field():  #класс продукта
             self.window_add.button_add_step.configure(state = "disabled")
         else:
             self.window_add.button_add_step.configure(state = "normal")
-
