@@ -172,8 +172,13 @@ class NewWindowAdd(ctk.CTkToplevel):
 
     def confirm_order(self):
         if self.check_order_field():
-            self.prev_order = Order(id=0, zakazchik=self.zakazchik_text, date_of_creation=date.today(),
-                                    date_of_vidacha=self.dat_of_vidacha)
+            if self.prev_order is None:
+                self.prev_order = Order(id=0, zakazchik=self.zakazchik_text, date_of_creation=date.today(),
+                                        date_of_vidacha=self.dat_of_vidacha, products=list())
+            else:
+                self.prev_order.zakazchik = self.zakazchik_text
+                self.prev_order.date_of_creation = date.today()
+                self.prev_order.date_of_vidacha = self.dat_of_vidacha
             self.button_add_product.configure(state="normal")
             self.button_add_step.configure(state="normal")
 
@@ -192,7 +197,7 @@ class NewWindowAdd(ctk.CTkToplevel):
         for product in self.product_field_list:
             product.destroy()
         self.product_field_list.clear()
-
+        del self.prev_order
         self.MainWindow.add_list_order()
         self.MainWindow.deiconify()
         self.destroy()

@@ -144,7 +144,7 @@ class New_Product_field():  # класс продукта
             self.product = Product(name=self.name_text, selling_cost=int(self.selling_cost_text),
                                    quantity=int(self.quantity_text),
                                    production_cost=int(self.production_cost_text),
-                                   commentary=self.commentary_text)
+                                   commentary=self.commentary_text, steps=list())
 
             self.button_apply.configure(fg_color="#2dba52", hover_color="#189e3b",
                                         text="Редактировать", command=self.edit)
