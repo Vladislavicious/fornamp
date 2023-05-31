@@ -42,7 +42,6 @@ class ProductField():  # класс продукта
 
         self.parse_width_height()
 
-
         self.is_saved: bool = False
         self.font_ = ctk.CTkFont(family="Arial", size=16)
         self.fontmini = ctk.CTkFont(family="Arial", size=12)

@@ -3,8 +3,6 @@ import customtkinter as ctk
 
 from BaH.order import Order
 from BaH.product import Product
-from BaH.step import Step
-from GUI.StepField import StepField
 from GUI.ProductField import ProductField
 
 

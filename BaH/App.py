@@ -90,7 +90,7 @@ class App:
         for templ in self.__product_templates:
             if templ.name == template.name:
                 isViable = False
-        
+
         if isViable:
             self.product_templates.append(template)
 
