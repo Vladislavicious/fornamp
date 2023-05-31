@@ -18,11 +18,13 @@ class WindowAdd(ctk.CTkToplevel):
         self.app = app
         self.MainWindow = MainWindow
         ###
+        self.order_parsed = False
         self.zakazchik_text = ""
         self.date_text = ""
         self.order = order
         self.title_text = "Добавление заказа"
         if self.order is not None:
+            self.order_parsed = True
             self.title_text = "Редактирование заказа"
             self.zakazchik_text = self.order.zakazchik
             self.date_text = self.order.date_of_vidacha.strftime("%d-%m-%Y")
@@ -205,13 +207,13 @@ class WindowAdd(ctk.CTkToplevel):
         return check
 
     def close_window(self):
-        for product in self.product_field_list:
-            product.destroy()
-        self.product_field_list.clear()
-
+        self.frame_order_panel.destroy()
+        self.frame_product_panel.destroy()
+        self.frame_step_panel.destroy()
+        self.frame_common_panel.destroy()
+        self.destroy()
         self.MainWindow.add_list_order()
         self.MainWindow.deiconify()
-        self.destroy()
 
     def delete_product_field(self, product_field: ProductField):
         index = -1
@@ -279,6 +281,9 @@ class WindowAdd(ctk.CTkToplevel):
            Из этих степ-филдов берёт список шагов, шаги пихает в продукт
            продукты пихает в список, спиоск продуктов в заказ
            заказ сохраняет"""
+        if self.order_parsed is True:  # Если мы редактируем
+            self.order.ClearProducts()
+
         for product_field in self.product_field_list:
             product = product_field.product
 
@@ -288,6 +293,9 @@ class WindowAdd(ctk.CTkToplevel):
 
             self.order.AddProduct(product)
 
-        self.app.addNewOrder(self.order)
+        if self.order_parsed is False:
+            self.app.addNewOrder(self.order)
+        else:  # Если мы редактируем
+            self.app.saveOrder(self.order)
 
         self.close_window()

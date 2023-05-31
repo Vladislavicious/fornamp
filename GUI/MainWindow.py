@@ -152,6 +152,14 @@ class MainWindow(ctk.CTkToplevel):
         email.grab_set()
 
     def open_info(self, order_id):
+        self.button_add_order.configure(state="disabled")
+
+        self.checkbox_Done.configure(state="disabled")
+        self.checkbox_Undone.configure(state="disabled")
+        self.checkbox_Vidan.configure(state="disabled")
+
+        self.frame_order.destroy()
+
         self.title_name_label.configure(text="Заказ " + str(order_id))
 
         if self.user.isAdministrator is True:
@@ -162,15 +170,6 @@ class MainWindow(ctk.CTkToplevel):
                                                      fg_color="#ba3434", hover_color="#bf6b6b",
                                                      command=lambda ID=order_id: self.delete_order(ID))
             self.delete_order_button.pack(side=tk.LEFT, padx=10)
-
-
-        self.button_add_order.configure(state="disabled")
-
-        self.checkbox_Done.configure(state="disabled")
-        self.checkbox_Undone.configure(state="disabled")
-        self.checkbox_Vidan.configure(state="disabled")
-
-        self.frame_order.destroy()
 
         self.button_close_info = ctk.CTkButton(self.frame_tools, text="Вернуться к заказам", command=self.close_info)
         self.button_close_info.pack(anchor=tk.N, pady=6)
@@ -193,6 +192,12 @@ class MainWindow(ctk.CTkToplevel):
 
     def close_info(self):
         self.window_info.delete_window_info()
+
+        self.button_close_info.destroy()
+        if self.user.isAdministrator is True:
+            self.delete_order_button.destroy()
+            self.edit_order_button.destroy()
+
         del self.window_info
         self.add_list_order()
 
@@ -204,12 +209,6 @@ class MainWindow(ctk.CTkToplevel):
         self.checkbox_Undone.configure(state="normal")
         self.checkbox_Vidan.configure(state="normal")
 
-        self.button_close_info.destroy()
-
-        if self.user.isAdministrator is True:
-            self.delete_order_button.destroy()
-            self.edit_order_button.destroy()
-
     def log_out(self):
         self.app.file_manager.user_handler.setNoLastUsers()
         self.root.deiconify()
@@ -220,6 +219,7 @@ class MainWindow(ctk.CTkToplevel):
         self.window_add = new_window
 
     def edit_order(self, order_id: int):
+        self.close_info()
         order = self.app.getOrderByID(order_id)
         new_window = WindowAdd(self, self.app, order)
         self.window_add = new_window
@@ -254,13 +254,11 @@ class WindowInfo(tk.Frame):
         self.scroll_step = ctk.CTkScrollableFrame(master=self.frame_info_step, height=600)
         self.scroll_step.pack(padx=3, pady=3, fill=tk.X)
 
-
     def show_product(self):
 
         self.products = self.cur_order.GetProducts()
         for item in self.products:
             self.product_info = ProductInfo(self, item)      # Не очень понимаю зачем в self это хранить
-
 
     def delete_window_info(self):
         self.frame_info_product.destroy()
