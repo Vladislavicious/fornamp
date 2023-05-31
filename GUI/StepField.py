@@ -50,16 +50,16 @@ class StepField():     # класс отображения шага в прил�
         self.is_shown = step_shown
 
         if self.is_shown:
-            self.add_step()
+            self.add_step(self.master)
 
-    def add_step(self):     # создание поля нового пустого шага
+    def add_step(self, scroll_step):     # создание поля нового пустого шага
         self.is_shown = True
         self.initialized = True
-        self.label_count = ctk.CTkLabel(self.master, text="Шаг № " + str(self.personal_number),
+        self.label_count = ctk.CTkLabel(scroll_step, text="Шаг № " + str(self.personal_number),
                                         font=self.font_)
         self.label_count.pack(anchor=tk.CENTER, pady=5)
 
-        self.frame_step_field = ctk.CTkFrame(self.master, border_width=2, width=350, height=190)
+        self.frame_step_field = ctk.CTkFrame(scroll_step, border_width=2, width=350, height=190)
         self.frame_step_field.pack(side=tk.TOP, padx=1, pady=1)
         self.frame_step_field.pack_propagate(False)
 
@@ -135,7 +135,7 @@ class StepField():     # класс отображения шага в прил�
         self.master_product_field.delete_step_field(self)
 
     def destroy(self):
-        if self.initialized:
+        if self.initialized and self.is_shown:
             self.label_count.destroy()
             self.frame_step_field.destroy()
             self.is_shown = False
