@@ -152,6 +152,14 @@ class MainWindow(ctk.CTkToplevel):
         email.grab_set()
 
     def open_info(self, order_id):
+        self.button_add_order.configure(state="disabled")
+
+        self.checkbox_Done.configure(state="disabled")
+        self.checkbox_Undone.configure(state="disabled")
+        self.checkbox_Vidan.configure(state="disabled")
+
+        self.frame_order.destroy()
+
         self.title_name_label.configure(text="Заказ " + str(order_id))
 
         if self.user.isAdministrator is True:
@@ -162,15 +170,6 @@ class MainWindow(ctk.CTkToplevel):
                                                      fg_color="#ba3434", hover_color="#bf6b6b",
                                                      command=lambda ID=order_id: self.delete_order(ID))
             self.delete_order_button.pack(side=tk.LEFT, padx=10)
-
-
-        self.button_add_order.configure(state="disabled")
-
-        self.checkbox_Done.configure(state="disabled")
-        self.checkbox_Undone.configure(state="disabled")
-        self.checkbox_Vidan.configure(state="disabled")
-
-        self.frame_order.destroy()
 
         self.button_close_info = ctk.CTkButton(self.frame_tools, text="Вернуться к заказам", command=self.close_info)
         self.button_close_info.pack(anchor=tk.N, pady=6)
@@ -193,6 +192,12 @@ class MainWindow(ctk.CTkToplevel):
 
     def close_info(self):
         self.window_info.delete_window_info()
+
+        self.button_close_info.destroy()
+        if self.user.isAdministrator is True:
+            self.delete_order_button.destroy()
+            self.edit_order_button.destroy()
+
         del self.window_info
         self.add_list_order()
 
@@ -204,12 +209,6 @@ class MainWindow(ctk.CTkToplevel):
         self.checkbox_Undone.configure(state="normal")
         self.checkbox_Vidan.configure(state="normal")
 
-        self.button_close_info.destroy()
-
-        if self.user.isAdministrator is True:
-            self.delete_order_button.destroy()
-            self.edit_order_button.destroy()
-
     def log_out(self):
         self.app.file_manager.user_handler.setNoLastUsers()
         self.root.deiconify()
@@ -220,6 +219,7 @@ class MainWindow(ctk.CTkToplevel):
         self.window_add = new_window
 
     def edit_order(self, order_id: int):
+        self.close_info()
         order = self.app.getOrderByID(order_id)
         new_window = WindowAdd(self, self.app, order)
         self.window_add = new_window
@@ -254,18 +254,27 @@ class WindowInfo(tk.Frame):
         self.scroll_step = ctk.CTkScrollableFrame(master=self.frame_info_step, height=600)
         self.scroll_step.pack(padx=3, pady=3, fill=tk.X)
 
+    def create_template_button(self):
+        self.button_save_as_template = ctk.CTkButton(master=self.scroll_step, text="Сохранить как шаблон",
+                                                     command=self.save_as_template, width=40, height=10)
+        self.button_save_as_template.pack(side=tk.BOTTOM, anchor=tk.E)
 
     def show_product(self):
 
         self.products = self.cur_order.GetProducts()
+
         for item in self.products:
             self.product_info = ProductInfo(self, item)      # Не очень понимаю зачем в self это хранить
-
 
     def delete_window_info(self):
         self.frame_info_product.destroy()
         self.frame_info_step.destroy()
         self.main_window.create_frame_order()
+
+    def save_as_template(self):
+        """Сохраняет нынешний товар, как шаблон"""
+        if self.current_product != -1:
+            print(self.current_product)
 
 
 class ProductInfo(tk.Frame):
@@ -273,9 +282,9 @@ class ProductInfo(tk.Frame):
         self.info_window = info_window
         self.prod_index = self.info_window.products.index(item)
         self.step = self.info_window.products[self.prod_index].GetSteps()
-        self.init_stepInfo(item)
+        self.init_ProductInfo(item)
 
-    def init_stepInfo(self, item):
+    def init_ProductInfo(self, item):
         self.frame_product_show = ctk.CTkFrame(self.info_window.scroll_product, border_width=2,
                                                fg_color="#b8bab9", height=90, width=150)
         self.frame_product_show.pack(fill=tk.X, padx=10, pady=7)
@@ -284,7 +293,7 @@ class ProductInfo(tk.Frame):
                                           font=ctk.CTkFont(family="Arial", size=12))
         self.label_product.pack(fill=tk.X, padx=10, pady=10)
         self.label_product.bind('<Button-1>', self.open_step_info)
-        if item.isDone is False:
+        if item.CheckIfDone() is False:
             self.frame_product_show.configure(border_color="#bf6b6b")
         else:
             self.frame_product_show.configure(border_color="#77bf6d")
@@ -293,11 +302,13 @@ class ProductInfo(tk.Frame):
         if self.info_window.current_product != self.prod_index:
             self.info_window.frame_info_step.destroy()
             self.info_window.create_step_frame()
+            self.info_window.create_template_button()
 
             for item_step in self.step:
                 step_info = StepInfo(self.info_window, item_step, self.frame_product_show, self.prod_index)
 
             self.info_window.current_product = self.prod_index
+
 
 
 class StepInfo(tk.Frame):

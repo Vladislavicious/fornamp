@@ -173,6 +173,9 @@ class Order:
 
         self.CheckIfDone()
 
+    def ClearProducts(self):
+        self.__products.clear()
+
     def __str__(self) -> str:
         """вывод инф-и о классе для отладки"""
         prods_str = "\n".join(list(prod.__str__() for prod in self.GetProducts()))

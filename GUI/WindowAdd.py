@@ -18,11 +18,13 @@ class WindowAdd(ctk.CTkToplevel):
         self.app = app
         self.MainWindow = MainWindow
         ###
+        self.order_parsed = False
         self.zakazchik_text = ""
         self.date_text = ""
         self.order = order
         self.title_text = "Добавление заказа"
         if self.order is not None:
+            self.order_parsed = True
             self.title_text = "Редактирование заказа"
             self.zakazchik_text = self.order.zakazchik
             self.date_text = self.order.date_of_vidacha.strftime("%d-%m-%Y")
@@ -88,7 +90,11 @@ class WindowAdd(ctk.CTkToplevel):
 
         self.button_add_product = ctk.CTkButton(self.frame_product_panel, text="Добавить товар",
                                                 command=self.add_product_field)
-        self.button_add_product.pack(side=tk.TOP, pady=7)
+        self.button_add_product.pack(side=tk.RIGHT, pady=7)
+
+        self.button_choose_from_template = ctk.CTkButton(self.frame_product_panel, text="Шаблоны",
+                                                         command=self.choose_from_template)
+        self.button_choose_from_template.pack(side=tk.LEFT, pady=7)
 
         self.button_add_step = ctk.CTkButton(self.frame_step_panel, text="Добавить шаг",
                                              command=self.add_step_field)
@@ -135,7 +141,7 @@ class WindowAdd(ctk.CTkToplevel):
             self.entry_data_order.insert(0, self.date_text)
 
         self.entry_data_order.pack(fill=tk.X, pady=5)
-        self.entry_data_order.bind('<KeyRelease>', self.edit_data)
+        self.entry_data_order.bind('<KeyRelease>', self.__edit_data)
 
         self.label_zakazchik = ctk.CTkLabel(master=frame_order_field,
                                             text="Введите заказчика", font=self.font_)
@@ -181,6 +187,18 @@ class WindowAdd(ctk.CTkToplevel):
 
         return product_field
 
+    def choose_from_template(self):
+        """
+        Пока что это пустая кнопка
+        Вижу это как добавление в эту колонку всех продуктов из шаблонов
+        их надо брать из App
+        но это будут не просто продукты, а продукты в которых удалить - удаляет шаблон из
+        списка шаблонов ( функцией в App ), а подтвердить - убирает все шаблоны с экрана,
+        добавляет обратно все продукты, которые были добавлены пользователем, а также
+        тот шаблон, который выбрал пользователь
+        """
+        pass
+
     def confirm_order(self):
         if self.check_order_field():
             if self.order is None:
@@ -196,6 +214,8 @@ class WindowAdd(ctk.CTkToplevel):
             if len(self.product_field_list) >= 1:
                 if self.__check_if_all_saved() is True:
                     self.button_add_order.configure(state="normal")
+                else:
+                    self.button_add_order.configure(state="disabled")
 
     def __check_if_all_saved(self):
         check = True
@@ -205,13 +225,14 @@ class WindowAdd(ctk.CTkToplevel):
         return check
 
     def close_window(self):
-        for product in self.product_field_list:
-            product.destroy()
-        self.product_field_list.clear()
+        self.frame_order_panel.destroy()
+        self.frame_product_panel.destroy()
+        self.frame_step_panel.destroy()
+        self.frame_common_panel.destroy()
+        self.destroy()
 
         self.MainWindow.add_list_order()
         self.MainWindow.deiconify()
-        self.destroy()
 
     def delete_product_field(self, product_field: ProductField):
         index = -1
@@ -231,7 +252,7 @@ class WindowAdd(ctk.CTkToplevel):
             prod_f.personal_number = i + 1
             prod_f.reconfigure_personal_number()
 
-    def edit_data_vidachi_field(self):  # редактирование поля ввода даты, если она введена неверно
+    def __edit_data_vidachi_field(self):  # редактирование поля ввода даты, если она введена неверно
         self.entry_data_order.delete(first_index=0, last_index=len(self.entry_data_order.get()))
         self.entry_data_order.configure(fg_color="#faebeb", border_color="#e64646",
                                         placeholder_text="ДД-ММ-ГГГГ", placeholder_text_color="#979da2")
@@ -255,7 +276,7 @@ class WindowAdd(ctk.CTkToplevel):
             self.entry_zakazchik_order.configure(fg_color="#f9f9fa", border_color="#61bf0d", placeholder_text="")
 
         if len(self.date_text) != 10:
-            self.edit_data_vidachi_field()
+            self.__edit_data_vidachi_field()
             check = False
         else:
             date = ValidateDate(self.date_text)
@@ -264,12 +285,12 @@ class WindowAdd(ctk.CTkToplevel):
                 self.entry_data_order.configure(fg_color="#f9f9fa", border_color="#61bf0d",
                                                 placeholder_text=date.strftime("%d-%m-%Y"))
             else:
-                self.edit_data_vidachi_field()
+                self.__edit_data_vidachi_field()
                 check = False
 
         return check
 
-    def edit_data(self, event):
+    def __edit_data(self, event):
         length = len(event.widget.get())
         if length > 10:
             self.entry_data_order.delete(10, length)
@@ -279,6 +300,9 @@ class WindowAdd(ctk.CTkToplevel):
            Из этих степ-филдов берёт список шагов, шаги пихает в продукт
            продукты пихает в список, спиоск продуктов в заказ
            заказ сохраняет"""
+        if self.order_parsed is True:  # Если мы редактируем
+            self.order.ClearProducts()
+
         for product_field in self.product_field_list:
             product = product_field.product
 
@@ -288,6 +312,9 @@ class WindowAdd(ctk.CTkToplevel):
 
             self.order.AddProduct(product)
 
-        self.app.addNewOrder(self.order)
+        if self.order_parsed is False:
+            self.app.addNewOrder(self.order)
+        else:  # Если мы редактируем
+            self.app.saveOrder(self.order)
 
         self.close_window()

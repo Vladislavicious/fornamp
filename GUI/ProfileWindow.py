@@ -132,8 +132,5 @@ class ProfileWindow(tk.Frame):
             self.entry_password.configure(fg_color="#faebeb", border_color= "#e64646")
             self.label_warning.configure(text="Неправильный логин или пароль")
 
-
-
-
     def open_main_window(self):
         MainWindow(self.root, self.app)
