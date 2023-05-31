@@ -263,6 +263,7 @@ class WindowInfo(tk.Frame):
         self.button_save_as_template = ctk.CTkButton(master=self.scroll_step, text="Сохранить как шаблон",
                                                      command=self.save_as_template, width=40, height=10)
         self.button_save_as_template.pack(side=tk.BOTTOM, anchor=tk.E)
+
         if self.template_dict[self.current_product_index]:
             self.button_save_as_template.configure(state="disabled")
 
@@ -270,7 +271,7 @@ class WindowInfo(tk.Frame):
 
         self.products = self.cur_order.GetProducts()
 
-        for i, product in enumerate(self.products):
+        for product in self.products:
             self.product_info = ProductInfo(self, product)      # Не очень понимаю зачем в self это хранить
 
     def delete_window_info(self):
@@ -288,8 +289,6 @@ class WindowInfo(tk.Frame):
                 self.main_window.app.makeNewProductTemplate(current_product)
 
             self.button_save_as_template.configure(state="disabled")
-
-
 
 
 class ProductInfo(tk.Frame):

@@ -8,6 +8,7 @@ from BaH.order import Order
 from BaH.product import Product
 from BaH.step import Step
 from Caps.listFuncs import ValidateDate
+from GUI.TemplateField import TemplateField
 from GUI.ProductField import ProductField
 
 
@@ -29,6 +30,8 @@ class WindowAdd(ctk.CTkToplevel):
             self.zakazchik_text = self.order.zakazchik
             self.date_text = self.order.date_of_vidacha.strftime("%d-%m-%Y")
 
+        self.template_field_list: List[TemplateField] = list()
+
         self.product_field_list: List[ProductField] = list()
         self.current_product_field: ProductField = None
         ###
@@ -37,6 +40,10 @@ class WindowAdd(ctk.CTkToplevel):
 
         if self.order is not None:
             self.parse_order()
+
+    @property
+    def templates(self) -> List[Product]:
+        return self.app.product_templates
 
     def init_window_add(self) -> None:
         self.geometry("1000x600+250+100")
@@ -175,6 +182,12 @@ class WindowAdd(ctk.CTkToplevel):
             for step in product.GetSteps():
                 self.add_step_field(step, product_field)
 
+    def parse_templates(self, templates: List[TemplateField]):
+        for template in templates:
+            template_field = self.add_template_field(template)
+            for step in template.GetSteps():
+                self.add_step_field(step, template_field)
+
     def add_product_field(self, product: Product = None):  # добавление новго продукта и добавление шага в список
         products_count = len(self.product_field_list)
         product_field = ProductField(app=self.app, parental_order=self.order,
@@ -187,6 +200,27 @@ class WindowAdd(ctk.CTkToplevel):
 
         return product_field
 
+    def __add_product_from_template(self, template: Product):
+        product_field = self.add_product_field(template)
+        for step in template.GetSteps():
+            self.add_step_field(step, product_field)
+
+    def choose_template(self, template: Product):
+        self.exit_template_view()
+        self.__add_product_from_template(template)
+
+    def add_template_field(self, template: Product):
+        templates_count = len(self.template_field_list)
+        template_field = TemplateField(app=self.app, parental_order=self.order,
+                                       personal_number=templates_count + 1, add_window=self,
+                                       product=template, button_add_step=self.button_add_step)
+        if templates_count == 0:
+            self.current_product_field = template_field
+
+        self.template_field_list.append(template_field)
+
+        return template_field
+
     def choose_from_template(self):
         """
         Пока что это пустая кнопка
@@ -197,6 +231,33 @@ class WindowAdd(ctk.CTkToplevel):
         добавляет обратно все продукты, которые были добавлены пользователем, а также
         тот шаблон, который выбрал пользователь
         """
+        self.button_choose_from_template.configure(text="Вернуться", command=self.exit_template_view)
+
+        self.button_add_product.configure(state="disabled")
+
+        self.destroy_products()
+
+        self.parse_templates(self.templates)
+
+        """
+        убирает список нынешних товаров с экрана
+        выключает кнопку добавить товар
+        добавляет список шаблонов
+        """
+        pass
+
+    def exit_template_view(self):
+
+        """
+        Создаём и добавляем шаблон в product_field
+        """
+        self.destroy_templates()
+
+        for product_field in self.product_field_list:
+            product_field.add_product(self.scroll_product, self.scroll_step)
+        self.button_choose_from_template.configure(text="Шаблоны", command=self.choose_from_template)
+
+        self.button_add_product.configure(state="normal")
         pass
 
     def confirm_order(self):
@@ -216,6 +277,14 @@ class WindowAdd(ctk.CTkToplevel):
                     self.button_add_order.configure(state="normal")
                 else:
                     self.button_add_order.configure(state="disabled")
+
+    def destroy_products(self):
+        for product_field in self.product_field_list:
+            product_field.destroy()
+
+    def destroy_templates(self):
+        for template_field in self.template_field_list:
+            template_field.destroy()
 
     def __check_if_all_saved(self):
         check = True
