@@ -1,3 +1,4 @@
+from collections import defaultdict
 import tkinter as tk
 import customtkinter as ctk
 from BaH.App import App
@@ -234,9 +235,12 @@ class WindowInfo(tk.Frame):
     def __init__(self, main_win: MainWindow, order):
         self.main_window = main_win
         self.cur_order = order
-        self.current_product = -1
+        self.current_product_index = -1
         self.username = main_win.user.login
+        self.template_dict = defaultdict(lambda: False)  # Словарь с индексами товаров, если по этому ключу True - уже делали шаблон
+
         self.init_window_info()
+
 
     def init_window_info(self):
         self.frame_info_product = ctk.CTkFrame(self.main_window, border_width=3, width=410)
@@ -255,16 +259,19 @@ class WindowInfo(tk.Frame):
         self.scroll_step.pack(padx=3, pady=3, fill=tk.X)
 
     def create_template_button(self):
+
         self.button_save_as_template = ctk.CTkButton(master=self.scroll_step, text="Сохранить как шаблон",
                                                      command=self.save_as_template, width=40, height=10)
         self.button_save_as_template.pack(side=tk.BOTTOM, anchor=tk.E)
+        if self.template_dict[self.current_product_index]:
+            self.button_save_as_template.configure(state="disabled")
 
     def show_product(self):
 
         self.products = self.cur_order.GetProducts()
 
-        for item in self.products:
-            self.product_info = ProductInfo(self, item)      # Не очень понимаю зачем в self это хранить
+        for i, product in enumerate(self.products):
+            self.product_info = ProductInfo(self, product)      # Не очень понимаю зачем в self это хранить
 
     def delete_window_info(self):
         self.frame_info_product.destroy()
@@ -273,8 +280,16 @@ class WindowInfo(tk.Frame):
 
     def save_as_template(self):
         """Сохраняет нынешний товар, как шаблон"""
-        if self.current_product != -1:
-            print(self.current_product)
+        if self.current_product_index != -1:  # бесполезная проверка, но всё же
+            if not self.template_dict[self.current_product_index]:
+                current_product = self.products[self.current_product_index]
+
+                self.template_dict[self.current_product_index] = True
+                self.main_window.app.makeNewProductTemplate(current_product)
+
+            self.button_save_as_template.configure(state="disabled")
+
+
 
 
 class ProductInfo(tk.Frame):
@@ -299,15 +314,15 @@ class ProductInfo(tk.Frame):
             self.frame_product_show.configure(border_color="#77bf6d")
 
     def open_step_info(self, event):
-        if self.info_window.current_product != self.prod_index:
+        if self.info_window.current_product_index != self.prod_index:
+            self.info_window.current_product_index = self.prod_index
+
             self.info_window.frame_info_step.destroy()
             self.info_window.create_step_frame()
             self.info_window.create_template_button()
 
             for item_step in self.step:
                 step_info = StepInfo(self.info_window, item_step, self.frame_product_show, self.prod_index)
-
-            self.info_window.current_product = self.prod_index
 
 
 
