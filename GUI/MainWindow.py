@@ -254,9 +254,15 @@ class WindowInfo(tk.Frame):
         self.scroll_step = ctk.CTkScrollableFrame(master=self.frame_info_step, height=600)
         self.scroll_step.pack(padx=3, pady=3, fill=tk.X)
 
+    def create_template_button(self):
+        self.button_save_as_template = ctk.CTkButton(master=self.scroll_step, text="Сохранить как шаблон",
+                                                     command=self.save_as_template, width=40, height=10)
+        self.button_save_as_template.pack(side=tk.BOTTOM, anchor=tk.E)
+
     def show_product(self):
 
         self.products = self.cur_order.GetProducts()
+
         for item in self.products:
             self.product_info = ProductInfo(self, item)      # Не очень понимаю зачем в self это хранить
 
@@ -264,6 +270,11 @@ class WindowInfo(tk.Frame):
         self.frame_info_product.destroy()
         self.frame_info_step.destroy()
         self.main_window.create_frame_order()
+
+    def save_as_template(self):
+        """Сохраняет нынешний товар, как шаблон"""
+        if self.current_product != -1:
+            print(self.current_product)
 
 
 class ProductInfo(tk.Frame):
@@ -291,11 +302,13 @@ class ProductInfo(tk.Frame):
         if self.info_window.current_product != self.prod_index:
             self.info_window.frame_info_step.destroy()
             self.info_window.create_step_frame()
+            self.info_window.create_template_button()
 
             for item_step in self.step:
                 step_info = StepInfo(self.info_window, item_step, self.frame_product_show, self.prod_index)
 
             self.info_window.current_product = self.prod_index
+
 
 
 class StepInfo(tk.Frame):

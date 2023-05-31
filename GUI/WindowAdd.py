@@ -90,7 +90,11 @@ class WindowAdd(ctk.CTkToplevel):
 
         self.button_add_product = ctk.CTkButton(self.frame_product_panel, text="Добавить товар",
                                                 command=self.add_product_field)
-        self.button_add_product.pack(side=tk.TOP, pady=7)
+        self.button_add_product.pack(side=tk.RIGHT, pady=7)
+
+        self.button_choose_from_template = ctk.CTkButton(self.frame_product_panel, text="Шаблоны",
+                                                         command=self.choose_from_template)
+        self.button_choose_from_template.pack(side=tk.LEFT, pady=7)
 
         self.button_add_step = ctk.CTkButton(self.frame_step_panel, text="Добавить шаг",
                                              command=self.add_step_field)
@@ -182,6 +186,18 @@ class WindowAdd(ctk.CTkToplevel):
         self.product_field_list.append(product_field)
 
         return product_field
+
+    def choose_from_template(self):
+        """
+        Пока что это пустая кнопка
+        Вижу это как добавление в эту колонку всех продуктов из шаблонов
+        их надо брать из App
+        но это будут не просто продукты, а продукты в которых удалить - удаляет шаблон из
+        списка шаблонов ( функцией в App ), а подтвердить - убирает все шаблоны с экрана,
+        добавляет обратно все продукты, которые были добавлены пользователем, а также
+        тот шаблон, который выбрал пользователь
+        """
+        pass
 
     def confirm_order(self):
         if self.check_order_field():
