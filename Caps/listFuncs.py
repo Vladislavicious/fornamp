@@ -1,4 +1,5 @@
 """Функции для работы со списком заказов"""
+from datetime import date
 import json
 from typing import List
 
@@ -182,3 +183,17 @@ def ProductsFromOrdersList(orders: List[Order]):
         Products = Products + order.GetProducts()
 
     return Products
+
+
+def ValidateDate(parsed_date: str) -> date:
+    """Проверяет дату на соответствие ДД-ММ-ГГГГ
+       При неправильном вводе возвращает None"""
+    try:
+        days = int(parsed_date[:2])
+        month = int(parsed_date[3:5])
+        years = int(parsed_date[6:10])
+        data = date(years, month, days)
+
+        return data
+    except ValueError:
+        return None

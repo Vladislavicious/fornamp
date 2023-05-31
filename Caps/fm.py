@@ -27,6 +27,9 @@ class FileManager():
 
         self.user_handler = UserHandler(self.key, self.accounts_filepath)
 
+    def clearOrderFilenames(self):
+        self.ordered_filenames.clear()
+
     def __readConfig(self):
         dir_name = self.__config_dir_path
         in_dir_path = "\\.ordconfig"
@@ -185,6 +188,13 @@ class FileManager():
         previous_order_filename = self.__getOrderFilename(order.id)
         if previous_order_filename != "":
             os.remove(previous_order_filename)
+
+        firstLetter = "N"   # G - если заказ выдан, D - если заказ сделан, N - если заказ не сделан
+        if order.isDone:
+            firstLetter = "D"
+        if order.isVidan:
+            firstLetter = "G"
+        self.ordered_filenames[str(order.id)] = firstLetter
 
         Order.toFile(order, self.orders_dir_path)
 

@@ -1,10 +1,12 @@
 from dataclasses import dataclass
 import json
 import datetime
+from operator import attrgetter
 import os
 from datetime import date
-from typing import List
+from typing import List, Tuple
 from random import Random
+from customtkinter import BooleanVar
 
 
 from BaH.Contribution import getValidData
@@ -46,6 +48,15 @@ class OrderPreviewSorter:
     def ByName(cls, ord_prevs: List[OrderPreview], reverse=False) -> List[OrderPreview]:
         return sorted(ord_prevs,
                       key=lambda order_preview: order_preview.zakazchik, reverse=reverse)
+
+    @classmethod
+    def Multisort(cls, ord_prevs: List[OrderPreview], sorting_params: List[Tuple[str, bool]]) -> List[OrderPreview]:
+        """сортировка по нескольким аргументам
+           в параметрах указывать кортеж из название поля и обратная/прямая сортировка,
+           например: ('date_of_vidacha', True) - сортируем по полю даты выдачи в восходящем порядке"""
+        for key, reverse in reversed(sorting_params):
+            ord_prevs.sort(key=attrgetter(key), reverse=reverse)
+        return ord_prevs
 
 
 class Order:
@@ -147,8 +158,8 @@ class Order:
     def GetProducts(self):
         return self.__products
 
-    def AddProduct(self, step: Product):
-        self.__products.append(step)
+    def AddProduct(self, product: Product):
+        self.__products.append(product)
         self.CheckIfDone()
 
     def DeleteProduct(self, product_name: str):
@@ -244,11 +255,11 @@ class Order:
 
         if not os.path.exists(directory):
             return False
-        firstLetter = "N"   # V - если заказ выдан, D - если заказ сделан, N - если заказ не сделан
-        if self.isVidan:
-            firstLetter = "G"
-        elif self.isDone:
+        firstLetter = "N"   # G - если заказ выдан, D - если заказ сделан, N - если заказ не сделан
+        if self.isDone:
             firstLetter = "D"
+        elif self.isVidan:
+            firstLetter = "G"
 
         filename = directory + "\\" + firstLetter + str(self.id) + ".order"
 

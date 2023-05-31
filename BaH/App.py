@@ -3,9 +3,10 @@ from email.mime.multipart import MIMEMultipart
 import os
 from typing import List, Tuple
 
-from BaH.order import Order
+from BaH.order import Order, OrderPreviewSorter
 from BaH.order import OrderPreview
 from BaH.product import Product
+from BaH.user import User
 from Caps.fm import FileManager
 from Caps.mail import MailAccount
 
@@ -20,12 +21,18 @@ class App:
 
         self.__orders = dict()
 
-    def __del__(self):
+    def destroy(self):
+        """Вызывается при закрытии приложения
+           сохраняет всё, что ещё не было сохранено"""
         self.__saveNewOrderPreviews()
         self.__saveTemplates()
+        self.file_manager.clearOrderFilenames()
+        self.__clearOrderPreviews()
+        self.__clearOrders()
+        self.__clearProductTemplates()
 
     @property
-    def current_user(self):
+    def current_user(self) -> User:
         return self.file_manager.user_handler.lastUser
 
     @property
@@ -41,7 +48,17 @@ class App:
             self.__mail_account = None
 
     @property
-    def order_previews(self):
+    def sorted_order_previews(self) -> List[OrderPreview]:
+        """Список структур для предварительного просмотра заказа
+           по умолчанию возвращает отсортированным"""
+        sorted_previews = OrderPreviewSorter.Multisort(self.__order_previews,
+                                                       [("isVidan", True), ("isDone", True),
+                                                        ("date_of_vidacha", False)])
+        self.order_previews = sorted_previews
+        return sorted_previews
+
+    @property
+    def order_previews(self) -> List[OrderPreview]:
         """Список структур для предварительного просмотра заказа"""
         return self.__order_previews
 
@@ -49,14 +66,20 @@ class App:
     def order_previews(self, value: List[OrderPreview]):
         self.__order_previews = value
 
+    def __clearOrderPreviews(self):
+        self.__order_previews.clear()
+
     @property
-    def product_templates(self):
+    def product_templates(self) -> List[Product]:
         """Список шаблонов товаров"""
         return self.__product_templates
 
     @product_templates.setter
     def product_templates(self, value: List[Product]):
         self.__product_templates = value
+
+    def __clearProductTemplates(self):
+        self.__product_templates.clear()
 
     def makeNewProductTemplate(self, product: Product):
         """Вызывается для добавления нового шаблона"""
@@ -86,7 +109,15 @@ class App:
         except KeyError:
             order = self.__parseOrderByID(ID)
 
+        if order is not None:    # Проверяется на случай, если заказ был изменён извне приложения
+            previous_state = order.isDone
+            if previous_state is not order.CheckIfDone():
+                self.saveOrder(order)
+
         return order
+
+    def __clearOrders(self):
+        self.__orders.clear()
 
     def __mergeOrders(self, orders: List[Order]):
         self.__orders = self.__orders | orders
@@ -116,6 +147,8 @@ class App:
         self.__orders[order.id] = order
         self.order_previews.append(order.createPreview())
 
+        self.file_manager.saveOrder(order)
+
     def deleteOrderByID(self, ID: int) -> Tuple[bool, bool, bool]:
         """Возвращает три була, если bool is True, то удаление успешно.
            Первый бул - удаление как файла
@@ -140,13 +173,21 @@ class App:
 
         return (success1, success2, success3)
 
+    def PreChangeOrderDir(self):
+        """Вызывается перед изменением папки хранения заказов"""
+        self.destroy()
+
+    def PostChangeOrderDir(self):
+        """Вызывается сразу после изменения папки хранения заказов"""
+        self.order_previews = self.file_manager.parseOrderPreviews()
+        self.product_templates = self.file_manager.parseTemplates()
+
     def saveOrder(self, order: Order):
         """Функция сохранения заказа в свой файл
            её необходимо вызывать при изменении существующего заказа"""
         self.file_manager.saveOrder(order)
         index = self.__getOrderPreviewIndexByID(order.id)
         self.order_previews[index] = order.createPreview()
-        self.__saveNewOrderPreviews()
 
     def saveOrderByID(self, ID: int):
         """то же, что и сверху"""
@@ -172,7 +213,6 @@ class App:
 
     def __CreateOtchetMessage(self, TO: str, msg_text: str = ""):
         orders, filepath = self.file_manager.CreateStatusHTML()
-        dict()
         orders_dict = dict(list((order.id, order) for order in orders))
 
         self.__mergeOrders(orders_dict)
