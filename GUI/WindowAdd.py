@@ -22,6 +22,7 @@ class WindowAdd(ctk.CTkToplevel):
         self.order_parsed = False
         self.zakazchik_text = ""
         self.date_text = ""
+        self.commentary_text = ""
         self.order = order
         self.title_text = "Добавление заказа"
         if self.order is not None:
@@ -29,6 +30,7 @@ class WindowAdd(ctk.CTkToplevel):
             self.title_text = "Редактирование заказа"
             self.zakazchik_text = self.order.zakazchik
             self.date_text = self.order.date_of_vidacha.strftime("%d-%m-%Y")
+            self.commentary_text = self.order.commentary
 
         self.template_field_list: List[TemplateField] = list()
 
@@ -62,8 +64,8 @@ class WindowAdd(ctk.CTkToplevel):
         self.MainWindow.withdraw()
 
     def panel_add(self):    # панель добавления шагов, продуктов, заказа
-        self.topbar = ctk.CTkFrame(master=self, height=50, border_width=3, fg_color="#FFFFFF")
-        self.title_name_label = ctk.CTkLabel(self.topbar, text=self.title_text, fg_color="transparent",
+        self.topbar = ctk.CTkFrame(master=self, height=50, border_width=3, fg_color="#cfcfcf")
+        self.title_name_label = ctk.CTkLabel(self.topbar, text=self.title_text, fg_color="#cfcfcf",
                                              font=ctk.CTkFont(family="Arial", size=24))
         self.title_name_label.place(relx=0.37, rely=0.2)
 
@@ -97,11 +99,11 @@ class WindowAdd(ctk.CTkToplevel):
 
         self.button_add_product = ctk.CTkButton(self.frame_product_panel, text="Добавить товар",
                                                 command=self.add_product_field)
-        self.button_add_product.pack(side=tk.RIGHT, pady=7)
+        self.button_add_product.pack(side=tk.RIGHT, pady=7, padx = 5)
 
         self.button_choose_from_template = ctk.CTkButton(self.frame_product_panel, text="Шаблоны",
                                                          command=self.choose_from_template)
-        self.button_choose_from_template.pack(side=tk.LEFT, pady=7)
+        self.button_choose_from_template.pack(side=tk.LEFT, pady=7, padx = 5)
 
         self.button_add_step = ctk.CTkButton(self.frame_step_panel, text="Добавить шаг",
                                              command=self.add_step_field)
@@ -158,6 +160,14 @@ class WindowAdd(ctk.CTkToplevel):
         self.entry_zakazchik_order = ctk.CTkEntry(frame_order_field)
         self.entry_zakazchik_order.insert(0, self.zakazchik_text)
         self.entry_zakazchik_order.pack(fill=tk.X, pady=5)
+
+        self.label_commentary = ctk.CTkLabel(master=frame_order_field,
+                                            text="Введите комментарий", font=self.font_)
+        self.label_commentary.pack(anchor=tk.CENTER, pady=5)
+
+        self.entry_commentary_order = ctk.CTkEntry(frame_order_field)
+        self.entry_commentary_order.insert(0, self.commentary_text)
+        self.entry_commentary_order.pack(fill=tk.X, pady=5)
 
         self.label_error = ctk.CTkLabel(master=frame_order_field, text="",
                                         font=self.font_, text_color="#e64646")
@@ -248,9 +258,10 @@ class WindowAdd(ctk.CTkToplevel):
         if self.check_order_field():
             if self.order is None:
                 self.order = Order(id=0, zakazchik=self.zakazchik_text, date_of_creation=date.today(),
-                                   date_of_vidacha=self.dat_of_vidacha, products=list())
+                                   date_of_vidacha=self.dat_of_vidacha, products=list(), commentary = self.commentary_text)
             else:
                 self.order.zakazchik = self.zakazchik_text
+                self.order.commentary = self.commentary_text
                 self.order.date_of_creation = date.today()
                 self.order.date_of_vidacha = self.dat_of_vidacha
             self.button_add_product.configure(state="normal")
@@ -316,6 +327,7 @@ class WindowAdd(ctk.CTkToplevel):
         check = True
         self.zakazchik_text = self.entry_zakazchik_order.get()
         self.date_text = self.entry_data_order.get()
+        self.commentary_text = self.entry_commentary_order.get()
         if self.zakazchik_text == "":
             self.entry_zakazchik_order.configure(fg_color="#faebeb", border_color="#e64646",
                                                  placeholder_text="Заполните это поле",
@@ -341,6 +353,13 @@ class WindowAdd(ctk.CTkToplevel):
             else:
                 self.__edit_data_vidachi_field()
                 check = False
+
+        if len(self.entry_commentary_order.get()) >= 150:
+            self.entry_commentary_order.configure(fg_color="#faebeb", border_color="#e64646")
+            self.label_error.configure(text="Введите не больше 150 символов")
+            check = False
+        else:
+            self.entry_commentary_order.configure(fg_color="#f9f9fa", border_color="#61bf0d", placeholder_text="")
 
         return check
 

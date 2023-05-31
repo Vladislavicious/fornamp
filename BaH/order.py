@@ -26,10 +26,10 @@ class OrderPreview:
 
     def __repr__(self) -> str:
         zakazchik = f"Заказчик: {self.zakazchik}\n"
-        descr = f"Описание: {self.commentary}\n"
+        descr = f"Описание: {self.commentary}"
         date_beg = f"Дата создания: {getValidData(self.date_of_creation)}\n"
-        date_end = f"Дата выдачи: {getValidData(self.date_of_vidacha)}"
-        return zakazchik + descr + date_beg + date_end
+        date_end = f"Дата выдачи: {getValidData(self.date_of_vidacha)}\n"
+        return zakazchik + date_beg + date_end + descr
 
 
 class OrderPreviewSorter:

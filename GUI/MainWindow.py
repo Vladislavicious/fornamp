@@ -25,13 +25,13 @@ class MainWindow(ctk.CTkToplevel):
         self.geometry("1000x600+250+100")
         self.resizable(False, False)
 
-        self.topbar = ctk.CTkFrame(master=self, height=50, border_width=3, fg_color="#FFFFFF")
+        self.topbar = ctk.CTkFrame(master=self, height=50, border_width=3, fg_color="#cfcfcf")
         self.frame_tools = ctk.CTkFrame(master=self, width=150, border_width=3)
 
         button_log_out = ctk.CTkButton(self.topbar, text="Выйти", command=self.log_out)
         button_log_out.pack(side=tk.RIGHT, padx=10)
 
-        self.title_name_label = ctk.CTkLabel(self.topbar, text="Просмотр заказов", fg_color="transparent",
+        self.title_name_label = ctk.CTkLabel(self.topbar, text="Просмотр заказов", fg_color="#cfcfcf",
                                              font=ctk.CTkFont(family="Arial", size=24))
         self.title_name_label.place(relx=0.37, rely=0.2)
 
@@ -58,21 +58,21 @@ class MainWindow(ctk.CTkToplevel):
                                              command=self.__checkbox_Refresh_list, variable=self.__viewDone,
                                              onvalue=True, offvalue=False)
 
-        self.checkbox_Done.pack(anchor=tk.N, pady=6)
+        self.checkbox_Done.pack(anchor=tk.W, pady=6, padx=10)
 
         self.__viewVidan = ctk.BooleanVar()
         self.checkbox_Vidan = ctk.CTkCheckBox(self.frame_tools, text="Выданные",
                                               command=self.__checkbox_Refresh_list, variable=self.__viewVidan,
                                               onvalue=True, offvalue=False)
 
-        self.checkbox_Vidan.pack(anchor=tk.N, pady=6)
+        self.checkbox_Vidan.pack(anchor=tk.W, pady=6, padx=10)
 
         self.__viewUndone = ctk.BooleanVar(value=True)
         self.checkbox_Undone = ctk.CTkCheckBox(self.frame_tools, text="Несделанные",
                                                command=self.__checkbox_Refresh_list, variable=self.__viewUndone,
                                                onvalue=True, offvalue=False)
 
-        self.checkbox_Undone.pack(anchor=tk.N, pady=6)
+        self.checkbox_Undone.pack(anchor=tk.W, pady=6, padx=10)
 
         self.frame_tools.pack(side=tk.LEFT, fill=tk.Y, padx=5, pady=5)
         self.topbar.pack(side=tk.TOP, fill=tk.X, padx=5, pady=5)
@@ -108,8 +108,8 @@ class MainWindow(ctk.CTkToplevel):
                (self.__viewUndone.get() and not item_order.isDone) or \
                (self.__viewVidan.get() and item_order.isVidan):
 
-                self.frame_order_info = ctk.CTkFrame(self.scroll, border_width=2, fg_color="#b8bab9", height=120)
-                self.frame_order_info.pack(fill=tk.X, padx=10, pady=7)
+                self.frame_order_info = ctk.CTkFrame(self.scroll, border_width=2, fg_color="#b8bab9")
+                self.frame_order_info.pack(fill=tk.X, padx=10, pady=7, expand = True)
                 shown = True
 
             if item_order.isVidan is True:
@@ -139,7 +139,7 @@ class MainWindow(ctk.CTkToplevel):
 
             if shown:
                 self.label_order = ctk.CTkLabel(self.frame_order_info, text=item_order.__str__(),
-                                                font=ctk.CTkFont(family="Arial", size=12))
+                                                font=ctk.CTkFont(family="Arial", size=12), wraplength = 400)
                 self.label_order.pack(padx=10, pady=10)
                 self.label_order.bind('<Button-1>', lambda event, ID=item_order.id: self.open_info(ID))
                 self.frame_order_info.bind('<Button-1>', lambda event, ID=item_order.id: self.open_info(ID))
@@ -164,10 +164,10 @@ class MainWindow(ctk.CTkToplevel):
         self.title_name_label.configure(text="Заказ " + str(order_id))
 
         if self.user.isAdministrator is True:
-            self.edit_order_button = ctk.CTkButton(self.topbar, text="Редактировать",
+            self.edit_order_button = ctk.CTkButton(self.topbar, text="Редактировать", width = 120,
                                                    command=lambda ID=order_id: self.edit_order(ID))
             self.edit_order_button.pack(side=tk.LEFT, padx=10)
-            self.delete_order_button = ctk.CTkButton(self.topbar, text="Удалить",
+            self.delete_order_button = ctk.CTkButton(self.topbar, text="Удалить", width = 120,
                                                      fg_color="#ba3434", hover_color="#bf6b6b",
                                                      command=lambda ID=order_id: self.delete_order(ID))
             self.delete_order_button.pack(side=tk.LEFT, padx=10)
@@ -262,7 +262,7 @@ class WindowInfo(tk.Frame):
 
         self.button_save_as_template = ctk.CTkButton(master=self.scroll_step, text="Сохранить как шаблон",
                                                      command=self.save_as_template, width=40, height=10)
-        self.button_save_as_template.pack(side=tk.BOTTOM, anchor=tk.E)
+        self.button_save_as_template.pack(side=tk.BOTTOM, anchor=tk.E, padx = 15)
 
         if self.template_dict[self.current_product_index]:
             self.button_save_as_template.configure(state="disabled")
@@ -300,10 +300,11 @@ class ProductInfo(tk.Frame):
 
     def init_ProductInfo(self, item):
         self.frame_product_show = ctk.CTkFrame(self.info_window.scroll_product, border_width=2,
-                                               fg_color="#b8bab9", height=90, width=150)
-        self.frame_product_show.pack(fill=tk.X, padx=10, pady=7)
-        self.frame_product_show.pack_propagate(False)
-        self.label_product = ctk.CTkLabel(self.frame_product_show, text=item.getAppView(),
+                                               fg_color="#b8bab9")
+        self.frame_product_show.pack(fill=tk.X, padx=10, pady=7, expand = True)
+        #self.frame_product_show.pack_propagate(False)
+        self.frame_product_show.bind('<Button-1>', self.open_step_info)
+        self.label_product = ctk.CTkLabel(self.frame_product_show, text=item.getAppView(), wraplength=330,
                                           font=ctk.CTkFont(family="Arial", size=12))
         self.label_product.pack(fill=tk.X, padx=10, pady=10)
         self.label_product.bind('<Button-1>', self.open_step_info)
