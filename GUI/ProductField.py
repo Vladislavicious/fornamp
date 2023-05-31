@@ -40,6 +40,8 @@ class ProductField():  # класс продукта
             self.commentary_text = self.product.commentary
         ###
 
+        self.parse_width_height()
+
         self.is_saved: bool = False
         self.font_ = ctk.CTkFont(family="Arial", size=16)
         self.fontmini = ctk.CTkFont(family="Arial", size=12)
@@ -59,7 +61,7 @@ class ProductField():  # класс продукта
         self.button_apply: ctk.CTkButton
         self.button_delete: ctk.CTkButton
 
-        self.add_product()
+        self.add_product(self.add_window.scroll_product, self.add_window.scroll_step)
 
     def create_step_field(self, step_scroll_panel: ctk.CTkFrame, step: Step = None, step_shown: bool = True):
 
@@ -72,14 +74,17 @@ class ProductField():  # класс продукта
 
         self.step_field_list.append(self.current_step_field)
 
-    def add_product(self):  # создание поля нового пустого продукта
+    def add_product(self, scroll_product, scroll_step):  # создание поля нового пустого продукта
 
-        self.label_count = ctk.CTkLabel(self.add_window.scroll_product, text="Товар № " + str(self.personal_number),
+        self.scroll_product = scroll_product
+        self.scroll_step = scroll_step
+
+        self.label_count = ctk.CTkLabel(scroll_product, text="Товар № " + str(self.personal_number),
                                         font=self.font_)
         self.label_count.pack(anchor=tk.CENTER, pady=5)
 
-        self.frame_product_field = ctk.CTkFrame(self.add_window.scroll_product,
-                                                border_width=2, width=350, height=415)
+        self.frame_product_field = ctk.CTkFrame(scroll_product,
+                                                border_width=2, width=self.width, height=self.height)
         self.frame_product_field.pack(side=tk.TOP, padx=1, pady=1)
         self.frame_product_field.pack_propagate(False)
         self.frame_product_field.bind('<Button-1>', self.reload)
@@ -133,6 +138,13 @@ class ProductField():  # класс продукта
         self.entry_commentariy.pack(fill=tk.X, pady=5, padx=5)
         self.entry_commentariy.bind('<Button-1>', self.reload)
 
+        self.add_buttons()
+
+    def parse_width_height(self):
+        self.height = 415
+        self.width = 350
+
+    def add_buttons(self):
         self.button_apply = ctk.CTkButton(self.frame_product_field, text="Применить", command=self.apply)
         self.button_apply.pack(side=tk.LEFT, padx=10)
 
@@ -194,11 +206,7 @@ class ProductField():  # класс продукта
     def destroy(self):
         for step_field in self.step_field_list:
             step_field.destroy()
-        self.step_field_list.clear()
-        """
-        Удаление фреймов шагов
-        Изменение порядка номеров
-        """
+
         self.label_count.destroy()
         self.frame_product_field.destroy()
 
@@ -315,12 +323,12 @@ class ProductField():  # класс продукта
             current_product_field.all_steps_are_visisble = False
 
             for step_field in self.step_field_list:
-                step_field.add_step()
+                step_field.add_step(self.scroll_step)
 
             self.add_window.current_product_field = self
 
         elif self.all_steps_are_visible is False:
             for step_field in self.step_field_list:
                 if not step_field.is_shown:
-                    step_field.add_step()
+                    step_field.add_step(self.scroll_step)
             self.all_steps_are_visible = True

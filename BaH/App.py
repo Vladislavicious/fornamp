@@ -82,9 +82,17 @@ class App:
         self.__product_templates.clear()
 
     def makeNewProductTemplate(self, product: Product):
-        """Вызывается для добавления нового шаблона"""
+        """Вызывается для добавления нового шаблона
+           Не добавляет шаблон, если уже существует шаблон
+           с таким именем"""
         template = product.GetAsTemplate()
-        self.product_templates.append(template)
+        isViable = True
+        for templ in self.__product_templates:
+            if templ.name == template.name:
+                isViable = False
+
+        if isViable:
+            self.product_templates.append(template)
 
     def deleteTemplate(self, template: Product) -> bool:
         index = -1
