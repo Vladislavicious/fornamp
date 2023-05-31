@@ -107,6 +107,7 @@ class WindowAdd(ctk.CTkToplevel):
                                              command=self.add_step_field)
         self.button_add_step.pack(side=tk.TOP, pady=7)
 
+        self.button_choose_from_template.configure(state="disabled")
         self.button_add_product.configure(state="disabled")
         self.button_add_step.configure(state="disabled")
 
@@ -222,35 +223,19 @@ class WindowAdd(ctk.CTkToplevel):
         return template_field
 
     def choose_from_template(self):
-        """
-        Пока что это пустая кнопка
-        Вижу это как добавление в эту колонку всех продуктов из шаблонов
-        их надо брать из App
-        но это будут не просто продукты, а продукты в которых удалить - удаляет шаблон из
-        списка шаблонов ( функцией в App ), а подтвердить - убирает все шаблоны с экрана,
-        добавляет обратно все продукты, которые были добавлены пользователем, а также
-        тот шаблон, который выбрал пользователь
-        """
         self.button_choose_from_template.configure(text="Вернуться", command=self.exit_template_view)
 
         self.button_add_product.configure(state="disabled")
 
         self.destroy_products()
-
-        self.parse_templates(self.templates)
-
-        """
-        убирает список нынешних товаров с экрана
-        выключает кнопку добавить товар
-        добавляет список шаблонов
-        """
-        pass
+        if len(self.template_field_list) == 0:
+            self.parse_templates(self.templates)
+        else:
+            for template_field in self.template_field_list:
+                template_field.add_product(self.scroll_product, self.scroll_step)
 
     def exit_template_view(self):
 
-        """
-        Создаём и добавляем шаблон в product_field
-        """
         self.destroy_templates()
 
         for product_field in self.product_field_list:
@@ -258,7 +243,6 @@ class WindowAdd(ctk.CTkToplevel):
         self.button_choose_from_template.configure(text="Шаблоны", command=self.choose_from_template)
 
         self.button_add_product.configure(state="normal")
-        pass
 
     def confirm_order(self):
         if self.check_order_field():
@@ -271,6 +255,7 @@ class WindowAdd(ctk.CTkToplevel):
                 self.order.date_of_vidacha = self.dat_of_vidacha
             self.button_add_product.configure(state="normal")
             self.button_add_step.configure(state="normal")
+            self.button_choose_from_template.configure(state="normal")
 
             if len(self.product_field_list) >= 1:
                 if self.__check_if_all_saved() is True:
