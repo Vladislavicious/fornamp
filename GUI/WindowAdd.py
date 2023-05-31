@@ -137,7 +137,7 @@ class WindowAdd(ctk.CTkToplevel):
             self.entry_data_order.insert(0, self.date_text)
 
         self.entry_data_order.pack(fill=tk.X, pady=5)
-        self.entry_data_order.bind('<KeyRelease>', self.edit_data)
+        self.entry_data_order.bind('<KeyRelease>', self.__edit_data)
 
         self.label_zakazchik = ctk.CTkLabel(master=frame_order_field,
                                             text="Введите заказчика", font=self.font_)
@@ -198,6 +198,8 @@ class WindowAdd(ctk.CTkToplevel):
             if len(self.product_field_list) >= 1:
                 if self.__check_if_all_saved() is True:
                     self.button_add_order.configure(state="normal")
+                else:
+                    self.button_add_order.configure(state="disabled")
 
     def __check_if_all_saved(self):
         check = True
@@ -212,6 +214,7 @@ class WindowAdd(ctk.CTkToplevel):
         self.frame_step_panel.destroy()
         self.frame_common_panel.destroy()
         self.destroy()
+
         self.MainWindow.add_list_order()
         self.MainWindow.deiconify()
 
@@ -233,7 +236,7 @@ class WindowAdd(ctk.CTkToplevel):
             prod_f.personal_number = i + 1
             prod_f.reconfigure_personal_number()
 
-    def edit_data_vidachi_field(self):  # редактирование поля ввода даты, если она введена неверно
+    def __edit_data_vidachi_field(self):  # редактирование поля ввода даты, если она введена неверно
         self.entry_data_order.delete(first_index=0, last_index=len(self.entry_data_order.get()))
         self.entry_data_order.configure(fg_color="#faebeb", border_color="#e64646",
                                         placeholder_text="ДД-ММ-ГГГГ", placeholder_text_color="#979da2")
@@ -257,7 +260,7 @@ class WindowAdd(ctk.CTkToplevel):
             self.entry_zakazchik_order.configure(fg_color="#f9f9fa", border_color="#61bf0d", placeholder_text="")
 
         if len(self.date_text) != 10:
-            self.edit_data_vidachi_field()
+            self.__edit_data_vidachi_field()
             check = False
         else:
             date = ValidateDate(self.date_text)
@@ -266,12 +269,12 @@ class WindowAdd(ctk.CTkToplevel):
                 self.entry_data_order.configure(fg_color="#f9f9fa", border_color="#61bf0d",
                                                 placeholder_text=date.strftime("%d-%m-%Y"))
             else:
-                self.edit_data_vidachi_field()
+                self.__edit_data_vidachi_field()
                 check = False
 
         return check
 
-    def edit_data(self, event):
+    def __edit_data(self, event):
         length = len(event.widget.get())
         if length > 10:
             self.entry_data_order.delete(10, length)

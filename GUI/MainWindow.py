@@ -271,9 +271,9 @@ class ProductInfo(tk.Frame):
         self.info_window = info_window
         self.prod_index = self.info_window.products.index(item)
         self.step = self.info_window.products[self.prod_index].GetSteps()
-        self.init_stepInfo(item)
+        self.init_ProductInfo(item)
 
-    def init_stepInfo(self, item):
+    def init_ProductInfo(self, item):
         self.frame_product_show = ctk.CTkFrame(self.info_window.scroll_product, border_width=2,
                                                fg_color="#b8bab9", height=90, width=150)
         self.frame_product_show.pack(fill=tk.X, padx=10, pady=7)
@@ -282,7 +282,7 @@ class ProductInfo(tk.Frame):
                                           font=ctk.CTkFont(family="Arial", size=12))
         self.label_product.pack(fill=tk.X, padx=10, pady=10)
         self.label_product.bind('<Button-1>', self.open_step_info)
-        if item.isDone is False:
+        if item.CheckIfDone() is False:
             self.frame_product_show.configure(border_color="#bf6b6b")
         else:
             self.frame_product_show.configure(border_color="#77bf6d")

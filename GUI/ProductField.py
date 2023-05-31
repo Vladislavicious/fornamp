@@ -14,6 +14,8 @@ class ProductField():  # класс продукта
         self.app = app
 
         ###
+        self.all_steps_are_visible = False
+
         self.button_add_step = button_add_step
         self.button_add_step.configure(state="disabled")
 
@@ -310,8 +312,15 @@ class ProductField():  # класс продукта
         if self.add_window.current_product_field != self:
             for step_field in current_product_field.step_field_list:
                 step_field.destroy()
+            current_product_field.all_steps_are_visisble = False
 
             for step_field in self.step_field_list:
                 step_field.add_step()
 
             self.add_window.current_product_field = self
+
+        elif self.all_steps_are_visible is False:
+            for step_field in self.step_field_list:
+                if not step_field.is_shown:
+                    step_field.add_step()
+            self.all_steps_are_visible = True
