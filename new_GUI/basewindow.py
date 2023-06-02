@@ -10,20 +10,26 @@ class FornampWindow(CTk, Container):
         CTk.__init__(self)
         Container.__init__(self, None)
 
-        self.geometry("500x220+500+340")
-        self.resizable(True, True)
-        self.title("Fornamp")
+        self.initialize()
 
-        self.main_window = None
+    def initialize(self) -> bool:
+        if Container.initialize(self):
+            self.geometry("500x220+500+340")
+            self.resizable(True, True)
+            self.title("Fornamp")
 
-        self.grid_rowconfigure(0, weight=1)  # configure grid system
-        self.grid_columnconfigure(0, weight=1)
+            self.main_window = None
 
-        self.button = CTkButton(master=self, text="Открыть Main",
-                                command=self.press, width=40, height=10)
-        self.button.grid()
+            self.grid_rowconfigure(0, weight=1)  # configure grid system
+            self.grid_columnconfigure(0, weight=1)
 
-        self.show()
+            self.button = CTkButton(master=self, text="Открыть Main",
+                                    command=self.press, width=40, height=10)
+            self.button.grid()
+            self.protocol("WM_DELETE_WINDOW", lambda: self.destroy())
+            self.show()
+            return True
+        return False
 
     def show(self) -> bool:
         if Container.show(self):
@@ -34,6 +40,13 @@ class FornampWindow(CTk, Container):
     def hide(self) -> bool:
         if Container.hide(self):
             self.withdraw()
+            return True
+        return False
+
+    def destroy(self):
+        if Container.destroy(self):
+            CTk.destroy(self)
+            print("Закрываю Fornamp")
             return True
         return False
 

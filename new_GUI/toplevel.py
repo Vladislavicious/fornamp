@@ -12,8 +12,6 @@ class TopLevel(CTkToplevel, Container):
         CTkToplevel.__init__(self, *args, parental_widget, fg_color=fg_color, **kwargs)
         Container.__init__(self, parental_widget)
 
-        self.protocol("WM_DELETE_WINDOW", lambda: self.delete_window())
-
     def hide(self):
         if Container.hide(self):
             self.withdraw()
@@ -26,8 +24,23 @@ class TopLevel(CTkToplevel, Container):
             return True
         return False
 
-    def delete_window(self):
-        self.destroy()
+    def destroy(self) -> bool:
+        print("Закрываю топлевел")
+        if Container.destroy(self):
+            CTkToplevel.destroy(self)
+            if self.parental_widget is not None:
+                self.parental_widget.show()
+            return True
+        return False
+
+    def initialize(self) -> bool:
+        if Container.initialize(self):
+            self.grid_rowconfigure(0, weight=1)  # configure grid system
+            self.grid_columnconfigure(0, weight=1)
+
+            self.protocol("WM_DELETE_WINDOW", lambda: self.destroy())
+            return True
+        return False
 
 
 class MainWindow(TopLevel):
@@ -35,16 +48,27 @@ class MainWindow(TopLevel):
                  fg_color: str | Tuple[str, str] | None = None, **kwargs):
         super().__init__(*args, parental_widget=parental_widget,
                          fg_color=fg_color, **kwargs)
+        self.initialize()
 
-        self.title("Task manager")
-        self.geometry("1000x600+250+100")
-        self.resizable(True, True)
+    def initialize(self) -> bool:
+        if super().initialize():
+            self.title("Main window")
+            self.geometry("1000x600+250+100")
+            self.resizable(True, True)
 
-        self.button = CTkButton(master=self, text="Открыть Base",
-                                command=self.press, width=40, height=10)
-        self.button.pack(side=tk.BOTTOM, anchor=tk.E, padx=15)
+            self.button = CTkButton(master=self, text="Открыть Base",
+                                    command=self.press, width=40, height=10)
+            self.button.grid()
+            return True
+        return False
 
     def press(self):
         print("нажатие в mainWindow")
         self.parental_widget.show()
         self.hide()
+
+    def destroy(self) -> bool:
+        if super().destroy():
+            self.parental_widget.main_window = None
+            return True
+        return False
