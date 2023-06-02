@@ -47,7 +47,7 @@ class Container(Widget):
 
     def __hide_all_widgets(self):
         for widget in self.__widgets:
-            widget.destroy()
+            widget.hide()
 
     def __show_all_widgets(self):
         for widget in self.__widgets:

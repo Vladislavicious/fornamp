@@ -1,9 +1,27 @@
 """Абстракция понятия toplevel в tkinter'е"""
-import tkinter as tk
-from typing import Tuple
-from customtkinter import CTkToplevel, CTkButton
+import logging
 
+from os import path
+from typing import Tuple
+from customtkinter import CTkToplevel
+
+from new_GUI.button import Button
 from uiabs.container import Container
+
+
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
+
+# настройка обработчика и форматировщика для logger
+handler = logging.FileHandler(path.abspath(path.curdir)+f"\\logs\\{__name__}.log", mode='w', encoding="utf-8")
+formatter = logging.Formatter("%(name)s %(asctime)s %(levelname)s %(message)s")
+
+# добавление форматировщика к обработчику
+handler.setFormatter(formatter)
+# добавление обработчика к логгеру
+logger.addHandler(handler)
+
+logger.info(f"Testing the custom logger for module {__name__}...")
 
 
 class TopLevel(CTkToplevel, Container):
@@ -25,7 +43,7 @@ class TopLevel(CTkToplevel, Container):
         return False
 
     def destroy(self) -> bool:
-        print("Закрываю топлевел")
+        logger.debug("Закрываю топлевел")
         if Container.destroy(self):
             CTkToplevel.destroy(self)
             if self.parental_widget is not None:
@@ -56,14 +74,16 @@ class MainWindow(TopLevel):
             self.geometry("1000x600+250+100")
             self.resizable(True, True)
 
-            self.button = CTkButton(master=self, text="Открыть Base",
-                                    command=self.press, width=40, height=10)
-            self.button.grid()
+            self.base_open_button = Button(parental_widget=self, master=self, text="Открыть Base",
+                                           command=self.press, width=40, height=10)
+            self.addWidget(self.base_open_button)
+
+            self.show()
             return True
         return False
 
     def press(self):
-        print("нажатие в mainWindow")
+        logger.debug("нажатие в mainWindow")
         self.parental_widget.show()
         self.hide()
 

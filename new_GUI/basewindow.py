@@ -1,8 +1,25 @@
 """Абстракция на ctk"""
+import logging
+from os import path
+
 from customtkinter import CTk, CTkButton
 
 from uiabs.container import Container
 from new_GUI.toplevel import MainWindow
+
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
+
+# настройка обработчика и форматировщика для logger
+handler = logging.FileHandler(path.abspath(path.curdir)+f"\\logs\\{__name__}.log", mode='w', encoding="utf-8")
+formatter = logging.Formatter("%(name)s %(asctime)s %(levelname)s %(message)s")
+
+# добавление форматировщика к обработчику
+handler.setFormatter(formatter)
+# добавление обработчика к логгеру
+logger.addHandler(handler)
+
+logger.info(f"Testing the custom logger for module {__name__}...")
 
 
 class FornampWindow(CTk, Container):
@@ -46,12 +63,12 @@ class FornampWindow(CTk, Container):
     def destroy(self):
         if Container.destroy(self):
             CTk.destroy(self)
-            print("Закрываю Fornamp")
+            logger.debug("Закрываю Fornamp")
             return True
         return False
 
     def press(self):
-        print("press в baseWidow")
+        logger.debug("press в baseWidow")
         if self.main_window is None:
             self.main_window = MainWindow(parental_widget=self)
         self.main_window.show()
