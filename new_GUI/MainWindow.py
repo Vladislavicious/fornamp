@@ -3,10 +3,11 @@ import logging
 from os import path
 from typing import Tuple
 
-from new_GUI.frame import Frame
-from new_GUI.scroller import Scroller
-from new_GUI.toplevel import TopLevel
-from new_GUI.button import Button
+from tkabs.frame import Frame
+from tkabs.label import Label
+from tkabs.scroller import Scroller
+from tkabs.toplevel import TopLevel
+from tkabs.button import Button
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
@@ -37,20 +38,14 @@ class MainWindow(TopLevel):
             self.title("Main Window")
             self.geometry("1000x600+250+100")
             self.resizable(True, True)
-
-            self.grid_rowconfigure(0, weight=1)  # configure grid system
-            for i in range(2):
-                self.grid_columnconfigure(i, weight=1)
+            self.grid_rowconfigure(0, weight=1)
+            self.grid_columnconfigure(0, weight=1)
+            self.grid_columnconfigure(1, weight=3)
 
             self.first_frame = Frame(parental_widget=self, master=self,
                                      border_width=1, bg_color="#FF0000")
 
             self.first_frame.frame.grid(row=0, column=0, padx=4, pady=4, sticky="nsew")
-
-            self.scroller = Scroller(parental_widget=self, master=self,
-                                     border_width=1, bg_color="#2E8B57")
-
-            self.scroller.scroller.grid(row=0, column=1, padx=4, pady=4, sticky="nsew")
 
             self.base_open_button = Button(parental_widget=self.first_frame, master=self.first_frame.frame,
                                            text="Открыть Base", command=self.press, width=40, height=10)
@@ -59,8 +54,35 @@ class MainWindow(TopLevel):
 
             self.first_frame.addWidget(self.base_open_button)
 
+            ### Настройка правого фрейма
+            self.second_frame = Frame(parental_widget=self, master=self,
+                                      border_width=1, bg_color="#2E8B57")
+
+            self.second_frame.frame.grid(row=0, column=1, padx=4, pady=4, sticky="nsew")
+            self.second_frame.frame.grid_columnconfigure(0, weight=1)
+            self.second_frame.frame.grid_rowconfigure(0, weight=1)
+            self.second_frame.frame.grid_rowconfigure(1, weight=9)
+
+            self.title = Frame(parental_widget=self.second_frame, master=self.second_frame.frame,
+                               border_width=1, bg_color="#1E8B57")
+            self.title.frame.grid(row=0, column=0, padx=4, pady=4, sticky="nsew")
+
+            self.title_label = Label(parental_widget=self.title, master=self.title.frame,
+                                     text="Заказы")
+            self.title_label.label.grid(row=0, column=0, padx=4, pady=4, sticky="nsew")
+            self.title.addWidget(self.title_label)
+
+            self.second_frame.addWidget(self.title)
+
+            self.scroller = Scroller(parental_widget=self.second_frame, master=self.second_frame.frame,
+                                     border_width=1, bg_color="#2E8B57")
+
+            self.scroller.scroller.grid(row=1, column=0, padx=4, pady=4, sticky="nsew")
+
+            self.second_frame.addWidget(self.scroller)
+            ###
             self.addWidget(self.first_frame)
-            self.addWidget(self.scroller)
+            self.addWidget(self.second_frame)
 
             self.show()
             return True

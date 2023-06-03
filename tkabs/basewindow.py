@@ -5,8 +5,8 @@ from os import path
 
 
 from customtkinter import CTk
-from new_GUI.button import Button
-from new_GUI.label import Label
+from tkabs.button import Button
+from tkabs.label import Label
 
 from uiabs.container import Container
 from new_GUI.MainWindow import MainWindow

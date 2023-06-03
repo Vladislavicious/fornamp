@@ -36,7 +36,7 @@ class Frame(Container):
         super().__init__(parental_widget)
         self.name = "Frame в " + parental_widget.name
         if self.initialize():
-            self.frame = CTkFrame(parental_widget, width, height, corner_radius,
+            self.frame = CTkFrame(master, width, height, corner_radius,
                                   border_width, bg_color, fg_color, border_color,
                                   background_corner_colors, overwrite_preferred_drawing_method, **kwargs)
             logger.debug(f"{self.name} инициализирован")
