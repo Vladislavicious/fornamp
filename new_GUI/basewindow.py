@@ -1,11 +1,15 @@
 """Абстракция на ctk"""
 import logging
+import tkinter as tk
 from os import path
 
-from customtkinter import CTk, CTkButton
+
+from customtkinter import CTk
+from new_GUI.button import Button
+from new_GUI.label import Label
 
 from uiabs.container import Container
-from new_GUI.toplevel import MainWindow
+from new_GUI.MainWindow import MainWindow
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
@@ -26,23 +30,30 @@ class FornampWindow(CTk, Container):
     def __init__(self):
         CTk.__init__(self)
         Container.__init__(self, None)
-
+        self.name = "FornampWindow"
         self.initialize()
 
     def initialize(self) -> bool:
         if Container.initialize(self):
+            logger.debug(f"Инициализирую {self.name}")
             self.geometry("500x220+500+340")
             self.resizable(True, True)
             self.title("Fornamp")
 
             self.main_window = None
-
-            self.grid_rowconfigure(0, weight=1)  # configure grid system
+            for i in range(2):
+                self.grid_rowconfigure(i, weight=1)  # configure grid system
             self.grid_columnconfigure(0, weight=1)
 
-            self.button = CTkButton(master=self, text="Открыть Main",
-                                    command=self.press, width=40, height=10)
-            self.button.grid()
+            self.base_label = Label(parental_widget=self, master=self, text="Над кнопкой: ")
+            self.base_label.label.grid(row=0, column=0, ipadx=6, ipady=6, padx=4, pady=4, sticky=tk.NSEW)
+            self.addWidget(self.base_label)
+
+            self.main_open_button = Button(parental_widget=self, master=self, text="Открыть Main",
+                                           command=self.press, width=40, height=10)
+            self.main_open_button.button.grid(row=1, column=0, ipadx=6, ipady=6, padx=4, pady=4, sticky=tk.NSEW)
+            self.addWidget(self.main_open_button)
+
             self.protocol("WM_DELETE_WINDOW", lambda: self.destroy())
             self.show()
             return True
@@ -68,7 +79,7 @@ class FornampWindow(CTk, Container):
         return False
 
     def press(self):
-        logger.debug("press в baseWidow")
+        logger.debug(f"press в {self.name}")
         if self.main_window is None:
             self.main_window = MainWindow(parental_widget=self)
         self.main_window.show()

@@ -5,12 +5,10 @@ from uiabs.widget import Widget
 
 
 class Container(Widget):
-    def __init__(self, parental_widget, widgets: List[Widget] = list()) -> None:
+    def __init__(self, parental_widget) -> None:
         super().__init__(parental_widget)
-
+        self.name = "Container"
         self.__widgets = set()  # является множеством, чтобы исключить нахождение нескольких одинаковых виджетов
-
-        self.__parse_widgets(widgets)
 
     def initialize(self) -> bool:
         if super().initialize():

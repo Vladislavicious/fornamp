@@ -1,9 +1,10 @@
-"""Абстракция понятия frame в tkinter'е"""
 import logging
 
 from os import path
-from typing import List, Tuple
-from customtkinter import CTkFrame
+from typing import Tuple
+from customtkinter import CTkLabel
+from customtkinter.windows.widgets.font import CTkFont
+from customtkinter.windows.widgets.image import CTkImage
 
 from uiabs.container import Container
 
@@ -22,40 +23,39 @@ logger.addHandler(handler)
 logger.info(f"Testing the custom logger for module {__name__}...")
 
 
-class Frame(Container):
-    def __init__(self, parental_widget: Container, master: any,
-                 width: int = 200, height: int = 200,
-                 corner_radius: int | str | None = None,
-                 border_width: int | str | None = None,
+class Label(Container):
+    def __init__(self, parental_widget: Container, master: any, width: int = 0,
+                 height: int = 28, corner_radius: int | None = None,
                  bg_color: str | Tuple[str, str] = "transparent",
                  fg_color: str | Tuple[str, str] | None = None,
-                 border_color: str | Tuple[str, str] | None = None,
-                 background_corner_colors: Tuple[str | Tuple[str, str]] | None = None,
-                 overwrite_preferred_drawing_method: str | None = None, **kwargs):
+                 text_color: str | Tuple[str, str] | None = None,
+                 text: str = "CTkLabel", font: tuple | CTkFont | None = None,
+                 image: CTkImage | None = None, compound: str = "center",
+                 anchor: str = "center", wraplength: int = 0, **kwargs):
 
         super().__init__(parental_widget)
-        self.name = "Frame в " + parental_widget.name
         if self.initialize():
-            self.frame = CTkFrame(parental_widget, width, height, corner_radius,
-                                  border_width, bg_color, fg_color, border_color,
-                                  background_corner_colors, overwrite_preferred_drawing_method, **kwargs)
-            logger.debug(f"{self.name} инициализирован")
+            self.label = CTkLabel(master, width, height, corner_radius,
+                                  bg_color, fg_color, text_color, text,
+                                  font, image, compound, anchor, wraplength, **kwargs)
+            self.name = "Метка " + text
+            logger.debug(f"{self.name} инициализирована")
 
     def destroy(self) -> bool:
         if super().destroy():
-            logger.debug(f"{self.name} уничтожен")
-            self.frame.destroy()
+            logger.debug(f"{self.name} уничтожена")
+            self.label.destroy()
             return True
         return False
 
     def hide(self) -> bool:
         if super().hide():
-            self.frame.grid_remove()
+            self.label.grid_remove()
             return True
         return False
 
     def show(self) -> bool:
         if super().show():
-            self.frame.grid()
+            self.label.grid()
             return True
         return False

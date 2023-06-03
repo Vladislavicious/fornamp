@@ -6,6 +6,7 @@ class Widget():
         self.__is_visible = False
         self.__is_initialized = False
         self.parental_widget = parental_widget
+        self.name = "Widget"
 
     @property
     def is_visible(self):
