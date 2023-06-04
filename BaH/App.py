@@ -21,6 +21,12 @@ class App:
 
         self.__orders = dict()
 
+    def __new__(cls):
+        """Не позволяет сделать более одного экземпляра класса"""
+        if not hasattr(cls, 'instance'):
+            cls.instance = super(App, cls).__new__(cls)
+        return cls.instance
+
     def destroy(self):
         """Вызывается при закрытии приложения
            сохраняет всё, что ещё не было сохранено"""

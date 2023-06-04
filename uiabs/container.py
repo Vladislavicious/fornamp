@@ -10,6 +10,10 @@ class Container(Widget):
         self.name = "Container"
         self.__widgets = set()  # является множеством, чтобы исключить нахождение нескольких одинаковых виджетов
 
+    @property
+    def items_count(self) -> int:
+        return len(self.__widgets)
+
     def initialize(self) -> bool:
         if super().initialize():
             self.__initialize_all_widgets()
@@ -34,14 +38,17 @@ class Container(Widget):
             return True
         return False
 
-    def deleteWidget(self, widget: Widget):
+    def delete_widget(self, widget: Widget):
         self.__widgets.discard(widget)
         widget.destroy()
 
-    def addWidget(self, widget: Widget):
+    def add_widget(self, widget: Widget):
         self.__widgets.add(widget)
         if self.is_visible:
             widget.show()
+
+    def clear_widgets(self):
+        self.__widgets.clear()
 
     def __hide_all_widgets(self):
         for widget in self.__widgets:
@@ -62,4 +69,4 @@ class Container(Widget):
     def __parse_widgets(self, widgets: List[Widget]):
         for widget in widgets:
             widget.parental_widget = self
-            self.addWidget(widget)
+            self.add_widget(widget)

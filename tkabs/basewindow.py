@@ -9,7 +9,7 @@ from tkabs.button import Button
 from tkabs.label import Label
 
 from uiabs.container import Container
-from new_GUI.MainWindow import MainWindow
+from new_GUI.mWindow import MainWindow
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
@@ -47,12 +47,12 @@ class FornampWindow(CTk, Container):
 
             self.base_label = Label(parental_widget=self, master=self, text="Над кнопкой: ")
             self.base_label.label.grid(row=0, column=0, ipadx=6, ipady=6, padx=4, pady=4, sticky=tk.NSEW)
-            self.addWidget(self.base_label)
+            self.add_widget(self.base_label)
 
             self.main_open_button = Button(parental_widget=self, master=self, text="Открыть Main",
                                            command=self.press, width=40, height=10)
             self.main_open_button.button.grid(row=1, column=0, ipadx=6, ipady=6, padx=4, pady=4, sticky=tk.NSEW)
-            self.addWidget(self.main_open_button)
+            self.add_widget(self.main_open_button)
 
             self.protocol("WM_DELETE_WINDOW", lambda: self.destroy())
             self.show()
