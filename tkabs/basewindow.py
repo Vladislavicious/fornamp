@@ -2,9 +2,11 @@
 import logging
 import tkinter as tk
 from os import path
+from typing import Tuple, Union
 
 
 from customtkinter import CTk
+from new_GUI.textButtonEntry import textButtonEntry
 from tkabs.button import Button
 from tkabs.label import Label
 
@@ -26,6 +28,15 @@ logger.addHandler(handler)
 logger.info(f"Testing the custom logger for module {__name__}...")
 
 
+def validate_string(string: str = "") -> Tuple[bool, str]:
+    """Проверяет строку на соответствие параметрам"""
+    if len(string) < 20:
+        return False, "Строка слишком короткая"
+    if not string.isidentifier():
+        return False, "Содержит неподобающие символы"
+    return True, ""
+
+
 class FornampWindow(CTk, Container):
     def __init__(self):
         CTk.__init__(self)
@@ -45,9 +56,10 @@ class FornampWindow(CTk, Container):
                 self.grid_rowconfigure(i, weight=1)  # configure grid system
             self.grid_columnconfigure(0, weight=1)
 
-            self.base_label = Label(parental_widget=self, master=self, text="Над кнопкой: ")
-            self.base_label.label.grid(row=0, column=0, ipadx=6, ipady=6, padx=4, pady=4, sticky=tk.NSEW)
-            self.add_widget(self.base_label)
+            self.entry = textButtonEntry(parental_widget=self, master=self,
+                                         validation_method=validate_string, placeholder_text="aboba")
+            self.entry.frame.grid(row=0, column=0, sticky="nsew")
+            self.add_widget(self.entry)
 
             self.main_open_button = Button(parental_widget=self, master=self, text="Открыть Main",
                                            command=self.press, width=40, height=10)

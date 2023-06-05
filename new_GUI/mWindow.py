@@ -41,54 +41,76 @@ class MainWindow(TopLevel):
             self.title("Main Window")
             self.geometry("1000x600+250+100")
             self.resizable(True, True)
-            self.grid_rowconfigure(0, weight=1)
+            self.grid_rowconfigure(0, weight=0)
+            self.grid_rowconfigure(1, weight=1)
             self.grid_columnconfigure(0, weight=1)
-            self.grid_columnconfigure(1, weight=3)
+            self.grid_columnconfigure(1, weight=6)
 
-            self.first_frame = Frame(parental_widget=self, master=self,
-                                     border_width=1, bg_color="#FF0000")
+            # Настройка тайтлов
 
-            self.first_frame.frame.grid(row=0, column=0, padx=4, pady=4, sticky="nsew")
+            self.left_title_frame = Frame(height=25, parental_widget=self, master=self,
+                                          border_width=1, border_color="#AF4214")
+            self.left_title_frame.frame.grid(row=0, column=0, sticky="nsew")
 
-            self.base_open_button = Button(parental_widget=self.first_frame, master=self.first_frame.frame,
+            self.base_open_button = Button(parental_widget=self.left_title_frame,
+                                           master=self.left_title_frame.frame,
                                            text="Открыть Base", command=self.press, width=40, height=10)
+            self.base_open_button.button.grid(row=0, column=0, pady=5, sticky="ew")
+            self.left_title_frame.add_widget(self.base_open_button)
 
-            self.base_open_button.button.grid(row=0, column=0, padx=24, pady=24)
+            self.right_title_frame = Frame(height=25, parental_widget=self, master=self,
+                                           border_width=1, border_color="#BB1111")
+            self.right_title_frame.frame.grid(row=0, column=1, sticky="nsew")
 
-            self.first_frame.add_widget(self.base_open_button)
+            self.add_widget(self.left_title_frame)
+            self.add_widget(self.right_title_frame)
+            # Настройка левого фрейма
 
-            # Настройка правого фрейма
-            self.second_frame = Frame(parental_widget=self, master=self,
-                                      border_width=1, bg_color="#2E8B57")
+            self.left_frame = Frame(parental_widget=self, master=self,
+                                    border_width=1, border_color="#AA0A00")
 
-            self.second_frame.frame.grid(row=0, column=1, padx=4, sticky="nsew")
-            self.second_frame.frame.grid_columnconfigure(0, weight=1)
-            self.second_frame.frame.grid_rowconfigure(0, weight=1)
-            self.second_frame.frame.grid_rowconfigure(1, weight=9)
+            self.left_frame.frame.grid(row=1, column=0, sticky="nsew")
+            self.left_frame.frame.grid_columnconfigure(0, weight=1)
+            self.left_frame.frame.grid_rowconfigure(0, weight=1)
+            self.left_frame.frame.grid_rowconfigure(1, weight=10)
 
-            self.title = Frame(parental_widget=self.second_frame, master=self.second_frame.frame,
-                               border_width=1, bg_color="#1E8B57")
-            self.title.frame.grid(row=0, column=0, pady=4, sticky="nsew")
+            self.search_frame = Frame(height=25, parental_widget=self.left_frame,
+                                      master=self.left_frame.frame, border_width=1,
+                                      border_color="#CF1241")
 
-            self.title_label = Label(parental_widget=self.title, master=self.title.frame,
-                                     text="Заказы")
-            self.title_label.label.grid(row=0, column=0, pady=4, sticky="e")
-            self.title.add_widget(self.title_label)
+            self.search_frame.frame.grid_columnconfigure(0, weight=1)
+            self.search_frame.frame.grid_rowconfigure(0, weight=1)
+            self.search_frame.frame.grid(row=0, column=0, sticky="nsew")
+            self.left_frame.add_widget(self.search_frame)
 
-            self.second_frame.add_widget(self.title)
+            self.search_label = Label(parental_widget=self.search_frame,
+                                      master=self.search_frame.frame, text="Поиск")
+            self.search_label.label.grid(row=0, column=0)
 
-            self.scroller = Scroller(parental_widget=self.second_frame, master=self.second_frame.frame,
-                                     border_width=1, bg_color="#2E8B57")
+            self.search_frame.add_widget(self.search_label)
+
+            self.scroller = Scroller(parental_widget=self.left_frame, master=self.left_frame.frame,
+                                     border_width=1, border_color="#4E8BC7")
             self.scroller.scroller.grid_columnconfigure(0, weight=1)
 
-            self.scroller.scroller.grid(row=1, column=0, pady=4, sticky="nsew")
+            self.scroller.scroller.grid(row=1, column=0, sticky="nsew")
 
-            self.second_frame.add_widget(self.scroller)
+            self.left_frame.add_widget(self.scroller)
 
             self.__parse_order_previews()
+
+            # Настройка правого фрейма
+            self.right_frame = Frame(parental_widget=self, master=self,
+                                     border_width=1, border_color="#2E8B57")
+
+            self.right_frame.frame.grid(row=1, column=1, sticky="nsew")
+
+            self.right_frame.frame.grid_columnconfigure(0, weight=1)
+            self.right_frame.frame.grid_rowconfigure(0, weight=1)
+
             ###
-            self.add_widget(self.first_frame)
-            self.add_widget(self.second_frame)
+            self.add_widget(self.left_frame)
+            self.add_widget(self.right_frame)
 
             self.show()
             return True

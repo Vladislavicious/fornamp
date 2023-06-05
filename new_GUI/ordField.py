@@ -54,18 +54,18 @@ class OrderField(Frame):
 
             id = "id: " + str(self.order_preview.id)
             self.id_label = Label(self, self.frame, text=id, font=self.base_font)
-            self.id_label.label.grid(column=0, row=0, padx=5, pady=5, sticky="nw")
+            self.id_label.label.grid(column=0, row=0, padx=5, pady=2, sticky="nw")
             self.add_widget(self.id_label)
 
             customer = "Заказчик: " + self.order_preview.zakazchik
             self.customer_label = Label(self, self.frame, text=customer, font=self.base_font)
-            self.customer_label.label.grid(column=0, row=1, padx=5, pady=5, sticky="w")
+            self.customer_label.label.grid(column=0, row=1, padx=5, pady=2, sticky="w")
             self.add_widget(self.customer_label)
 
-            date_of_vidacha = "Дата выдачи заказа: " + \
+            date_of_vidacha = "Дата выдачи: " + \
                               self.order_preview.date_of_vidacha.strftime("%d.%m.%Y")
             self.date_of_vidacha = Label(self, self.frame, text=date_of_vidacha, font=self.base_font)
-            self.date_of_vidacha.label.grid(column=0, padx=5, pady=5, row=2, sticky="sw")
+            self.date_of_vidacha.label.grid(column=0, padx=5, pady=2, row=2, sticky="sw")
             self.add_widget(self.date_of_vidacha)
 
             return True
