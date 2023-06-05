@@ -2,7 +2,7 @@
 import logging
 
 from os import path
-from typing import List, Tuple
+from typing import Tuple
 from customtkinter import CTkFrame
 
 from uiabs.container import Container

@@ -4,10 +4,9 @@ import datetime
 from operator import attrgetter
 import os
 from datetime import date
+import pickle
 from typing import List, Tuple
 from random import Random
-from customtkinter import BooleanVar
-
 
 from BaH.Contribution import getValidData
 from BaH.Contribution import simpleEncoder
@@ -17,19 +16,15 @@ from BaH.product import Product
 @dataclass(repr=False)
 class OrderPreview:
     id: int
-    date_of_creation: date
     date_of_vidacha: date
-    commentary: str
     zakazchik: str
     isDone: bool
     isVidan: bool
 
     def __repr__(self) -> str:
         zakazchik = f"Заказчик: {self.zakazchik}\n"
-        descr = f"Описание: {self.commentary}"
-        date_beg = f"Дата создания: {getValidData(self.date_of_creation)}\n"
         date_end = f"Дата выдачи: {getValidData(self.date_of_vidacha)}\n"
-        return zakazchik + date_beg + date_end + descr
+        return zakazchik + date_end
 
 
 class OrderPreviewSorter:
@@ -38,11 +33,6 @@ class OrderPreviewSorter:
     def ByVidachaDate(cls, ord_prevs: List[OrderPreview], reverse=False) -> List[OrderPreview]:
         return sorted(ord_prevs,
                       key=lambda order_preview: order_preview.date_of_vidacha, reverse=reverse)
-
-    @classmethod
-    def ByCreationDate(cls, ord_prevs: List[OrderPreview], reverse=False) -> List[OrderPreview]:
-        return sorted(ord_prevs,
-                      key=lambda order_preview: order_preview.date_of_creation, reverse=reverse)
 
     @classmethod
     def ByName(cls, ord_prevs: List[OrderPreview], reverse=False) -> List[OrderPreview]:
@@ -228,10 +218,8 @@ class Order:
         return other
 
     def createPreview(self) -> OrderPreview:
-        return OrderPreview(id=self.id, date_of_creation=self.date_of_creation,
-                            date_of_vidacha=self.date_of_vidacha, isDone=self.isDone,
-                            zakazchik=self.zakazchik, isVidan=self.isVidan,
-                            commentary=self.commentary)
+        return OrderPreview(id=self.id, date_of_vidacha=self.date_of_vidacha,
+                            isDone=self.isDone, zakazchik=self.zakazchik, isVidan=self.isVidan)
 
     def toHTML(self) -> str:
         prod = "\n".join(list(prod.toHTML() for prod in self.GetProducts()))
@@ -251,8 +239,9 @@ class Order:
     def toJSON(self):
         return json.dumps(self, cls=simpleEncoder, indent=4, ensure_ascii=False)
 
-    def toFile(self, directory: str = ""):
-        """Сохраняет заказ в указанной директории, по умолчанию в рабочей. указывать абсолютный путь"""
+    def toJSONFile(self, directory: str = ""):
+        """Сохраняет заказ в указанной директории, по умолчанию в рабочей. указывать абсолютный путь
+           Возвращает True при успешном сохранении"""
         if directory == "":
             directory = os.getcwd()
 
@@ -270,8 +259,34 @@ class Order:
             file.write(self.toJSON())
         return True
 
+    def toFile(self, directory: str = ""):
+        """Сохраняет заказ в указанной директории, по умолчанию в рабочей. указывать абсолютный путь
+           Возвращает True при успешном сохранении"""
+        if directory == "":
+            directory = os.getcwd()
+
+        if not os.path.exists(directory):
+            return False
+        firstLetter = "N"   # G - если заказ выдан, D - если заказ сделан, N - если заказ не сделан
+        if self.isDone:
+            firstLetter = "D"
+        elif self.isVidan:
+            firstLetter = "G"
+
+        filename = directory + "\\" + firstLetter + str(self.id) + ".order"
+
+        with open(filename, "wb") as file:
+            pickle.dump(self, file)
+
+        return True
+
     @classmethod
     def fromFile(cls, filepath: str):
+        with open(filepath, "rb") as file:
+            return pickle.load(file)
+
+    @classmethod
+    def fromJSONFile(cls, filepath: str):
         with open(filepath, "r", encoding="utf-8") as file:
             return cls.fromJSON(file.read())
 

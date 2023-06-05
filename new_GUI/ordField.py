@@ -4,9 +4,6 @@
 эта функция, в свою очередь, вызывает функцию открытия open_order(order: Order) этого заказа в MainWindow,
 которая открывает окно с заказом, а себя hide.
 """
-
-
-from typing import Tuple
 from customtkinter import CTkFont
 from BaH.order import OrderPreview
 from tkabs.frame import Frame
@@ -51,9 +48,9 @@ class OrderField(Frame):
 
             self.frame.rowconfigure(0, weight=1)
             self.frame.rowconfigure(1, weight=1)
+            self.frame.rowconfigure(2, weight=1)
 
             self.frame.columnconfigure(0, weight=1)
-            self.frame.columnconfigure(1, weight=1)
 
             id = "id: " + str(self.order_preview.id)
             self.id_label = Label(self, self.frame, text=id, font=self.base_font)
@@ -62,30 +59,14 @@ class OrderField(Frame):
 
             customer = "Заказчик: " + self.order_preview.zakazchik
             self.customer_label = Label(self, self.frame, text=customer, font=self.base_font)
-            self.customer_label.label.grid(column=1, row=0)
+            self.customer_label.label.grid(column=0, row=1, padx=5, pady=5, sticky="w")
             self.add_widget(self.customer_label)
-
-            date_of_creation = "Дата создания заказа: " + \
-                               self.order_preview.date_of_creation.strftime("%d.%m.%Y")
-            self.date_of_creation = Label(self, self.frame, text=date_of_creation, font=self.base_font)
-            self.date_of_creation.label.grid(column=0, row=1, padx=5, pady=5, sticky="w")
-            self.add_widget(self.date_of_creation)
 
             date_of_vidacha = "Дата выдачи заказа: " + \
                               self.order_preview.date_of_vidacha.strftime("%d.%m.%Y")
             self.date_of_vidacha = Label(self, self.frame, text=date_of_vidacha, font=self.base_font)
-            self.date_of_vidacha.label.grid(column=1, padx=5, pady=5, row=1)
+            self.date_of_vidacha.label.grid(column=0, padx=5, pady=5, row=2, sticky="sw")
             self.add_widget(self.date_of_vidacha)
-
-            description = self.order_preview.commentary
-            if description != "":
-                description = "Описание: " + description
-                description = self.__configure_string_length(description)
-
-                self.frame.rowconfigure(2, weight=2)
-                self.description = Label(self, self.frame, text=description, font=self.base_font)
-                self.description.label.grid(row=2, columnspan=2, padx=5, pady=5, sticky="s")
-                self.add_widget(self.description)
 
             return True
         return False

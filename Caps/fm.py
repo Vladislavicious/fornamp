@@ -131,7 +131,7 @@ class FileManager():
         with open(self.orders_dir_path + "\\orderPreviews.b", "wb") as file:
             file.write(pickle.dumps(order_preview_list))
 
-    def getOrderList(self):
+    def getOrderList(self) -> List[Order]:
         """Возвращает список всех заказов"""
         order_list = list()
         for key in self.ordered_filenames.keys():

@@ -57,7 +57,7 @@ class MainWindow(TopLevel):
 
             self.first_frame.add_widget(self.base_open_button)
 
-            ### Настройка правого фрейма
+            # Настройка правого фрейма
             self.second_frame = Frame(parental_widget=self, master=self,
                                       border_width=1, bg_color="#2E8B57")
 
