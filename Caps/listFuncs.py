@@ -195,6 +195,6 @@ def ValidateDate(parsed_date: str) -> date:
         years = int(parsed_date[6:10])
         data = date(years, month, days)
 
-        return data
+        return True, data
     except ValueError:
-        return None
+        return False, None

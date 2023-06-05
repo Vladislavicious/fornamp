@@ -2,6 +2,7 @@ import logging
 
 from os import path
 from typing import Tuple
+from textwrap import wrap
 from customtkinter import CTkLabel, CTkFont
 
 from customtkinter.windows.widgets.image import CTkImage
@@ -23,20 +24,13 @@ logger.addHandler(handler)
 logger.info(f"Testing the custom logger for module {__name__}...")
 
 
-def shorter(string: str, length: int = 60) -> str:
-    string_len = len(string)
-
-    new_string = "\n".join(list([string[i:i + length] for i in range(0, string_len, length)]))
-    return new_string
-
-
 class Label(Container):
     def __init__(self, parental_widget: Container, master: any, width: int = 0,
                  height: int = 28, corner_radius: int | None = None,
                  bg_color: str | Tuple[str, str] = "transparent",
                  fg_color: str | Tuple[str, str] | None = None,
                  text_color: str | Tuple[str, str] | None = None,
-                 text: str = "CTkLabel", font: tuple | CTkFont | None = None,
+                 text: str = "Метка", font: tuple | CTkFont | None = None,
                  image: CTkImage | None = None, compound: str = "center",
                  anchor: str = "center", wraplength: int = 0, **kwargs):
 
@@ -91,5 +85,6 @@ class Label(Container):
 
         new_string_length = label_width // mean_width - 5
 
-        self.label.configure(text=shorter(text, new_string_length))
+        wrapped_text = '\n'.join(wrap(text, new_string_length))
+        self.label.configure(text=wrapped_text)
         return True

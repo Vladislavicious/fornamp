@@ -3,7 +3,8 @@ import logging
 from os import path
 from typing import Tuple
 from BaH.App import App
-from new_GUI.ordField import OrderField
+from new_GUI.ordPreviewField import OrderPreviewField
+from new_GUI.orderField import OrderField
 
 from tkabs.frame import Frame
 from tkabs.label import Label
@@ -106,7 +107,11 @@ class MainWindow(TopLevel):
             self.right_frame.frame.grid(row=1, column=1, sticky="nsew")
 
             self.right_frame.frame.grid_columnconfigure(0, weight=1)
+            self.right_frame.frame.grid_columnconfigure(1, weight=1)
             self.right_frame.frame.grid_rowconfigure(0, weight=1)
+            self.right_frame.frame.grid_rowconfigure(1, weight=3)
+
+            self.__initialize_open_order()
 
             ###
             self.add_widget(self.left_frame)
@@ -115,6 +120,24 @@ class MainWindow(TopLevel):
             self.show()
             return True
         return False
+
+    def __initialize_open_order(self):
+        self.order_frame = Frame(parental_widget=self.right_frame, master=self.right_frame.frame,
+                                 border_width=1, border_color="#EE8B57")
+        self.order_frame.frame.grid_columnconfigure(0, weight=1)
+        self.order_frame.frame.grid_rowconfigure(0, weight=1)
+        self.order_frame.frame.grid(row=0, columnspan=2, pady=0, sticky="nsew")
+        self.right_frame.add_widget(self.order_frame)
+
+        self.product_frame = Scroller(parental_widget=self.right_frame, master=self.right_frame.frame,
+                                      border_width=1, border_color="#432B57")
+        self.product_frame.scroller.grid(row=1, column=0, pady=0, sticky="nsew")
+        self.right_frame.add_widget(self.product_frame)
+
+        self.step_frame = Scroller(parental_widget=self.right_frame, master=self.right_frame.frame,
+                                   border_width=1, border_color="#655337")
+        self.step_frame.scroller.grid(row=1, column=1, pady=0, sticky="nsew")
+        self.right_frame.add_widget(self.step_frame)
 
     def press(self):
         logger.debug(f"нажатие в {self.name}")
@@ -132,12 +155,25 @@ class MainWindow(TopLevel):
         logger.debug("Выводим заказы")
         if self.scroller.items_count == 0:
             for order_preview in self.app.order_previews:
-                order_field = OrderField(self.scroller, self.scroller.scroller,
-                                         order_preview=order_preview)
-                self.scroller.add_widget(order_field)
-
-                order_field.frame.grid(sticky="nsew", pady=2)
-                order_field.frame.bind('<Button-1>', lambda event, ID=order_preview.id: self.open_info(ID))
+                order_preview_field = OrderPreviewField(self.scroller, self.scroller.scroller,
+                                                        order_preview=order_preview)
+                self.scroller.add_widget(order_preview_field)
+                order_preview_field.frame.grid(sticky="nsew", pady=2)
+                order_preview_field.frame.configure(cursor="hand2")
+                order_preview_field.frame.bind('<Button-1>', lambda event,
+                                               ID=order_preview.id: self.open_info(ID))
 
     def open_info(self, id: int):
         logger.debug(f"Нажатие по заказу {id}")
+        self.right_frame.delete_widget(self.order_frame)
+        self.right_frame.delete_widget(self.product_frame)
+        self.right_frame.delete_widget(self.step_frame)
+
+        self.__initialize_open_order()
+
+        order = self.app.getOrderByID(id)
+
+        order_field = OrderField(parental_widget=self.order_frame, master=self.order_frame.frame,
+                                 order=order)
+        order_field.frame.grid(row=0, column=0, pady=0, sticky="nsew")
+        self.order_frame.add_widget(order_field)

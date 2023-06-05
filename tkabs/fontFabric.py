@@ -60,7 +60,6 @@ class FontFabric():
 
         return cls.__mean_width_calculation(font)
 
-
     @classmethod
     def __mean_width_calculation(cls, font: CTkFont):
         text = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ" + \

@@ -1,10 +1,3 @@
-"""
-Класс, наследуемый от Frame, получающий на вход OrderPreview
-При нажатии на любую часть фрейма, вызывается функция order_field_press(self, order_id: int),
-эта функция, в свою очередь, вызывает функцию открытия open_order(order: Order) этого заказа в MainWindow,
-которая открывает окно с заказом, а себя hide.
-"""
-
 from BaH.order import OrderPreview
 from tkabs.frame import Frame
 from tkabs.label import Label
@@ -12,14 +5,7 @@ from tkabs.fontFabric import FontFabric
 from uiabs.container import Container
 
 
-def shorter(string: str, length: int = 60) -> str:
-    string_len = len(string)
-
-    new_string = "\n".join(list([string[i:i + length] for i in range(0, string_len, length)]))
-    return new_string
-
-
-class OrderField(Frame):
+class OrderPreviewField(Frame):
     def __init__(self, parental_widget: Container, master: any,
                  order_preview: OrderPreview):
         border_width = 2
@@ -30,13 +16,6 @@ class OrderField(Frame):
         self.base_font = FontFabric.get_base_font()
 
         self.initialize()
-
-    def __configure_string_length(self, string: str):
-        string_length = len(string)
-        if string_length > 60:
-            new_string_length = 60
-            return shorter(string, new_string_length)
-        return string
 
     def initialize(self) -> bool:
         if super().initialize():

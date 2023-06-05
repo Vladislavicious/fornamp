@@ -10,7 +10,7 @@ from tkabs.entry import Entry
 from uiabs.container import Container
 
 
-class textButtonEntry(Frame):
+class TextField(Frame):
     def __init__(self, parental_widget: Container, master: any,
                  validation_method, title: str,
                  placeholder_text: str = "", initial_text: str = "",
@@ -46,23 +46,23 @@ class textButtonEntry(Frame):
             self.frame.grid_rowconfigure(1, weight=3)
 
             self.title_label = Label(parental_widget=self, master=self.frame,
-                                     text=self.title_text, font=self.base_font)
+                                     text=self.title_text, font=self.base_font, width=500)
             self.title_label.label.grid(row=0, column=0, sticky="nsew")
             self.add_widget(self.title_label)
 
             self.text_label = Label(parental_widget=self, master=self.frame,
-                                    text=self.initial_text, font=self.base_font)
+                                    text=self.initial_text, font=self.base_font, width=500)
             self.text_label.label.grid(row=1, column=0, sticky="nsew")
             self.add_widget(self.text_label)
 
             self.text_entry = Entry(parental_widget=self, master=self.frame,
                                     placeholder_text=self.placeholder_text,
-                                    font=self.base_font)
+                                    font=self.base_font, width=500)
             self.text_entry.entry.grid(row=1, column=0, sticky="nsew")
             self.add_widget(self.text_entry)
 
             self.button = Button(parental_widget=self, master=self.frame,
-                                 text="Edit", font=self.base_font, command=self.__edit)
+                                 text="edit", font=self.base_font, command=self.__edit, width=500)
             self.button.button.grid(row=0, column=1, rowspan=2, sticky="nsew")
             self.add_widget(self.button)
 

@@ -6,9 +6,8 @@ from typing import Tuple
 
 
 from customtkinter import CTk
-from new_GUI.textButtonEntry import textButtonEntry
+from new_GUI.textField import TextField
 from tkabs.button import Button
-from tkabs.label import Label
 
 from uiabs.container import Container
 from new_GUI.mWindow import MainWindow
@@ -57,8 +56,8 @@ class FornampWindow(CTk, Container):
             self.grid_columnconfigure(0, weight=1)
             self.grid_propagate(True)
 
-            self.entry = textButtonEntry(parental_widget=self, master=self, title="Введите абоба:",
-                                         validation_method=validate_string, placeholder_text="aboba")
+            self.entry = TextField(parental_widget=self, master=self, title="Введите абоба:",
+                                   validation_method=validate_string, placeholder_text="aboba")
             self.entry.frame.grid(row=0, column=0, sticky="nsew")
             self.add_widget(self.entry)
 
