@@ -4,10 +4,11 @@
 эта функция, в свою очередь, вызывает функцию открытия open_order(order: Order) этого заказа в MainWindow,
 которая открывает окно с заказом, а себя hide.
 """
-from customtkinter import CTkFont
+
 from BaH.order import OrderPreview
 from tkabs.frame import Frame
 from tkabs.label import Label
+from tkabs.fontFabric import FontFabric
 from uiabs.container import Container
 
 
@@ -26,12 +27,11 @@ class OrderField(Frame):
         super().__init__(parental_widget, master, border_width=border_width,
                          border_color=border_color)
         self.order_preview = order_preview
-        self.base_font = CTkFont(family="Century gothic", size=16)
+        self.base_font = FontFabric.get_base_font()
 
         self.initialize()
 
     def __configure_string_length(self, string: str):
-
         string_length = len(string)
         if string_length > 60:
             new_string_length = 60

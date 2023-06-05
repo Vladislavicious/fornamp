@@ -2,10 +2,10 @@ import logging
 
 from os import path
 from typing import Tuple
-from customtkinter import CTkLabel
-from customtkinter.windows.widgets.font import CTkFont
-from customtkinter.windows.widgets.image import CTkImage
+from customtkinter import CTkLabel, CTkFont
 
+from customtkinter.windows.widgets.image import CTkImage
+from tkabs.fontFabric import FontFabric
 from uiabs.container import Container
 
 logger = logging.getLogger(__name__)
@@ -23,6 +23,13 @@ logger.addHandler(handler)
 logger.info(f"Testing the custom logger for module {__name__}...")
 
 
+def shorter(string: str, length: int = 60) -> str:
+    string_len = len(string)
+
+    new_string = "\n".join(list([string[i:i + length] for i in range(0, string_len, length)]))
+    return new_string
+
+
 class Label(Container):
     def __init__(self, parental_widget: Container, master: any, width: int = 0,
                  height: int = 28, corner_radius: int | None = None,
@@ -33,8 +40,10 @@ class Label(Container):
                  image: CTkImage | None = None, compound: str = "center",
                  anchor: str = "center", wraplength: int = 0, **kwargs):
 
+        logger.debug(f"initial width: {width}")
         super().__init__(parental_widget)
         if self.initialize():
+            self.font = font
             self.label = CTkLabel(master, width, height, corner_radius,
                                   bg_color, fg_color, text_color, text,
                                   font, image, compound, anchor, wraplength, **kwargs)
@@ -56,6 +65,31 @@ class Label(Container):
 
     def show(self) -> bool:
         if super().show():
+            self.label.update()
+
+            self.__check_text_length()
+
             self.label.grid()
+
+            logger.debug(f"second width: {self.label.winfo_width()}")
             return True
         return False
+
+    def __check_text_length(self):
+        """Если длина строки больше, чем ей выделено места,
+           делает переносы строки"""
+        text = self.label.cget("text")
+        text_length = len(text)
+        if text_length <= 25:
+            return False
+
+        label_width = self.label.winfo_width()
+
+        mean_width = FontFabric.calculate_mean_width(self.font)
+        if label_width > text_length * mean_width:
+            return False
+
+        new_string_length = label_width // mean_width - 5
+
+        self.label.configure(text=shorter(text, new_string_length))
+        return True

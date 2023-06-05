@@ -3,10 +3,10 @@
    продукта был свой набор шагов, которые будут отображаться на один конкретный
    frame"""
 
-from customtkinter import CTkFont
 from BaH.product import Product
 from tkabs.frame import Frame
 from tkabs.label import Label
+from tkabs.fontFabric import FontFabric
 from uiabs.container import Container
 
 
@@ -26,7 +26,7 @@ class ProductField(Frame):
                          border_color=border_color)
         self.product = product
         self.step_frame = step_frame
-        self.base_font = CTkFont(family="Century gothic", size=16)
+        self.base_font = FontFabric.get_base_font()
 
         self.initialize()
 

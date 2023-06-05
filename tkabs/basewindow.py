@@ -2,7 +2,7 @@
 import logging
 import tkinter as tk
 from os import path
-from typing import Tuple, Union
+from typing import Tuple
 
 
 from customtkinter import CTk
@@ -55,8 +55,9 @@ class FornampWindow(CTk, Container):
             for i in range(2):
                 self.grid_rowconfigure(i, weight=1)  # configure grid system
             self.grid_columnconfigure(0, weight=1)
+            self.grid_propagate(True)
 
-            self.entry = textButtonEntry(parental_widget=self, master=self,
+            self.entry = textButtonEntry(parental_widget=self, master=self, title="Введите абоба:",
                                          validation_method=validate_string, placeholder_text="aboba")
             self.entry.frame.grid(row=0, column=0, sticky="nsew")
             self.add_widget(self.entry)
