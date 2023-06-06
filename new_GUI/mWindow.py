@@ -107,10 +107,9 @@ class MainWindow(TopLevel):
 
             self.right_frame.frame.grid(row=1, column=1, sticky="nsew")
 
-            self.right_frame.frame.grid_columnconfigure(0, weight=1)
-            self.right_frame.frame.grid_columnconfigure(1, weight=1)
-            self.right_frame.frame.grid_rowconfigure(0, weight=0)
-            self.right_frame.frame.grid_rowconfigure(1, weight=1)
+            self.right_frame.frame.grid_columnconfigure(0, weight=0)
+            self.right_frame.frame.grid_columnconfigure(1, weight=5)
+            self.right_frame.frame.grid_rowconfigure(0, weight=1)
 
             self.__initialize_open_order()
 
@@ -127,19 +126,14 @@ class MainWindow(TopLevel):
                                  border_width=1, border_color="#EE8B57")
         self.order_frame.frame.grid_columnconfigure(0, weight=1)
         self.order_frame.frame.grid_rowconfigure(0, weight=1)
-        self.order_frame.frame.grid(row=0, columnspan=2, pady=0, sticky="nsew")
+        self.order_frame.frame.grid(row=0, column=0, pady=0, sticky="nsew")
         self.right_frame.add_widget(self.order_frame)
 
         self.product_frame = Scroller(parental_widget=self.right_frame, master=self.right_frame.frame,
                                       border_width=1, border_color="#432B57")
-        self.product_frame.scroller.grid(row=1, column=0, pady=0, sticky="nsew")
+        self.product_frame.scroller.grid(row=0, column=1, pady=0, sticky="nsew")
         self.product_frame.scroller.grid_columnconfigure(0, weight=1)
         self.right_frame.add_widget(self.product_frame)
-
-        self.step_frame = Scroller(parental_widget=self.right_frame, master=self.right_frame.frame,
-                                   border_width=1, border_color="#655337")
-        self.step_frame.scroller.grid(row=1, column=1, pady=0, sticky="nsew")
-        self.right_frame.add_widget(self.step_frame)
 
     def press(self):
         logger.debug(f"нажатие в {self.name}")
@@ -169,7 +163,6 @@ class MainWindow(TopLevel):
         logger.debug(f"Нажатие по заказу {id}")
         self.right_frame.delete_widget(self.order_frame)
         self.right_frame.delete_widget(self.product_frame)
-        self.right_frame.delete_widget(self.step_frame)
 
         self.__initialize_open_order()
 

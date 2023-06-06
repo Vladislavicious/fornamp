@@ -62,7 +62,7 @@ def validate_date_ov(parsed_date: str) -> Tuple[bool, str]:
 
 class OrderField(Frame):
     def __init__(self, parental_widget: Container, master: any, order: Order = None,
-                 width: int = 500, height: int = 200,
+                 width: int = 250, height: int = 200,
                  bg_color: str | Tuple[str, str] = "transparent",
                  fg_color: str | Tuple[str, str] | None = None,
                  border_color: str | Tuple[str, str] | None = "#B22222", **kwargs):
@@ -99,6 +99,7 @@ class OrderField(Frame):
                     self.frame.configure(border_color="#FFA500")
 
             self.frame.grid_columnconfigure(0, weight=1)
+            self.frame.grid_propagate(False)
 
             self.id_label = Label(self, self.frame, text="id: " + self.id,
                                   font=FontFabric.get_changed_font(weight='bold'))
@@ -130,4 +131,3 @@ class OrderField(Frame):
 
             return True
         return False
-
