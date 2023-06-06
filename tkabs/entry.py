@@ -29,6 +29,10 @@ class Entry(Container):
                                   placeholder_text, font, state, **kwargs)
             self.name = "Entry " + placeholder_text
 
+    @property
+    def contained_text(self) -> str:
+        return self.entry.get()
+
     def destroy(self) -> bool:
         if super().destroy():
             self.entry.destroy()
@@ -46,3 +50,10 @@ class Entry(Container):
             self.entry.grid()
             return True
         return False
+
+    def place_text(self, string: str):
+        text = self.contained_text
+        length = len(text)
+        if string != text:
+            self.entry.delete(0, length)
+            self.entry.insert(0, string)

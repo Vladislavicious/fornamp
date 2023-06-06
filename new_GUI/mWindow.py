@@ -3,6 +3,7 @@ import logging
 from os import path
 from typing import Tuple
 from BaH.App import App
+from new_GUI.prodField import ProductField
 from new_GUI.ordPreviewField import OrderPreviewField
 from new_GUI.orderField import OrderField
 
@@ -108,8 +109,8 @@ class MainWindow(TopLevel):
 
             self.right_frame.frame.grid_columnconfigure(0, weight=1)
             self.right_frame.frame.grid_columnconfigure(1, weight=1)
-            self.right_frame.frame.grid_rowconfigure(0, weight=1)
-            self.right_frame.frame.grid_rowconfigure(1, weight=3)
+            self.right_frame.frame.grid_rowconfigure(0, weight=0)
+            self.right_frame.frame.grid_rowconfigure(1, weight=1)
 
             self.__initialize_open_order()
 
@@ -132,6 +133,7 @@ class MainWindow(TopLevel):
         self.product_frame = Scroller(parental_widget=self.right_frame, master=self.right_frame.frame,
                                       border_width=1, border_color="#432B57")
         self.product_frame.scroller.grid(row=1, column=0, pady=0, sticky="nsew")
+        self.product_frame.scroller.grid_columnconfigure(0, weight=1)
         self.right_frame.add_widget(self.product_frame)
 
         self.step_frame = Scroller(parental_widget=self.right_frame, master=self.right_frame.frame,
@@ -147,7 +149,7 @@ class MainWindow(TopLevel):
     def destroy(self) -> bool:
         if super().destroy():
             logger.debug(f"Закрываю {self.name}")
-            self.parental_widget.main_window = None
+            self.parental_widget.destroy()
             return True
         return False
 
@@ -175,5 +177,11 @@ class MainWindow(TopLevel):
 
         order_field = OrderField(parental_widget=self.order_frame, master=self.order_frame.frame,
                                  order=order)
-        order_field.frame.grid(row=0, column=0, pady=0, sticky="nsew")
+        order_field.frame.grid(row=0, column=0, pady=0, ipady=5, sticky="nsew")
         self.order_frame.add_widget(order_field)
+
+        for product in order.GetProducts():
+            product_field = ProductField(parental_widget=self.product_frame, master=self.product_frame.scroller,
+                                         product=product)
+            product_field.frame.grid(sticky="ew", pady=2, ipadx=1, ipady=5)
+            self.product_frame.add_widget(product_field)

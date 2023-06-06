@@ -59,7 +59,6 @@ class Label(Container):
 
     def show(self) -> bool:
         if super().show():
-            self.label.update()
 
             self.__check_text_length()
 
@@ -78,13 +77,14 @@ class Label(Container):
             return False
 
         label_width = self.label.winfo_width()
+        if label_width > 1:
+            mean_width = FontFabric.calculate_mean_width(self.font)
+            if label_width > text_length * mean_width:
+                return False
 
-        mean_width = FontFabric.calculate_mean_width(self.font)
-        if label_width > text_length * mean_width:
-            return False
+            new_string_length = label_width // mean_width - 5
 
-        new_string_length = label_width // mean_width - 5
-
-        wrapped_text = '\n'.join(wrap(text, new_string_length))
-        self.label.configure(text=wrapped_text)
-        return True
+            wrapped_text = '\n'.join(wrap(text, new_string_length))
+            self.label.configure(text=wrapped_text)
+            return True
+        return False

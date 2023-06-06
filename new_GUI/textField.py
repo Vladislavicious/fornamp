@@ -19,8 +19,8 @@ class TextField(Frame):
                  fg_color: str | Tuple[str, str] | None = None,
                  border_color: str | Tuple[str, str] | None = "#123456", **kwargs):
 
-        super().__init__(parental_widget, master, border_width,
-                         bg_color=bg_color, fg_color=fg_color,
+        super().__init__(parental_widget, master, border_width=border_width,
+                         width=250, bg_color=bg_color, fg_color=fg_color,
                          border_color=border_color, **kwargs)
 
         self.validation_method = validation_method
@@ -40,29 +40,31 @@ class TextField(Frame):
 
     def initialize(self) -> bool:
         if super().initialize():
-            self.frame.grid_columnconfigure(0, weight=3)
-            self.frame.grid_columnconfigure(1, weight=1)
+            self.frame.grid_columnconfigure(0, weight=1)
+            self.frame.grid_columnconfigure(1, weight=0)
             self.frame.grid_rowconfigure(0, weight=1)
             self.frame.grid_rowconfigure(1, weight=3)
+            self.frame.grid_propagate(True)
 
             self.title_label = Label(parental_widget=self, master=self.frame,
-                                     text=self.title_text, font=self.base_font, width=500)
+                                     text=self.title_text,
+                                     font=FontFabric.get_changed_font(weight='bold'), width=300)
             self.title_label.label.grid(row=0, column=0, sticky="nsew")
             self.add_widget(self.title_label)
 
             self.text_label = Label(parental_widget=self, master=self.frame,
-                                    text=self.initial_text, font=self.base_font, width=500)
+                                    text=self.initial_text, font=self.base_font, width=300)
             self.text_label.label.grid(row=1, column=0, sticky="nsew")
             self.add_widget(self.text_label)
 
             self.text_entry = Entry(parental_widget=self, master=self.frame,
                                     placeholder_text=self.placeholder_text,
-                                    font=self.base_font, width=500)
+                                    font=self.base_font, width=300)
             self.text_entry.entry.grid(row=1, column=0, sticky="nsew")
             self.add_widget(self.text_entry)
 
-            self.button = Button(parental_widget=self, master=self.frame,
-                                 text="edit", font=self.base_font, command=self.__edit, width=500)
+            self.button = Button(parental_widget=self, master=self.frame, width=40,
+                                 text="edit", font=self.base_font, command=self.__edit)
             self.button.button.grid(row=0, column=1, rowspan=2, sticky="nsew")
             self.add_widget(self.button)
 
@@ -80,7 +82,8 @@ class TextField(Frame):
 
     def __edit(self):
         self.__is_being_edited = True
-        self.button.button.configure(command=self.__confirm, text="confirm")
+        self.button.button.configure(command=self.__confirm, text="conf")
+        self.text_entry.place_text(self.initial_text)
         self.hide()
         self.show()
         pass
@@ -93,6 +96,7 @@ class TextField(Frame):
             self.is_edited = True
             self.button.button.configure(command=self.__edit, text="edit")
 
+            self.initial_text = new_text
             self.text_label.label.configure(text=new_text)
             self.hide()
             self.show()
