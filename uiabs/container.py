@@ -65,8 +65,3 @@ class Container(Widget):
     def __destroy_all_widgets(self):
         for widget in self.__widgets:
             widget.destroy()
-
-    def __parse_widgets(self, widgets: List[Widget]):
-        for widget in widgets:
-            widget.parental_widget = self
-            self.add_widget(widget)

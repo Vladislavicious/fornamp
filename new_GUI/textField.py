@@ -15,10 +15,11 @@ class TextField(Frame):
     def __init__(self, parental_widget: Container, master: any,
                  validation_method, title: str,
                  placeholder_text: str = "", initial_text: str = "",
+                 with_button: bool = False,
                  border_width: int | str | None = 1,
                  bg_color: str | Tuple[str, str] = "transparent",
                  fg_color: str | Tuple[str, str] | None = None,
-                 border_color: str | Tuple[str, str] | None = "#123456", **kwargs):
+                 border_color: str | Tuple[str, str] | None = None, **kwargs):
 
         super().__init__(parental_widget, master, border_width=border_width,
                          width=250, bg_color=bg_color, fg_color=fg_color,
@@ -29,6 +30,7 @@ class TextField(Frame):
         self.initial_text = initial_text
         self.title_text = title
 
+        self.__with_button = with_button
         self.__is_being_edited = False
         self.is_edited = False
 
@@ -38,6 +40,10 @@ class TextField(Frame):
     @property
     def contained_text(self) -> str:
         return self.text_entry.entry.get()
+
+    @property
+    def is_confirmed(self) -> bool:
+        return not self.__is_being_edited
 
     def initialize(self) -> bool:
         if super().initialize():
@@ -67,25 +73,24 @@ class TextField(Frame):
 
             self.add_widget(self.text_entry)
 
-            self.button = Button(parental_widget=self, master=self.frame, width=40,
-                                 text="edit", font=self.base_font, command=self.__edit)
-            #self.button.button.bind("<Enter>", command=self.__edit)
-            self.button.button.grid(row=0, column=1, rowspan=2, sticky="nsew")
-            self.add_widget(self.button)
+            if self.__with_button:
+                self.button = Button(parental_widget=self, master=self.frame, width=40,
+                                     text="edit", font=self.base_font, command=self.edit)
+                self.button.button.grid(row=0, column=1, rowspan=2, sticky="nsew")
+                self.add_widget(self.button)
 
             return True
         return False
 
     def __check_for_enter(self, event: Event):
         if event.keysym == 'Return':
-            self.__confirm()
+            self.confirm()
 
     def __focused_entry(self):
         self.text_entry.entry.bind('<Key>', command=self.__check_for_enter)
 
     def __unfocused_entry(self):
         self.text_entry.entry.unbind('<Key>')
-
 
     def show(self) -> bool:
         if super().show():
@@ -96,27 +101,33 @@ class TextField(Frame):
             return True
         return False
 
-    def __edit(self):
+    def edit(self):
+        """редактирование поля"""
         self.__is_being_edited = True
-        self.button.button.configure(command=self.__confirm, text="conf")
+        if self.__with_button:
+            self.button.button.configure(command=self.confirm, text="conf")
         self.text_entry.place_text(self.initial_text)
         self.hide()
         self.show()
-        pass
 
-    def __confirm(self):
+    def confirm(self) -> bool:
+        """Проверка редакции поля, при успешном возвращает True"""
         new_text = self.text_entry.entry.get()
         valid, report = self.validation_method(new_text)
         if valid:
             self.__is_being_edited = False
             self.is_edited = True
-            self.button.button.configure(command=self.__edit, text="edit")
+            if self.__with_button:
+                self.button.button.configure(command=self.edit, text="edit")
 
             self.initial_text = new_text
             self.text_label.label.configure(text=new_text)
             self.hide()
             self.show()
+            return True
         else:
             self.text_entry.entry.delete(0, len(new_text))
             self.text_entry.entry.configure(placeholder_text=report, placeholder_text_color="#DC143C")
-            self.button.button.focus()
+            if self.__with_button:
+                self.button.button.focus()
+            return False

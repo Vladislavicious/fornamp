@@ -52,6 +52,7 @@ class Button(Container):
                                     round_height_to_even_numbers, text, font, textvariable,
                                     image, state, hover, command, compound, anchor, **kwargs)
             self.name = "Кнопка " + text
+
             logger.debug(f"{self.name} инициализирована")
 
     def destroy(self) -> bool:
