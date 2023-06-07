@@ -15,14 +15,14 @@ class TextField(Frame):
     def __init__(self, parental_widget: Container, master: any,
                  validation_method, title: str,
                  placeholder_text: str = "", initial_text: str = "",
-                 with_button: bool = False,
+                 with_button: bool = False, width: int = 250,
                  border_width: int | str | None = 1,
                  bg_color: str | Tuple[str, str] = "transparent",
                  fg_color: str | Tuple[str, str] | None = None,
                  border_color: str | Tuple[str, str] | None = None, **kwargs):
 
         super().__init__(parental_widget, master, border_width=border_width,
-                         width=250, bg_color=bg_color, fg_color=fg_color,
+                         width=width, bg_color=bg_color, fg_color=fg_color,
                          border_color=border_color, **kwargs)
 
         self.validation_method = validation_method
@@ -55,18 +55,18 @@ class TextField(Frame):
 
             self.title_label = Label(parental_widget=self, master=self.frame,
                                      text=self.title_text,
-                                     font=FontFabric.get_changed_font(weight='bold'), width=300)
+                                     font=FontFabric.get_changed_font(weight='bold'))
             self.title_label.label.grid(row=0, column=0, sticky="nsew")
             self.add_widget(self.title_label)
 
             self.text_label = Label(parental_widget=self, master=self.frame,
-                                    text=self.initial_text, font=self.base_font, width=300)
+                                    text=self.initial_text, font=self.base_font)
             self.text_label.label.grid(row=1, column=0, sticky="nsew")
             self.add_widget(self.text_label)
 
             self.text_entry = Entry(parental_widget=self, master=self.frame,
                                     placeholder_text=self.placeholder_text,
-                                    font=self.base_font, width=300)
+                                    font=self.base_font)
             self.text_entry.entry.grid(row=1, column=0, sticky="nsew")
             self.text_entry.entry.bind('<FocusIn>', lambda event: self.__focused_entry())
             self.text_entry.entry.bind('<FocusOut>', lambda event: self.__unfocused_entry())

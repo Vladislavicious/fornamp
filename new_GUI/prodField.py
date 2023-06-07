@@ -123,6 +123,8 @@ class ProductField(Frame):
 
             self.step_frame = Frame(parental_widget=self, master=self.frame)
             self.step_frame.frame.grid(row=6, column=0, padx=10, pady=3, sticky="nsew")
+            self.step_frame.frame.grid_columnconfigure(0, weight=1)
+            self.step_frame.frame.grid_columnconfigure(1, weight=1)
             self.add_widget(self.step_frame)
 
             self.__parse_steps()
@@ -152,7 +154,13 @@ class ProductField(Frame):
             # Сохранение изменений в заказе
 
     def __parse_steps(self):
-        for step in self.product.GetSteps():
+        steps = self.product.GetSteps()
+        length = len(steps)
+        for i, step in enumerate(steps):
             step_field = stepField(parental_widget=self.step_frame, master=self.step_frame.frame,
                                    step=step)
+            if length % 2 == 1 and i == length - 1:
+                step_field.frame.grid(row=i // 2, columnspan=2, padx=2, pady=2, sticky="nsew")
+            else:
+                step_field.frame.grid(row=i // 2, column=i % 2, padx=2, pady=2, sticky="nsew")
             self.step_frame.add_widget(step_field)

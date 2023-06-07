@@ -58,17 +58,21 @@ class stepField(Frame):
                 self.frame.configure(border_color="#7FFF00")
 
             self.frame.grid_columnconfigure(0, weight=1)
+            self.frame.grid_rowconfigure(0, weight=1)
 
             self.name_field = TextField(parental_widget=self, master=self.frame,
                                         validation_method=validate_name, title="Название шага",
                                         placeholder_text="Введите название", initial_text=self.name_text)
-            self.name_field.frame.grid(row=0, column=0, padx=5, pady=3, sticky="ew")
+            self.name_field.frame.grid(row=0, column=0, padx=5, pady=3, sticky="nsew")
             self.add_widget(self.name_field)
 
-            self.runner = Runner(parental_widget=self, master=self.frame,
-                                 from_value=self.number_of_made, to_value=self.quantity, steps_count=self.quantity+1)
-            self.runner.frame.grid(row=1, column=0, padx=5, pady=3, sticky="nsew")
-            self.add_widget(self.runner)
+            from_value = 0
+            to_value = self.quantity - self.number_of_made
+            if to_value > 0:
+                self.runner = Runner(parental_widget=self, master=self.frame, runner_title="Выполнить:",
+                                     from_value=from_value, to_value=to_value, steps_count=to_value)
+                self.runner.frame.grid(row=1, column=0, padx=5, pady=3, sticky="nsew")
+                self.add_widget(self.runner)
 
             return True
         return False

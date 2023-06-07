@@ -6,11 +6,8 @@ from uiabs.container import Container
 
 
 class Slider(Container):
-    def __init__(self, parental_widget: Container, master: any, width: int | None = None,
-                 height: int | None = None, corner_radius: int | None = None,
-                 button_corner_radius: int | None = None,
-                 border_width: int | None = None,
-                 button_length: int | None = None,
+    def __init__(self, parental_widget: Container, master: any, width: int | None = 200,
+                 height: int | None = 30, corner_radius: int | None = None,
                  bg_color: str | Tuple[str, str] = "transparent",
                  fg_color: str | Tuple[str, str] | None = None,
                  border_color: str | Tuple[str, str] = "transparent",
@@ -22,16 +19,34 @@ class Slider(Container):
                  command: Callable[[float], None] | None = None,
                  variable: Variable | None = None, orientation: str = "horizontal", **kwargs):
 
-        super().__init__()
+        super().__init__(parental_widget=parental_widget)
         if self.initialize():
-            self.slider = CTkSlider(master, width, height, corner_radius,
-                                    button_corner_radius, border_width,
-                                    button_length, bg_color, fg_color,
-                                    border_color, progress_color, button_color,
-                                    button_hover_color, from_, to, state,
-                                    number_of_steps, hover, command,
-                                    variable, orientation, **kwargs)
+            self.slider = CTkSlider(master=master, width=width, height=height,
+                                    corner_radius=corner_radius,
+                                    bg_color=bg_color, fg_color=fg_color,
+                                    border_color=border_color, progress_color=progress_color,
+                                    button_color=button_color,
+                                    button_hover_color=button_hover_color,
+                                    from_=from_, to=to, state=state,
+                                    number_of_steps=number_of_steps,
+                                    hover=hover, command=command,
+                                    variable=variable, orientation=orientation, **kwargs)
             self.name = "Slider in" + self.parental_widget.name
+
+            self.__is_being_edited = False
+            self.initial_value = from_
+
+    @property
+    def is_confirmed(self) -> bool:
+        return not self.__is_being_edited
+
+    def edit(self):
+        self.slider.configure(state="normal")
+        self.__is_being_edited = True
+
+    def confirm(self):
+        self.slider.configure(state="disabled")
+        self.__is_being_edited = False
 
     @property
     def slider_value(self):
