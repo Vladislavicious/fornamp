@@ -58,7 +58,6 @@ class Button(Container):
     def destroy(self) -> bool:
         if super().destroy():
             logger.debug(f"{self.name} уничтожена")
-            self.button.destroy()
             return True
         return False
 

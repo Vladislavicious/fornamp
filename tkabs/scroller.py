@@ -52,7 +52,6 @@ class Scroller(Container):
     def destroy(self) -> bool:
         if super().destroy():
             logger.debug(f"{self.name} уничтожен")
-            self.scroller.destroy()
             return True
         return False
 

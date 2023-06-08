@@ -46,7 +46,6 @@ class Slider(Container, Editable):
 
     def destroy(self) -> bool:
         if super().destroy():
-            self.slider.destroy()
             return True
         return False
 

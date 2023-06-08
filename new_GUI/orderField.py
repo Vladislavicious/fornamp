@@ -148,19 +148,18 @@ class OrderField(Frame, Editable):
 
             self.save_button = None
 
-            self.fields = [self.customer_field, self.date_oc_field,
-                           self.date_ov_field, self.description_field]
             return True
         return False
 
     def edit(self):
         self.edit_button.button.configure(text="conf", command=self.confirm)
-        for field in self.fields:
+        for field in self.get_class_instances(Editable):
             field.edit()
+        Editable.edit(self)
 
     def confirm(self) -> bool:
         is_confirmed = True
-        for field in self.fields:
+        for field in self.get_class_instances(Editable):
             field.confirm()
             if field.is_confirmed is False:
                 is_confirmed = False
@@ -168,6 +167,16 @@ class OrderField(Frame, Editable):
         if is_confirmed:
             Editable.confirm(self)
             self.edit_button.button.configure(text="edit", command=self.edit)
+
+    def save(self):
+        print("Сохраняю ордер")
+        editable_list = self.get_class_instances(Editable)
+        for widget in editable_list:
+            widget.save()
+        self.save_button.hide()
+        if Editable.save(self):
+            return True
+        return False
 
     def __add_save_button(self):
         if self.save_button is not None:
@@ -177,16 +186,3 @@ class OrderField(Frame, Editable):
                                   text="Сохранить изменения")
         self.save_button.button.grid(row=6, column=0, padx=10, pady=3, sticky="s")
         self.add_widget(self.save_button)
-
-    def save(self):
-        print("Сохраняю ордер")
-        editable_list = list()
-        for widget in self.widgets:
-            if widget is Editable:
-                editable_list.append(widget)
-
-        for widget in editable_list:
-            widget.save()
-        Editable.save(self)
-
-        self.save_button.hide()

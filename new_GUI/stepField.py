@@ -78,13 +78,28 @@ class stepField(Frame, Editable):
             return True
         return False
 
+    def edit(self):
+        for widget in self.get_class_instances(Editable):
+            widget.edit()
+        Editable.edit(self)
+
+    def confirm(self) -> bool:
+        is_confirmed = True
+        for widget in self.get_class_instances(Editable):
+            widget.confirm()
+            if widget.is_confirmed is False:
+                is_confirmed = False
+
+        if is_confirmed:
+            Editable.confirm(self)
+            self.set_as_edited()
+            return True
+        return False
+
     def save(self):
         print("Сохраняю шаг")
-        editable_list = list()
-        for widget in self.widgets:
-            if widget is Editable:
-                editable_list.append(widget)
-
-        for widget in editable_list:
+        for widget in self.get_class_instances(Editable):
             widget.save()
-        Editable.save(self)
+        if Editable.save(self):
+            return True
+        return False

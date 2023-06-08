@@ -35,7 +35,6 @@ class Entry(Container):
 
     def destroy(self) -> bool:
         if super().destroy():
-            self.entry.destroy()
             return True
         return False
 

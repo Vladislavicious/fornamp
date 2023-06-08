@@ -179,4 +179,4 @@ class MainWindow(TopLevel):
             product_field = ProductField(parental_widget=order_field, master=self.product_frame.scroller,
                                          product=product)
             product_field.frame.grid(sticky="ew", pady=2, ipadx=1, ipady=5)
-            self.product_frame.add_widget(product_field)
+            order_field.add_widget(product_field)

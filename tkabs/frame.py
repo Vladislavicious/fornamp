@@ -44,7 +44,6 @@ class Frame(Container):
     def destroy(self) -> bool:
         if super().destroy():
             logger.debug(f"{self.name} уничтожен")
-            self.frame.destroy()
             return True
         return False
 

@@ -75,7 +75,7 @@ class Runner(Frame, Editable):
                                         validation_method=lambda value:
                                         validate_number(string=value, name="От"),
                                         initial_text=self.from_value_text,
-                                        enter_pressed_function=self.conf_all_fields)
+                                        enter_pressed_function=self.confirm)
             self.from_field.frame.grid(row=1, column=0, padx=2)
             self.add_widget(self.from_field)
 
@@ -94,7 +94,6 @@ class Runner(Frame, Editable):
             self.to_field.frame.grid(row=1, column=2, padx=2)
             self.add_widget(self.to_field)
 
-            self.fields = [self.slider, self.from_field]
             return True
         return False
 
@@ -102,13 +101,14 @@ class Runner(Frame, Editable):
         self.from_field.change_text(str(int(value)))
         self.from_field.edit()
 
-    def edit_all_fields(self):
-        for field in self.fields:
+    def edit(self):
+        for field in self.get_class_instances(Editable):
             field.edit()
+        Editable.edit(self)
 
-    def conf_all_fields(self):
-        if self.from_field.is_confirmed:
-            from_field_value = int(self.from_field.get())
-            self.slider.set_value(from_field_value)
-            self.set_as_edited()
-            self.slider.confirm()
+    def confirm(self):
+        from_field_value = int(self.from_field.get())
+        self.slider.set_value(from_field_value)
+        self.set_as_edited()
+        self.slider.confirm()
+        Editable.confirm(self)

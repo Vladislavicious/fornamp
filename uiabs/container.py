@@ -16,6 +16,13 @@ class Container(Widget):
     def items_count(self) -> int:
         return len(self.__widgets)
 
+    def get_class_instances(self, class_type):
+        new_spis = list()
+        for i in self.widgets:
+            if isinstance(i, class_type):
+                new_spis.append(i)
+        return new_spis
+
     def initialize(self) -> bool:
         if super().initialize():
             self.__initialize_all_widgets()

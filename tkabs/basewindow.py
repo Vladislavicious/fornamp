@@ -73,9 +73,6 @@ class FornampWindow(CTk, Container):
             return True
         return False
 
-    def __slider_print(self, value):
-        logger.debug(f"slider is {value}")
-
     def show(self) -> bool:
         if Container.show(self):
             self.deiconify()

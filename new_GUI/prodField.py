@@ -80,7 +80,7 @@ class ProductField(Frame, Editable):
             self.frame.grid_columnconfigure(0, weight=1)
 
             self.edit_button = Button(parental_widget=self, master=self.frame, text="edit",
-                                      command=self.edit_all_fields, font=self.base_font, width=40)
+                                      command=self.edit, font=self.base_font, width=40)
             self.edit_button.button.grid(row=0, column=0, padx=3, pady=3, sticky="ne")
             self.add_widget(self.edit_button)
 
@@ -130,29 +130,37 @@ class ProductField(Frame, Editable):
 
             self.__parse_steps()
 
-            self.fields = [self.prod_name_field, self.quantity_field,
-                           self.selling_cost_field, self.prod_cost_field, self.description_field]
-
             return True
         return False
 
-    def edit_all_fields(self):
-        self.edit_button.button.configure(text="conf", command=self.conf_all_fields)
-        for field in self.fields:
+    def edit(self):
+        self.edit_button.button.configure(text="conf", command=self.confirm)
+        for field in self.get_class_instances(Editable):
             field.edit()
+        Editable.edit(self)
 
-    def conf_all_fields(self):
+    def confirm(self):
         is_confirmed = True
-        for field in self.fields:
+
+        for field in self.get_class_instances(Editable):
             field.confirm()
             if field.is_confirmed is False:
                 is_confirmed = False
 
         if is_confirmed:
+            Editable.confirm(self)
             self.set_as_edited()
-            self.edit_button.button.configure(text="edit", command=self.edit_all_fields)
+            self.edit_button.button.configure(text="edit", command=self.edit)
+            return True
+        return False
 
-            # Сохранение изменений в заказе
+    def save(self):
+        print("Сохраняю товар")
+        for widget in self.get_class_instances(Editable):
+            widget.save()
+        if Editable.save(self):
+            return True
+        return False
 
     def __parse_steps(self):
         steps = self.product.GetSteps()
@@ -164,15 +172,4 @@ class ProductField(Frame, Editable):
                 step_field.frame.grid(row=i // 2, columnspan=2, padx=2, pady=2, sticky="nsew")
             else:
                 step_field.frame.grid(row=i // 2, column=i % 2, padx=2, pady=2, sticky="nsew")
-            self.step_frame.add_widget(step_field)
-
-    def save(self):
-        print("Сохраняю товар")
-        editable_list = list()
-        for widget in self.widgets:
-            if widget is Editable:
-                editable_list.append(widget)
-
-        for widget in editable_list:
-            widget.save()
-        Editable.save(self)
+            self.add_widget(step_field)
