@@ -9,6 +9,8 @@ from tkabs.fontFabric import FontFabric
 from uiabs.container import Container
 from customtkinter import CTkFrame
 
+from uiabs.editable import Editable
+
 def is_valid_string(s):
     allowed_chars = set('abcdefghijklmnopqrstuvwxyzабвгдеёжзийклмнопрстуфхцчшщъыьэюя.,:/" ')
     return all(c in allowed_chars for c in s)
@@ -62,7 +64,7 @@ def validate_date_ov(parsed_date: str) -> Tuple[bool, str]:
         return False, "Введена невозможная дата"
 
 
-class OrderField(Frame):
+class OrderField(Frame, Editable):
     def __init__(self, parental_widget: Container, master: any, order: Order = None,
                  width: int = 250, height: int = 200,
                  border_width: int | str | None = 2,
@@ -70,13 +72,14 @@ class OrderField(Frame):
                  fg_color: str | Tuple[str, str] | None = None,
                  border_color: str | Tuple[str, str] | None = "#B22222"):
 
-        super().__init__(parental_widget=parental_widget, master=master,
-                         width=width, height=height,
-                         border_width=border_width, bg_color=bg_color,
-                         fg_color=fg_color, border_color=border_color)
+        Frame.__init__(self, parental_widget=parental_widget, master=master,
+                       width=width, height=height,
+                       border_width=border_width, bg_color=bg_color,
+                       fg_color=fg_color, border_color=border_color)
+        Editable.__init__(self, parental_unit=None)
+
         self.base_font = FontFabric.get_base_font()
         self.order = order
-        self.__is_edited = False
         # все характеристики order будут в виде строк
         if order is not None:
             self.id = str(order.id)
@@ -93,22 +96,12 @@ class OrderField(Frame):
 
         self.initialize()
 
-    @property
-    def is_edited(self) -> bool:
-        return self.__is_edited
-
-    @is_edited.setter
-    def is_edited(self, value):
-        if value is True and not self.__is_edited:
-            self.__is_edited = True
+    def set_as_edited(self) -> bool:
+        if Editable.set_as_edited(self):
             self.__add_save_button()
-        elif not value and self.__is_edited:
-            self.__is_edited = False
-            for widget in self.widgets:
-                widget.is_edited = False
 
     def initialize(self) -> bool:
-        if super().initialize():
+        if Frame.initialize(self):
             if self.order.isDone:
                 if self.order.isVidan:
                     self.frame.configure(border_color="#7FFF00")
@@ -119,7 +112,7 @@ class OrderField(Frame):
             self.frame.grid_propagate(False)
 
             self.edit_button = Button(parental_widget=self, master=self.frame, text="edit",
-                                      command=self.edit_all_fields, font=self.base_font, width=40)
+                                      command=self.edit, font=self.base_font, width=40)
             self.edit_button.button.grid(row=0, column=0, padx=3, pady=3, sticky="ne")
             self.add_widget(self.edit_button)
 
@@ -160,12 +153,12 @@ class OrderField(Frame):
             return True
         return False
 
-    def edit_all_fields(self):
-        self.edit_button.button.configure(text="conf", command=self.conf_all_fields)
+    def edit(self):
+        self.edit_button.button.configure(text="conf", command=self.confirm)
         for field in self.fields:
             field.edit()
 
-    def conf_all_fields(self):
+    def confirm(self) -> bool:
         is_confirmed = True
         for field in self.fields:
             field.confirm()
@@ -173,10 +166,8 @@ class OrderField(Frame):
                 is_confirmed = False
 
         if is_confirmed:
-            self.is_edited = True
-            self.edit_button.button.configure(text="edit", command=self.edit_all_fields)
-
-            # Сохранение изменений в заказе
+            Editable.confirm(self)
+            self.edit_button.button.configure(text="edit", command=self.edit)
 
     def __add_save_button(self):
         if self.save_button is not None:
@@ -188,6 +179,14 @@ class OrderField(Frame):
         self.add_widget(self.save_button)
 
     def save(self):
-        print("Сохраняю")
-        self.is_edited = False
+        print("Сохраняю ордер")
+        editable_list = list()
+        for widget in self.widgets:
+            if widget is Editable:
+                editable_list.append(widget)
+
+        for widget in editable_list:
+            widget.save()
+        Editable.save(self)
+
         self.save_button.hide()

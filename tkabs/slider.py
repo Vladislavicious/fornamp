@@ -3,9 +3,10 @@ from typing import Callable, Tuple
 from customtkinter import CTkSlider
 
 from uiabs.container import Container
+from uiabs.editable import Editable
 
 
-class Slider(Container):
+class Slider(Container, Editable):
     def __init__(self, parental_widget: Container, master: any, width: int | None = 200,
                  height: int | None = 30, corner_radius: int | None = None,
                  bg_color: str | Tuple[str, str] = "transparent",
@@ -19,7 +20,8 @@ class Slider(Container):
                  command: Callable[[float], None] | None = None,
                  variable: Variable | None = None, orientation: str = "horizontal", **kwargs):
 
-        super().__init__(parental_widget=parental_widget)
+        Container.__init__(self, parental_widget=parental_widget)
+        Editable.__init__(self)
         if self.initialize():
             self.slider = CTkSlider(master=master, width=width, height=height,
                                     corner_radius=corner_radius,
@@ -33,13 +35,7 @@ class Slider(Container):
                                     variable=variable, orientation=orientation, **kwargs)
             self.name = "Slider in" + self.parental_widget.name
 
-            self.__is_being_edited = False
-            self.is_edited = False
             self.initial_value = from_
-
-    @property
-    def is_confirmed(self) -> bool:
-        return not self.__is_being_edited
 
     @property
     def slider_value(self):
@@ -47,13 +43,6 @@ class Slider(Container):
 
     def set_value(self, value: int):
         self.slider.set(value)
-
-    def edit(self):
-        self.__is_being_edited = True
-
-    def confirm(self):
-        self.is_edited = True
-        self.__is_being_edited = False
 
     def destroy(self) -> bool:
         if super().destroy():

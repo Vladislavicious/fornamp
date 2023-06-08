@@ -9,9 +9,10 @@ from tkabs.frame import Frame
 from tkabs.label import Label
 from tkabs.entry import Entry
 from uiabs.container import Container
+from uiabs.editable import Editable
 
 
-class TextField(Frame):
+class TextField(Frame, Editable):
     def __init__(self, parental_widget: Container, master: any,
                  validation_method, title: str,
                  placeholder_text: str = "", initial_text: str = "",
@@ -22,9 +23,10 @@ class TextField(Frame):
                  border_color: str | Tuple[str, str] | None = None,
                  enter_pressed_function=None, **kwargs):
 
-        super().__init__(parental_widget, master, border_width=border_width,
-                         width=width, bg_color=bg_color, fg_color=fg_color,
-                         border_color=border_color, **kwargs)
+        Frame.__init__(self, parental_widget, master, border_width=border_width,
+                       width=width, bg_color=bg_color, fg_color=fg_color,
+                       border_color=border_color, **kwargs)
+        Editable.__init__(self, parental_unit=parental_widget)
 
         self.validation_method = validation_method
         self.placeholder_text = placeholder_text
@@ -32,8 +34,6 @@ class TextField(Frame):
         self.title_text = title
 
         self.__with_button = with_button
-        self.__is_being_edited = False
-        self.is_edited = False
 
         self.enter_pressed_function = enter_pressed_function
 
@@ -44,16 +44,12 @@ class TextField(Frame):
     def contained_text(self) -> str:
         return self.text_entry.entry.get()
 
-    @property
-    def is_confirmed(self) -> bool:
-        return not self.__is_being_edited
-
     def change_text(self, text: str):
         self.initial_text = text
         self.text_label.change_text(text)
 
     def get(self) -> str:
-        if self.__is_being_edited:
+        if self.is_being_edited:
             return self.text_entry.contained_text
         else:
             return self.initial_text
@@ -110,7 +106,7 @@ class TextField(Frame):
 
     def show(self) -> bool:
         if super().show():
-            if self.__is_being_edited:
+            if self.is_being_edited:
                 self.text_label.hide()
             else:
                 self.text_entry.hide()
@@ -119,7 +115,7 @@ class TextField(Frame):
 
     def edit(self):
         """редактирование поля"""
-        self.__is_being_edited = True
+        Editable.edit(self)
         if self.__with_button:
             self.button.button.configure(command=self.confirm, text="conf")
         self.text_entry.place_text(self.initial_text)
@@ -131,8 +127,7 @@ class TextField(Frame):
         new_text = self.text_entry.entry.get()
         valid, report = self.validation_method(new_text)
         if valid:
-            self.__is_being_edited = False
-            self.is_edited = True
+            Editable.confirm(self)
             if self.__with_button:
                 self.button.button.configure(command=self.edit, text="edit")
 

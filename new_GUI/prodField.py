@@ -6,6 +6,7 @@ from tkabs.button import Button
 from tkabs.frame import Frame
 from tkabs.fontFabric import FontFabric
 from uiabs.container import Container
+from uiabs.editable import Editable
 
 
 def is_valid_string(s):
@@ -43,18 +44,18 @@ def validate_description(string: str = "") -> Tuple[bool, str]:
     return False, "Содержит неподобающие символы"
 
 
-class ProductField(Frame):
+class ProductField(Frame, Editable):
     def __init__(self, parental_widget: Container, master: any,
                  product: Product, border_width: int | str | None = 2,
                  bg_color: str | Tuple[str, str] = "transparent",
                  fg_color: str | Tuple[str, str] | None = None,
                  border_color: str | Tuple[str, str] | None = "#B22222"):
-        super().__init__(parental_widget=parental_widget, master=master,
-                         border_width=border_width, bg_color=bg_color,
-                         fg_color=fg_color, border_color=border_color)
+        Frame.__init__(self, parental_widget=parental_widget, master=master,
+                       border_width=border_width, bg_color=bg_color,
+                       fg_color=fg_color, border_color=border_color)
+        Editable.__init__(self, parental_unit=parental_widget)
         self.product = product
         self.base_font = FontFabric.get_base_font()
-        self.__is_edited = False
         # все характеристики product будут в виде строк
         if product is not None:
             self.prod_name = product.name
@@ -70,20 +71,6 @@ class ProductField(Frame):
             self.description = ""
 
         self.initialize()
-
-    @property
-    def is_edited(self) -> bool:
-        return self.__is_edited
-
-    @is_edited.setter
-    def is_edited(self, value):
-        if value is True and not self.__is_edited:
-            self.__is_edited = True
-            self.parental_widget.is_edited = True
-        elif not value and self.__is_edited:
-            self.__is_edited = False
-            for widget in self.widgets:
-                widget.is_edited = False
 
     def initialize(self) -> bool:
         if super().initialize():
@@ -162,7 +149,7 @@ class ProductField(Frame):
                 is_confirmed = False
 
         if is_confirmed:
-            self.is_edited = True
+            self.set_as_edited()
             self.edit_button.button.configure(text="edit", command=self.edit_all_fields)
 
             # Сохранение изменений в заказе
@@ -178,3 +165,14 @@ class ProductField(Frame):
             else:
                 step_field.frame.grid(row=i // 2, column=i % 2, padx=2, pady=2, sticky="nsew")
             self.step_frame.add_widget(step_field)
+
+    def save(self):
+        print("Сохраняю товар")
+        editable_list = list()
+        for widget in self.widgets:
+            if widget is Editable:
+                editable_list.append(widget)
+
+        for widget in editable_list:
+            widget.save()
+        Editable.save(self)

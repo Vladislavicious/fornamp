@@ -9,6 +9,7 @@ from tkabs.frame import Frame
 from tkabs.label import Label
 from tkabs.fontFabric import FontFabric
 from uiabs.container import Container
+from uiabs.editable import Editable
 
 
 def is_valid_string(s):
@@ -28,20 +29,20 @@ def validate_name(string: str = "") -> Tuple[bool, str]:
     return True, ""
 
 
-class stepField(Frame):
+class stepField(Frame, Editable):
     def __init__(self, parental_widget: Container, master: any, step: Step,
                  border_width: int | str | None = 2,
                  bg_color: str | Tuple[str, str] = "transparent",
                  fg_color: str | Tuple[str, str] | None = None,
                  border_color: str | Tuple[str, str] | None = "#B22222"):
 
-        super().__init__(parental_widget=parental_widget, master=master,
-                         border_width=border_width, bg_color=bg_color,
-                         fg_color=fg_color, border_color=border_color)
+        Frame.__init__(self, parental_widget=parental_widget, master=master,
+                       border_width=border_width, bg_color=bg_color,
+                       fg_color=fg_color, border_color=border_color)
+        Editable.__init__(self, parental_widget)
 
         self.step = step
         self.base_font = FontFabric.get_base_font()
-        self.__is_edited = False
 
         if self.step is not None:
             self.name_text = step.name
@@ -51,20 +52,6 @@ class stepField(Frame):
             self.name_text = ""
             self.quantity = 0
             self.number_of_made = 0
-
-    @property
-    def is_edited(self) -> bool:
-        return self.__is_edited
-
-    @is_edited.setter
-    def is_edited(self, value):
-        if value is True and not self.__is_edited:
-            self.__is_edited = True
-            self.parental_widget.is_edited = True
-        elif not value and self.__is_edited:
-            self.__is_edited = False
-            for widget in self.widgets:
-                widget.is_edited = False
 
     def initialize(self) -> bool:
         if super().initialize():
@@ -90,3 +77,14 @@ class stepField(Frame):
 
             return True
         return False
+
+    def save(self):
+        print("Сохраняю шаг")
+        editable_list = list()
+        for widget in self.widgets:
+            if widget is Editable:
+                editable_list.append(widget)
+
+        for widget in editable_list:
+            widget.save()
+        Editable.save(self)

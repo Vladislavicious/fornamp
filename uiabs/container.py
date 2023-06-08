@@ -1,6 +1,4 @@
 """Абстрактный класс, содержащий логику отображения элементов, содержащих виджеты внутри себя"""
-from typing import List
-
 from uiabs.widget import Widget
 
 

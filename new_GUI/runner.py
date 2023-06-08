@@ -8,6 +8,7 @@ from tkabs.slider import Slider
 from tkabs.fontFabric import FontFabric
 from tkabs.frame import Frame
 from uiabs.container import Container
+from uiabs.editable import Editable
 
 
 def validate_number(string: str = "", name: str = "Количество") -> Tuple[bool, str]:
@@ -20,7 +21,7 @@ def validate_number(string: str = "", name: str = "Количество") -> Tup
     return False, "Введите число"
 
 
-class Runner(Frame):
+class Runner(Frame, Editable):
     def __init__(self, parental_widget: Container, master: any, runner_title: str,
                  from_value: int = 0, to_value: int = 1, steps_count: int = 0,
                  width: int = 100, height: int = 100,
@@ -29,11 +30,11 @@ class Runner(Frame):
                  fg_color: str | Tuple[str, str] | None = None,
                  border_color: str | Tuple[str, str] | None = None):
 
-        super().__init__(parental_widget=parental_widget, master=master,
-                         width=width, height=height,
-                         border_width=border_width, bg_color=bg_color,
-                         fg_color=fg_color, border_color=border_color)
-
+        Frame.__init__(self, parental_widget=parental_widget, master=master,
+                       width=width, height=height,
+                       border_width=border_width, bg_color=bg_color,
+                       fg_color=fg_color, border_color=border_color)
+        Editable.__init__(self, parental_unit=parental_widget)
         if from_value < 0:
             from_value = 0
         if to_value < 1:
@@ -47,25 +48,12 @@ class Runner(Frame):
             steps_count = to_value + 1
 
         self.base_font = FontFabric.get_base_font()
-        self.__is_edited = False
         self.steps_count = steps_count
         self.from_value_text = str(from_value)
         self.to_value_text = str(to_value)
         self.runner_title = runner_title
 
         self.initialize()
-
-    @property
-    def is_edited(self) -> bool:
-        return self.__is_edited
-
-    @is_edited.setter
-    def is_edited(self, value):
-        if value is True and not self.__is_edited:
-            self.__is_edited = True
-            self.parental_widget.is_edited = True
-        elif not value and self.__is_edited:
-            self.__is_edited = False
 
     @property
     def slider_value(self):
@@ -122,5 +110,5 @@ class Runner(Frame):
         if self.from_field.is_confirmed:
             from_field_value = int(self.from_field.get())
             self.slider.set_value(from_field_value)
-            self.is_edited = True
+            self.set_as_edited()
             self.slider.confirm()
