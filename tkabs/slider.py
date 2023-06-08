@@ -34,23 +34,26 @@ class Slider(Container):
             self.name = "Slider in" + self.parental_widget.name
 
             self.__is_being_edited = False
+            self.is_edited = False
             self.initial_value = from_
 
     @property
     def is_confirmed(self) -> bool:
         return not self.__is_being_edited
 
-    def edit(self):
-        self.slider.configure(state="normal")
-        self.__is_being_edited = True
-
-    def confirm(self):
-        self.slider.configure(state="disabled")
-        self.__is_being_edited = False
-
     @property
     def slider_value(self):
         return self.slider.get()
+
+    def set_value(self, value: int):
+        self.slider.set(value)
+
+    def edit(self):
+        self.__is_being_edited = True
+
+    def confirm(self):
+        self.is_edited = True
+        self.__is_being_edited = False
 
     def destroy(self) -> bool:
         if super().destroy():

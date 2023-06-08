@@ -35,6 +35,7 @@ class MainWindow(TopLevel):
                          fg_color=fg_color, **kwargs)
         self.name = "MainWindow"
         self.app = App()
+        self.current_order = None
         self.initialize()
 
     def initialize(self) -> bool:
@@ -167,6 +168,7 @@ class MainWindow(TopLevel):
         self.__initialize_open_order()
 
         order = self.app.getOrderByID(id)
+        self.current_order = order
 
         order_field = OrderField(parental_widget=self.order_frame, master=self.order_frame.frame,
                                  order=order)
@@ -174,7 +176,7 @@ class MainWindow(TopLevel):
         self.order_frame.add_widget(order_field)
 
         for product in order.GetProducts():
-            product_field = ProductField(parental_widget=self.product_frame, master=self.product_frame.scroller,
+            product_field = ProductField(parental_widget=order_field, master=self.product_frame.scroller,
                                          product=product)
             product_field.frame.grid(sticky="ew", pady=2, ipadx=1, ipady=5)
             self.product_frame.add_widget(product_field)

@@ -41,7 +41,7 @@ class stepField(Frame):
 
         self.step = step
         self.base_font = FontFabric.get_base_font()
-        self.is_edited = False
+        self.__is_edited = False
 
         if self.step is not None:
             self.name_text = step.name
@@ -51,6 +51,20 @@ class stepField(Frame):
             self.name_text = ""
             self.quantity = 0
             self.number_of_made = 0
+
+    @property
+    def is_edited(self) -> bool:
+        return self.__is_edited
+
+    @is_edited.setter
+    def is_edited(self, value):
+        if value is True and not self.__is_edited:
+            self.__is_edited = True
+            self.parental_widget.is_edited = True
+        elif not value and self.__is_edited:
+            self.__is_edited = False
+            for widget in self.widgets:
+                widget.is_edited = False
 
     def initialize(self) -> bool:
         if super().initialize():

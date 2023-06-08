@@ -76,7 +76,7 @@ class OrderField(Frame):
                          fg_color=fg_color, border_color=border_color)
         self.base_font = FontFabric.get_base_font()
         self.order = order
-        self.is_edited = False
+        self.__is_edited = False
         # все характеристики order будут в виде строк
         if order is not None:
             self.id = str(order.id)
@@ -92,6 +92,20 @@ class OrderField(Frame):
             self.description = ""
 
         self.initialize()
+
+    @property
+    def is_edited(self) -> bool:
+        return self.__is_edited
+
+    @is_edited.setter
+    def is_edited(self, value):
+        if value is True and not self.__is_edited:
+            self.__is_edited = True
+            self.__add_save_button()
+        elif not value and self.__is_edited:
+            self.__is_edited = False
+            for widget in self.widgets:
+                widget.is_edited = False
 
     def initialize(self) -> bool:
         if super().initialize():
@@ -139,6 +153,8 @@ class OrderField(Frame):
             self.description_field.frame.grid(row=5, column=0, padx=10, pady=3, sticky="ew")
             self.add_widget(self.description_field)
 
+            self.save_button = None
+
             self.fields = [self.customer_field, self.date_oc_field,
                            self.date_ov_field, self.description_field]
             return True
@@ -161,3 +177,17 @@ class OrderField(Frame):
             self.edit_button.button.configure(text="edit", command=self.edit_all_fields)
 
             # Сохранение изменений в заказе
+
+    def __add_save_button(self):
+        if self.save_button is not None:
+            self.save_button.show()
+            return
+        self.save_button = Button(self, self.frame, command=self.save,
+                                  text="Сохранить изменения")
+        self.save_button.button.grid(row=6, column=0, padx=10, pady=3, sticky="s")
+        self.add_widget(self.save_button)
+
+    def save(self):
+        print("Сохраняю")
+        self.is_edited = False
+        self.save_button.hide()

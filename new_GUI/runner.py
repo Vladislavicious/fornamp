@@ -12,8 +12,8 @@ from uiabs.container import Container
 
 def validate_number(string: str = "", name: str = "Количество") -> Tuple[bool, str]:
     if string.isdecimal():
-        if int(string) <= 0:
-            return False, f"{name} меньше 1"
+        if int(string) < 0:
+            return False, f"{name} меньше 0"
         return True, ""
     elif len(string) == 0:
         return False, f"Введите {name}"
@@ -47,13 +47,25 @@ class Runner(Frame):
             steps_count = to_value + 1
 
         self.base_font = FontFabric.get_base_font()
-        self.is_edited = False
+        self.__is_edited = False
         self.steps_count = steps_count
         self.from_value_text = str(from_value)
         self.to_value_text = str(to_value)
         self.runner_title = runner_title
 
         self.initialize()
+
+    @property
+    def is_edited(self) -> bool:
+        return self.__is_edited
+
+    @is_edited.setter
+    def is_edited(self, value):
+        if value is True and not self.__is_edited:
+            self.__is_edited = True
+            self.parental_widget.is_edited = True
+        elif not value and self.__is_edited:
+            self.__is_edited = False
 
     @property
     def slider_value(self):
@@ -74,7 +86,8 @@ class Runner(Frame):
                                         title="От", width=30,
                                         validation_method=lambda value:
                                         validate_number(string=value, name="От"),
-                                        initial_text=self.from_value_text)
+                                        initial_text=self.from_value_text,
+                                        enter_pressed_function=self.conf_all_fields)
             self.from_field.frame.grid(row=1, column=0, padx=2)
             self.add_widget(self.from_field)
 
@@ -82,7 +95,8 @@ class Runner(Frame):
             to_int = int(self.to_value_text)
             self.slider = Slider(parental_widget=self, master=self.frame,
                                  from_=0, to=to_int, height=25, width=550,
-                                 number_of_steps=self.steps_count, state="normal")
+                                 number_of_steps=self.steps_count, state="normal",
+                                 command=self.__slider_change)
             self.slider.slider.set(from_int)
             self.slider.slider.grid(row=1, column=1, sticky="ew")
             self.add_widget(self.slider)
@@ -92,22 +106,21 @@ class Runner(Frame):
             self.to_field.frame.grid(row=1, column=2, padx=2)
             self.add_widget(self.to_field)
 
-            self.fields = [self.from_field, self.to_field]
+            self.fields = [self.slider, self.from_field]
             return True
         return False
+
+    def __slider_change(self, value):
+        self.from_field.change_text(str(int(value)))
+        self.from_field.edit()
 
     def edit_all_fields(self):
         for field in self.fields:
             field.edit()
 
     def conf_all_fields(self):
-        is_confirmed = True
-        for field in self.fields:
-            field.confirm()
-            if field.is_confirmed is False:
-                is_confirmed = False
-
-        if is_confirmed:
+        if self.from_field.is_confirmed:
+            from_field_value = int(self.from_field.get())
+            self.slider.set_value(from_field_value)
             self.is_edited = True
-
-             # поменять значения в границах слайдера
+            self.slider.confirm()

@@ -19,7 +19,8 @@ class TextField(Frame):
                  border_width: int | str | None = 1,
                  bg_color: str | Tuple[str, str] = "transparent",
                  fg_color: str | Tuple[str, str] | None = None,
-                 border_color: str | Tuple[str, str] | None = None, **kwargs):
+                 border_color: str | Tuple[str, str] | None = None,
+                 enter_pressed_function=None, **kwargs):
 
         super().__init__(parental_widget, master, border_width=border_width,
                          width=width, bg_color=bg_color, fg_color=fg_color,
@@ -34,6 +35,8 @@ class TextField(Frame):
         self.__is_being_edited = False
         self.is_edited = False
 
+        self.enter_pressed_function = enter_pressed_function
+
         self.base_font = FontFabric.get_base_font()
         self.initialize()
 
@@ -44,6 +47,16 @@ class TextField(Frame):
     @property
     def is_confirmed(self) -> bool:
         return not self.__is_being_edited
+
+    def change_text(self, text: str):
+        self.initial_text = text
+        self.text_label.change_text(text)
+
+    def get(self) -> str:
+        if self.__is_being_edited:
+            return self.text_entry.contained_text
+        else:
+            return self.initial_text
 
     def initialize(self) -> bool:
         if super().initialize():
@@ -85,12 +98,15 @@ class TextField(Frame):
     def __check_for_enter(self, event: Event):
         if event.keysym == 'Return':
             self.confirm()
+            if self.enter_pressed_function is not None:
+                self.enter_pressed_function()
 
     def __focused_entry(self):
         self.text_entry.entry.bind('<Key>', command=self.__check_for_enter)
 
     def __unfocused_entry(self):
         self.text_entry.entry.unbind('<Key>')
+        self.confirm()
 
     def show(self) -> bool:
         if super().show():
@@ -128,6 +144,5 @@ class TextField(Frame):
         else:
             self.text_entry.entry.delete(0, len(new_text))
             self.text_entry.entry.configure(placeholder_text=report, placeholder_text_color="#DC143C")
-            if self.__with_button:
-                self.button.button.focus()
+            self.title_label.label.focus()
             return False

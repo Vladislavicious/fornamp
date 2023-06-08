@@ -44,6 +44,13 @@ class Label(Container):
             self.name = "Метка " + text
             logger.debug(f"{self.name} инициализирована")
 
+    def change_text(self, text: str):
+        self.label.configure(text="text")
+
+    @property
+    def contained_text(self) -> str:
+        return self.label.cget("text")
+
     def destroy(self) -> bool:
         if super().destroy():
             logger.debug(f"{self.name} уничтожена")

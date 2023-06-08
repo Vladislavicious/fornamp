@@ -11,6 +11,10 @@ class Container(Widget):
         self.__widgets = set()  # является множеством, чтобы исключить нахождение нескольких одинаковых виджетов
 
     @property
+    def widgets(self):
+        return self.__widgets
+
+    @property
     def items_count(self) -> int:
         return len(self.__widgets)
 

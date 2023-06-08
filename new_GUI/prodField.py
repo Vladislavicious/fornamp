@@ -54,7 +54,7 @@ class ProductField(Frame):
                          fg_color=fg_color, border_color=border_color)
         self.product = product
         self.base_font = FontFabric.get_base_font()
-        self.is_edited = False
+        self.__is_edited = False
         # все характеристики product будут в виде строк
         if product is not None:
             self.prod_name = product.name
@@ -70,6 +70,20 @@ class ProductField(Frame):
             self.description = ""
 
         self.initialize()
+
+    @property
+    def is_edited(self) -> bool:
+        return self.__is_edited
+
+    @is_edited.setter
+    def is_edited(self, value):
+        if value is True and not self.__is_edited:
+            self.__is_edited = True
+            self.parental_widget.is_edited = True
+        elif not value and self.__is_edited:
+            self.__is_edited = False
+            for widget in self.widgets:
+                widget.is_edited = False
 
     def initialize(self) -> bool:
         if super().initialize():
@@ -157,7 +171,7 @@ class ProductField(Frame):
         steps = self.product.GetSteps()
         length = len(steps)
         for i, step in enumerate(steps):
-            step_field = stepField(parental_widget=self.step_frame, master=self.step_frame.frame,
+            step_field = stepField(parental_widget=self, master=self.step_frame.frame,
                                    step=step)
             if length % 2 == 1 and i == length - 1:
                 step_field.frame.grid(row=i // 2, columnspan=2, padx=2, pady=2, sticky="nsew")
