@@ -1,12 +1,9 @@
-from datetime import date
 from typing import Tuple
-from BaH.order import Order
+from BaH.App import App
 from BaH.step import Step
 from new_GUI.runner import Runner
 from new_GUI.textField import TextField
-from tkabs.button import Button
 from tkabs.frame import Frame
-from tkabs.label import Label
 from tkabs.fontFabric import FontFabric
 from uiabs.container import Container
 from uiabs.editable import Editable
@@ -53,10 +50,10 @@ class stepField(Frame, Editable):
             self.quantity = 0
             self.number_of_made = 0
 
+        self.runner = None
+
     def initialize(self) -> bool:
         if super().initialize():
-            if self.step.isDone:
-                self.frame.configure(border_color="#7FFF00")
 
             self.frame.grid_columnconfigure(0, weight=1)
             self.frame.grid_rowconfigure(0, weight=1)
@@ -74,6 +71,9 @@ class stepField(Frame, Editable):
                                      from_value=from_value, to_value=to_value, steps_count=to_value)
                 self.runner.frame.grid(row=1, column=0, padx=5, pady=3, sticky="nsew")
                 self.add_widget(self.runner)
+
+            if self.step.isDone:
+                self.__configure_as_done()
 
             return True
         return False
@@ -101,5 +101,34 @@ class stepField(Frame, Editable):
         for widget in self.get_class_instances(Editable):
             widget.save()
         if Editable.save(self):
+            self.__assemble_step()
             return True
         return False
+
+    def __configure_as_done(self):
+        self.frame.configure(border_color="#7FFF00")
+        if self.runner is not None:
+            self.runner.hide()
+
+    def __assemble_step(self):
+        if self.step.isDone:
+            return
+
+        max_contr_value = int(self.runner.to_value)
+
+        contribution = int(self.runner.from_value)
+
+        if contribution > max_contr_value:
+            self.runner.from_value = self.runner.to_value
+            contribution = max_contr_value
+
+        self.number_of_made += contribution
+
+        app_reference = App()
+
+        username = app_reference.current_user.login
+
+        self.step.Contribute(username, contribution)
+
+        if self.step.isDone:
+            self.__configure_as_done()

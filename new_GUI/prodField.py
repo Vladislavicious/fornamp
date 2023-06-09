@@ -70,6 +70,7 @@ class ProductField(Frame, Editable):
             self.selling_cost = ""
             self.description = ""
 
+        self.step_fields = list()
         self.initialize()
 
     def initialize(self) -> bool:
@@ -159,10 +160,41 @@ class ProductField(Frame, Editable):
         for widget in self.get_class_instances(Editable):
             widget.save()
         if Editable.save(self):
+
+            self.__assemble_product()
+
             return True
         return False
 
+    def __assemble_product(self):
+        name = self.prod_name_field.get()
+        quantity = int(self.quantity_field.get())
+        prod_cost = int(self.prod_cost_field.get())
+        sell_cost = int(self.selling_cost_field.get())
+        description = self.description_field.get()
+
+        self.product.name = name
+        self.product.quantity = quantity
+        self.product.production_cost = prod_cost
+        self.product.selling_cost = sell_cost
+        self.product.commentary = description
+
+        self.prod_name = name
+        self.quantity = quantity
+        self.production_cost = prod_cost
+        self.selling_cost = sell_cost
+        self.description = description
+
+        self.__parse_steps()
+        if self.product.isDone:
+            self.frame.configure(border_color="#7FFF00")
+
     def __parse_steps(self):
+        if len(self.step_fields) != 0:
+            for step_field in self.step_fields:
+                self.delete_widget(step_field)
+            self.step_fields.clear()
+
         steps = self.product.GetSteps()
         length = len(steps)
         for i, step in enumerate(steps):
@@ -172,4 +204,6 @@ class ProductField(Frame, Editable):
                 step_field.frame.grid(row=i // 2, columnspan=2, padx=2, pady=2, sticky="nsew")
             else:
                 step_field.frame.grid(row=i // 2, column=i % 2, padx=2, pady=2, sticky="nsew")
+
             self.add_widget(step_field)
+            self.step_fields.append(step_field)

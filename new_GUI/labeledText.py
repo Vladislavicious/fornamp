@@ -26,15 +26,8 @@ class labeledText(Frame):
         self.initial_text = initial_text
         self.title_text = title
 
-        self.__is_being_edited = False
-        self.is_edited = False
-
         self.base_font = FontFabric.get_base_font()
         self.initialize()
-
-    @property
-    def is_confirmed(self) -> bool:
-        return not self.__is_being_edited
 
     def change_title(self, title: str):
         self.title_text = title
@@ -43,6 +36,9 @@ class labeledText(Frame):
     def change_text(self, text: str):
         self.initial_text = text
         self.text_label.label.configure(text=text)
+
+    def get(self) -> str:
+        return self.initial_text
 
     def initialize(self) -> bool:
         if super().initialize():
@@ -69,14 +65,3 @@ class labeledText(Frame):
         if super().show():
             return True
         return False
-
-    def edit(self):
-        """редактирование поля"""
-        self.__is_being_edited = True
-
-    def confirm(self) -> bool:
-        """Проверка редакции поля, при успешном возвращает True"""
-        self.__is_being_edited = False
-        self.is_edited = True
-
-        return True

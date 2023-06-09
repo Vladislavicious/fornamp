@@ -15,7 +15,7 @@ class Editable():
 
     def set_as_edited(self) -> bool:
         """Если не был изменён до этого, возвращает True"""
-        if not self.__is_edited:
+        if not self.__is_edited and self.is_confirmed:
             self.__is_edited = True
             if self.__parental_unit is not None:
                 self.__parental_unit.set_as_edited()

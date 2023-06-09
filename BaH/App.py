@@ -11,7 +11,19 @@ from Caps.fm import FileManager
 from Caps.mail import MailAccount
 
 
-class App:
+class Singleton(type):
+    """Не позволяет сделать более одного экземпляра класса"""
+    _instances = {}
+
+    def __call__(cls, *args, **kwargs):
+        if cls not in cls._instances:
+            cls._instances[cls] = super(Singleton, cls).__call__(*args, **kwargs)
+        else:
+            cls._instances[cls].__init__(*args, **kwargs)
+        return cls._instances[cls]
+
+
+class App(metaclass=Singleton):
     def __init__(self) -> None:
         self.file_manager = FileManager()
 
@@ -20,12 +32,6 @@ class App:
         self.product_templates = self.file_manager.parseTemplates()
 
         self.__orders = dict()
-
-    def __new__(cls):
-        """Не позволяет сделать более одного экземпляра класса"""
-        if not hasattr(cls, 'instance'):
-            cls.instance = super(App, cls).__new__(cls)
-        return cls.instance
 
     def destroy(self):
         """Вызывается при закрытии приложения

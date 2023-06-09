@@ -91,6 +91,17 @@ class Product:
     def GetSteps(self):
         return self.__steps
 
+    def UpdateSteps(self, steps: List[Step]):
+        if len(steps) == 0:
+            print("беда при обновлении списка шагов")
+            return
+
+        self.__steps.clear()
+        self.__steps = steps
+
+        self.EvaluateSteps()
+        self.CheckIfDone()
+
     def AddStep(self, step: Step):
 
         step.quantity = self.quantity

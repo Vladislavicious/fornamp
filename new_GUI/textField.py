@@ -42,7 +42,7 @@ class TextField(Frame, Editable):
 
     @property
     def contained_text(self) -> str:
-        return self.text_entry.entry.get()
+        return self.get()
 
     def change_text(self, text: str):
         self.initial_text = text
@@ -93,9 +93,9 @@ class TextField(Frame, Editable):
 
     def __check_for_enter(self, event: Event):
         if event.keysym == 'Return':
-            self.confirm()
-            if self.enter_pressed_function is not None:
-                self.enter_pressed_function()
+            if self.confirm():
+                if self.enter_pressed_function is not None:
+                    self.enter_pressed_function()
 
     def __focused_entry(self):
         self.text_entry.entry.bind('<Key>', command=self.__check_for_enter)

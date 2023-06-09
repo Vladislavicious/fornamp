@@ -7,9 +7,9 @@ from tkabs.frame import Frame
 from tkabs.label import Label
 from tkabs.fontFabric import FontFabric
 from uiabs.container import Container
-from customtkinter import CTkFrame
 
 from uiabs.editable import Editable
+
 
 def is_valid_string(s):
     allowed_chars = set('abcdefghijklmnopqrstuvwxyzабвгдеёжзийклмнопрстуфхцчшщъыьэюя.,:/" ')

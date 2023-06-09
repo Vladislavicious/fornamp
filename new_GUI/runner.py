@@ -51,13 +51,25 @@ class Runner(Frame, Editable):
         self.steps_count = steps_count
         self.from_value_text = str(from_value)
         self.to_value_text = str(to_value)
-        self.runner_title = runner_title
+        self.runner_title_text = runner_title
 
         self.initialize()
 
     @property
     def slider_value(self):
         return self.slider.slider_value
+
+    @property
+    def from_value(self) -> str:
+        return self.from_field.get()
+
+    @from_value.setter
+    def from_value(self, text: str):
+        self.from_field.change_text(text)
+
+    @property
+    def to_value(self) -> str:
+        return self.to_field.get()
 
     def initialize(self) -> bool:
         if super().initialize():
@@ -66,7 +78,7 @@ class Runner(Frame, Editable):
             self.frame.grid_propagate(False)
 
             self.runner_title = Label(parental_widget=self, master=self.frame,
-                                      text=self.runner_title, font=FontFabric.get_bold_font())
+                                      text=self.runner_title_text, font=FontFabric.get_bold_font())
             self.runner_title.label.grid(row=0, columnspan=3, padx=2)
             self.add_widget(self.runner_title)
 
