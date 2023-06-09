@@ -186,8 +186,10 @@ class ProductField(Frame, Editable):
         self.description = description
 
         self.__parse_steps()
-        if self.product.isDone:
+        if self.product.CheckIfDone():
             self.frame.configure(border_color="#7FFF00")
+        else:
+            self.frame.configure(border_color="#B22222")
 
     def __parse_steps(self):
         if len(self.step_fields) != 0:

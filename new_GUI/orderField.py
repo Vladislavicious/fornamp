@@ -1,5 +1,6 @@
 from datetime import date
 from typing import Tuple
+from BaH.App import App
 from BaH.order import Order
 from new_GUI.textField import TextField
 from tkabs.button import Button
@@ -9,6 +10,14 @@ from tkabs.fontFabric import FontFabric
 from uiabs.container import Container
 
 from uiabs.editable import Editable
+
+
+def get_date(date_string: str) -> date:
+    days = int(date_string[:2])
+    month = int(date_string[3:5])
+    years = int(date_string[6:10])
+    data = date(years, month, days)
+    return data
 
 
 def is_valid_string(s):
@@ -70,7 +79,8 @@ class OrderField(Frame, Editable):
                  border_width: int | str | None = 2,
                  bg_color: str | Tuple[str, str] = "transparent",
                  fg_color: str | Tuple[str, str] | None = None,
-                 border_color: str | Tuple[str, str] | None = "#B22222"):
+                 border_color: str | Tuple[str, str] | None = "#B22222",
+                 change_preview_func=None):
 
         Frame.__init__(self, parental_widget=parental_widget, master=master,
                        width=width, height=height,
@@ -94,6 +104,8 @@ class OrderField(Frame, Editable):
             self.date_ov = ""
             self.description = ""
 
+        self.change_preview_func = change_preview_func
+
         self.initialize()
 
     def set_as_edited(self) -> bool:
@@ -102,11 +114,6 @@ class OrderField(Frame, Editable):
 
     def initialize(self) -> bool:
         if Frame.initialize(self):
-            if self.order.isDone:
-                if self.order.isVidan:
-                    self.frame.configure(border_color="#7FFF00")
-                else:
-                    self.frame.configure(border_color="#FFA500")
 
             self.frame.grid_columnconfigure(0, weight=1)
             self.frame.grid_propagate(False)
@@ -148,6 +155,8 @@ class OrderField(Frame, Editable):
 
             self.save_button = None
 
+            self.__configure_colors()
+
             return True
         return False
 
@@ -175,8 +184,38 @@ class OrderField(Frame, Editable):
             widget.save()
         self.save_button.hide()
         if Editable.save(self):
+            self.__assemble_order()
+
             return True
         return False
+
+    def __configure_colors(self):
+        if self.order.CheckIfDone():
+            if self.order.isVidan:
+                self.frame.configure(border_color="#7FFF00")
+            else:
+                self.frame.configure(border_color="#FFA500")
+        else:
+            self.frame.configure(border_color="#B22222")
+
+    def __assemble_order(self):
+        customer = self.customer_field.get()
+        date_oc = get_date(self.date_oc_field.get())
+        date_ov = get_date(self.date_ov_field.get())
+
+        self.order.zakazchik = customer
+        self.order.date_of_creation = date_oc
+        self.order.date_of_vidacha = date_ov
+        self.order.CheckIfDone()
+
+        if self.change_preview_func is not None:
+            self.change_preview_func(self.order.createPreview())
+
+        self.__configure_colors()
+
+        app_reference = App()
+
+        app_reference.saveOrder(self.order)
 
     def __add_save_button(self):
         if self.save_button is not None:

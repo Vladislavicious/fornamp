@@ -1,8 +1,9 @@
 import logging
 
 from os import path
-from typing import Tuple
+from typing import List, Tuple
 from BaH.App import App
+from BaH.order import OrderPreview
 from new_GUI.prodField import ProductField
 from new_GUI.ordPreviewField import OrderPreviewField
 from new_GUI.orderField import OrderField
@@ -36,7 +37,38 @@ class MainWindow(TopLevel):
         self.name = "MainWindow"
         self.app = App()
         self.current_order = None
+        self.__order_previews = list()
         self.initialize()
+
+    @property
+    def order_previews(self) -> List[OrderPreviewField]:
+        return self.__order_previews
+
+    def add_order_preview(self, order_preview: OrderPreviewField):
+        self.__order_previews.append(order_preview)
+
+    def clear_order_previews(self):
+        self.__order_previews.clear()
+
+    def change_order_preview(self, order_preview: OrderPreview):
+        id = order_preview.id
+
+        index, order_preview_field = self.__get_order_preview(id)
+        if index == -1:
+            logger.error("Попытка парсить несущетсвующий ордер превью")
+            return
+
+        order_preview_field.change_order_preview(order_preview)
+
+    def delete_order_preview(self, id: int):
+        index, order_preview = self.__get_order_preview(id)
+        self.__order_previews.pop(index)
+
+    def __get_order_preview(self, id: int) -> Tuple[int, OrderPreviewField]:
+        for i, order_preview in enumerate(self.__order_previews):
+            if order_preview.order_preview.id == id:
+                return i, order_preview
+        return -1, None
 
     def initialize(self) -> bool:
         if super().initialize():
@@ -159,6 +191,7 @@ class MainWindow(TopLevel):
                 order_preview_field.frame.configure(cursor="hand2")
                 order_preview_field.frame.bind('<Button-1>', lambda event,
                                                ID=order_preview.id: self.open_info(ID))
+                self.add_order_preview(order_preview_field)
 
     def open_info(self, id: int):
         logger.debug(f"Нажатие по заказу {id}")
@@ -171,7 +204,7 @@ class MainWindow(TopLevel):
         self.current_order = order
 
         order_field = OrderField(parental_widget=self.order_frame, master=self.order_frame.frame,
-                                 order=order)
+                                 order=order, change_preview_func=self.change_order_preview)
         order_field.frame.grid(row=0, column=0, pady=0, ipady=5, sticky="nsew")
         self.order_frame.add_widget(order_field)
 

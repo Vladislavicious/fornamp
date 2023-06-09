@@ -17,14 +17,39 @@ class OrderPreviewField(Frame):
 
         self.initialize()
 
+    @property
+    def customer(self) -> str:
+        return self.customer_label.contained_text
+
+    def change_customer(self, customer: str):
+        self.customer_label.change_text("Заказчик: " + customer)
+
+    @property
+    def date_of_vidacha(self) -> str:
+        return self.date_of_vidacha_label.contained_text
+
+    def change_date_ov(self, date: str):
+        self.date_of_vidacha_label.change_text("Дата выдачи: " + date)
+
+    def __configure_colors(self):
+        if self.order_preview.isDone:
+            if self.order_preview.isVidan:
+                self.frame.configure(border_color="#7FFF00")
+            else:
+                self.frame.configure(border_color="#FFA500")
+
+    def change_order_preview(self, order_preview: OrderPreview):
+        self.order_preview = order_preview
+
+        customer = order_preview.zakazchik
+        date = order_preview.date_of_vidacha.strftime("%d/%m/%Y")
+        self.change_customer(customer)
+        self.change_date_ov(date)
+        self.__configure_colors()
+
     def initialize(self) -> bool:
         if super().initialize():
-            if self.order_preview.isDone:
-                if self.order_preview.isVidan:
-                    self.frame.configure(border_color="#7FFF00")
-                else:
-                    self.frame.configure(border_color="#FFA500")
-
+            self.__configure_colors()
             self.frame.rowconfigure(0, weight=1)
             self.frame.rowconfigure(1, weight=1)
             self.frame.rowconfigure(2, weight=1)
@@ -43,9 +68,9 @@ class OrderPreviewField(Frame):
 
             date_of_vidacha = "Дата выдачи: " + \
                               self.order_preview.date_of_vidacha.strftime("%d.%m.%Y")
-            self.date_of_vidacha = Label(self, self.frame, text=date_of_vidacha, font=self.base_font)
-            self.date_of_vidacha.label.grid(column=0, padx=5, pady=2, row=2, sticky="sw")
-            self.add_widget(self.date_of_vidacha)
+            self.date_of_vidacha_label = Label(self, self.frame, text=date_of_vidacha, font=self.base_font)
+            self.date_of_vidacha_label.label.grid(column=0, padx=5, pady=2, row=2, sticky="sw")
+            self.add_widget(self.date_of_vidacha_label)
 
             return True
         return False

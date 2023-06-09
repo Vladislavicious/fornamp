@@ -45,7 +45,7 @@ class Label(Container):
             logger.debug(f"{self.name} инициализирована")
 
     def change_text(self, text: str):
-        self.label.configure(text="text")
+        self.label.configure(text=text)
 
     @property
     def contained_text(self) -> str:
