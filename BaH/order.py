@@ -273,7 +273,10 @@ class Order:
         elif self.isVidan:
             firstLetter = "G"
 
-        filename = directory + "\\" + firstLetter + str(self.id) + ".order"
+        directory_name = directory + "\\" + firstLetter + str(self.id)
+        filename = directory_name + "\\" + firstLetter + str(self.id) + ".order"
+
+        os.makedirs(directory_name, exist_ok=True)
 
         with open(filename, "wb") as file:
             pickle.dump(self, file)

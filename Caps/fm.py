@@ -1,4 +1,5 @@
 import os
+import shutil
 import pickle
 from typing import List, Tuple
 from cryptography.fernet import Fernet
@@ -8,21 +9,19 @@ from BaH.order import OrderPreview
 from BaH.product import Product
 from BaH.uh import UserHandler
 from Caps.listFuncs import createHTMLfromList
+from Caps.cm import ConfigManager
 
 
 class FileManager():
     """
     Класс для работы с файлами приложения.
-    Создаётся при открытии приложения. считывает из конфига ( если его нет,
-    то создаёт ) пути ко всевозможным папкам,вроде рабочей папки, папки с заказами
-    и т.д. Конфиг по умолчанию создаётся в АппДате.Внутри также содержит
+    Создаётся при открытии приложения. Содержит конфиг менеджера. Внутри также содержит
     user_handler'а, с помощью которого делаются все
     операции над пользователями в приложении
     """
     def __init__(self) -> None:
-        self.__config_dir_path = os.getenv('APPDATA') + "\\factory-engine"
-        self.working_directory = os.getcwd()
-        self.__readConfig()
+        self.config_manager = ConfigManager.standard_cm()
+
         self.__parseOrderFilenames()
 
         self.user_handler = UserHandler(self.key, self.accounts_filepath)
@@ -30,40 +29,21 @@ class FileManager():
     def clearOrderFilenames(self):
         self.ordered_filenames.clear()
 
-    def __readConfig(self):
-        dir_name = self.__config_dir_path
-        in_dir_path = "\\.ordconfig"
-        try:
-            config_file = open(dir_name + in_dir_path, "r", encoding="utf-8")
-        except FileNotFoundError:
-            os.makedirs(dir_name, exist_ok=True)
-            self.orders_dir_path = self.working_directory + "\\orders"
-            self.statistics_dir_path = self.working_directory + "\\statistics"
-            self.accounts_filepath = self.__config_dir_path + "\\accs.b"
-            self.key = Fernet.generate_key()
-            self.__saveNewConfig()
+    @property
+    def orders_dir_path(self) -> str:
+        return self.config_manager.orders_dir_path
 
-            return
+    @property
+    def statistics_dir_path(self) -> str:
+        return self.config_manager.statistics_dir_path
 
-        lines = [line.rstrip() for line in config_file]
+    @property
+    def accounts_filepath(self) -> str:
+        return self.config_manager.accounts_filepath
 
-        self.__parsePath(lines)
-
-        config_file.close()
-
-    def __parsePath(self, config_lines: list):
-        self.orders_dir_path = (config_lines[0].split(": "))[1].strip()
-        self.statistics_dir_path = (config_lines[1].split(": "))[1].strip()
-        self.accounts_filepath = (config_lines[2].split(": "))[1].strip()
-        self.key = bytes((config_lines[3].split(": "))[1].strip(), encoding="utf-8")
-
-    def __saveNewConfig(self):
-        file = open(self.__config_dir_path + "\\.ordconfig", "w", encoding="utf-8")
-        file.write("Orders Directory Path: " + self.orders_dir_path + "\n")
-        file.write("Statistics Directory Path: " + self.statistics_dir_path + "\n")
-        file.write("Accounts Filepath: " + self.accounts_filepath + "\n")
-        file.write("Key: " + self.key.decode("utf-8") + "\n")
-        file.close()
+    @property
+    def key(self) -> bytes:
+        return self.config_manager.key
 
     def changeConfig(self, orders_dir_path: str = None, statistics_dir_path: str = None,
                      accounts_filepath: str = None) -> bool:
@@ -73,20 +53,20 @@ class FileManager():
         need_to_save = False
         if orders_dir_path is not None:
             if os.path.isdir(orders_dir_path):
-                self.orders_dir_path = orders_dir_path
+                self.config_manager.orders_dir_path = orders_dir_path
                 need_to_save = True
 
         if statistics_dir_path is not None:
             if os.path.isdir(statistics_dir_path):
-                self.statistics_dir_path = statistics_dir_path
+                self.config_manager.statistics_dir_path = statistics_dir_path
                 need_to_save = True
 
         if accounts_filepath is not None:
             if os.path.isdir(accounts_filepath):
-                self.accounts_filepath = accounts_filepath
+                self.config_manager.accounts_filepath = accounts_filepath
                 need_to_save = True
         if need_to_save:
-            self.__saveNewConfig()
+            self.config_manager.save()
 
         return need_to_save
 
@@ -151,7 +131,7 @@ class FileManager():
 
         order_filenames = os.listdir(self.orders_dir_path)
 
-        order_filenames = [order for order in order_filenames if order.endswith(".order")]
+        order_filenames = [order for order in order_filenames if not order.endswith(".b")]
 
         self.ordered_filenames = self.__getOrderStatusPairs(order_filenames)
 
@@ -174,20 +154,19 @@ class FileManager():
 
     def deleteOrderByID(self, ID: int) -> bool:
         """Удаляет как файл, так и элемент словаря"""
-        filename = self.__getOrderFilename(ID)
+        filename = self.__getOrderDirectory(ID)
         if filename == "":
             return False
 
-        os.remove(filename)
+        shutil.rmtree(filename)
         del self.ordered_filenames[str(ID)]
         return True
 
     def saveOrder(self, order: Order):
-        """Если ордер с таким айди уже существовал, удаляет его
-           При успешном выполнении возвращает True"""
-        previous_order_filename = self.__getOrderFilename(order.id)
+        """Если ордер с таким айди уже существовал, удаляет его"""
+        previous_order_filename = self.__getOrderDirectory(order.id)
         if previous_order_filename != "":
-            os.remove(previous_order_filename)
+            shutil.rmtree(previous_order_filename)
 
         firstLetter = "N"   # G - если заказ выдан, D - если заказ сделан, N - если заказ не сделан
         if order.isDone:
@@ -202,8 +181,18 @@ class FileManager():
         """Возвращает имя файла, либо '' """
         id_str = str(ID)
         try:
-            filename = self.orders_dir_path + "\\" + self.ordered_filenames[id_str] + id_str + ".order"
+            directory_name = self.orders_dir_path + "\\" + self.ordered_filenames[id_str] + id_str
+            filename = directory_name + "\\" + self.ordered_filenames[id_str] + id_str + ".order"
         except KeyError:
             filename = ""
 
         return filename
+
+    def __getOrderDirectory(self, ID: int):
+        id_str = str(ID)
+        try:
+            directory_name = self.orders_dir_path + "\\" + self.ordered_filenames[id_str] + id_str
+        except KeyError:
+            directory_name = ""
+
+        return directory_name

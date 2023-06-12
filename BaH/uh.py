@@ -57,7 +57,6 @@ class UserHandler:
 
                 for code in text:
                     Users.append(User.deserialize(code, self.key))
-
             self.users = Users
         except FileNotFoundError:
             print("Файл с аккаунтами ещё не создан")
