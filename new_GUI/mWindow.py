@@ -38,6 +38,9 @@ class MainWindow(TopLevel):
         self.app = App()
         self.current_order = None
         self.__order_previews = list()
+
+        self.menu_opened = False
+
         self.initialize()
 
     @property
@@ -83,15 +86,24 @@ class MainWindow(TopLevel):
 
             # Настройка тайтлов
 
-            self.left_title_frame = Frame(height=25, parental_widget=self, master=self,
-                                          border_width=1, border_color="#AF4214")
-            self.left_title_frame.frame.grid(row=0, column=0, sticky="nsew")
+            self.menu_frame = Frame(height=25, parental_widget=self, master=self,
+                                    border_width=1, border_color="#AF4214")
+            self.menu_frame.frame.grid(row=0, column=0, sticky="nsew")
+            self.menu_frame.frame.grid_columnconfigure(1, weight=1)
 
-            self.base_open_button = Button(parental_widget=self.left_title_frame,
-                                           master=self.left_title_frame.frame,
-                                           text="Открыть Base", command=self.press, width=40, height=10)
-            self.base_open_button.button.grid(row=0, column=0, pady=5, sticky="ew")
-            self.left_title_frame.add_widget(self.base_open_button)
+            self.menu_open_button = Button(parental_widget=self.menu_frame,
+                                           master=self.menu_frame.frame,
+                                           text="Menu", command=self.press, width=40, height=10)
+            self.menu_open_button.button.grid(row=0, column=0, pady=3, sticky="w")
+
+            self.menu_label = Label(parental_widget=self.menu_frame, master=self.menu_frame.frame,
+                                    text="Меню")
+            self.menu_label.label.grid(row=0, column=1, pady=3, sticky="nsew")
+
+            self.menu_frame.add_widget(self.menu_open_button)
+            self.menu_frame.add_widget(self.menu_label)
+
+            self.__initialize_menu()
 
             self.right_title_frame = Frame(height=25, parental_widget=self, master=self,
                                            border_width=1, border_color="#BB1111")
@@ -99,7 +111,7 @@ class MainWindow(TopLevel):
             self.right_title_frame.frame.grid_rowconfigure(0, weight=1)
             self.right_title_frame.frame.grid_columnconfigure(0, weight=1)
 
-            self.add_widget(self.left_title_frame)
+            self.add_widget(self.menu_frame)
             self.add_widget(self.right_title_frame)
             # Настройка левого фрейма
 
@@ -169,10 +181,25 @@ class MainWindow(TopLevel):
         self.product_frame.scroller.grid_columnconfigure(0, weight=1)
         self.right_frame.add_widget(self.product_frame)
 
+    def __initialize_menu(self):
+        self.menu_window = Frame(self, self)
+        self.menu_window.frame.grid(column=0, row=0, rowspan=2, sticky="nsew")
+        self.menu_frame.frame.lift()
+        self.menu_window.hide()
+        self.add_widget(self.menu_window)
+
     def press(self):
         logger.debug(f"нажатие в {self.name}")
-        self.parental_widget.show()
-        self.hide()
+        if not self.menu_opened:
+            self.menu_open_button.button.configure(text="Close")
+            self.menu_window.show()
+            self.menu_window.frame.lift()
+            self.menu_frame.frame.lift()
+            self.menu_opened = True
+        else:
+            self.menu_open_button.button.configure(text="Menu")
+            self.menu_opened = False
+            self.menu_window.hide()
 
     def destroy(self) -> bool:
         if super().destroy():
@@ -184,7 +211,7 @@ class MainWindow(TopLevel):
     def __parse_order_previews(self):
         logger.debug("Выводим заказы")
         if self.scroller.items_count == 0:
-            for order_preview in self.app.order_previews:
+            for order_preview in self.app.sorted_order_previews:
                 order_preview_field = OrderPreviewField(self.scroller, self.scroller.scroller,
                                                         order_preview=order_preview)
                 self.scroller.add_widget(order_preview_field)
