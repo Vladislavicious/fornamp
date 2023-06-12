@@ -10,7 +10,7 @@ class FontFabric():
 
     @classmethod
     def initialize_base_font(cls, family: str | None = "Century gothic", size: int | None = 16,
-                             weight: Literal['normal', 'bold'] = None,
+                             weight: Literal['normal', 'bold'] = "normal",
                              slant: Literal['italic', 'roman'] = "roman",
                              underline: bool = False, overstrike: bool = False):
         cls.initialized = True

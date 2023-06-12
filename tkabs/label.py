@@ -6,7 +6,7 @@ from textwrap import wrap
 from customtkinter import CTkLabel, CTkFont
 
 from customtkinter.windows.widgets.image import CTkImage
-from tkabs.fontFabric import FontFabric
+from UIadjusters.fontFabric import FontFabric
 from uiabs.container import Container
 
 logger = logging.getLogger(__name__)

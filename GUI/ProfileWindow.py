@@ -1,7 +1,7 @@
 ﻿import tkinter as tk
 import customtkinter as ctk
 
-from BaH.App import App
+from ioconnection.App import App
 from GUI.MainWindow import MainWindow
 
 

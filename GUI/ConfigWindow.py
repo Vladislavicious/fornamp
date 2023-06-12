@@ -2,7 +2,7 @@ import tkinter as tk
 from tkinter import filedialog
 import customtkinter as ctk
 
-from BaH.App import App
+from ioconnection.App import App
 
 
 class ConfigWindow(ctk.CTkToplevel):

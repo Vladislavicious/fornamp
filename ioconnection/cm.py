@@ -32,6 +32,8 @@ class ConfigManager():
         self.accounts_filepath = self.__config_dir_path + "\\accs.b"
         self.key = Fernet.generate_key()
 
+        self.font_family = "Century gothic"
+
     def save(self):
         with open(self.__config_dir_path + "\\.ordconfig", "wb") as file:
             pickle.dump(self, file)

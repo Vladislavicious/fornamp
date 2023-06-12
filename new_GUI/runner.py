@@ -5,7 +5,7 @@ from new_GUI.labeledText import labeledText
 from new_GUI.textField import TextField
 from tkabs.label import Label
 from tkabs.slider import Slider
-from tkabs.fontFabric import FontFabric
+from UIadjusters.fontFabric import FontFabric
 from tkabs.frame import Frame
 from uiabs.container import Container
 from uiabs.editable import Editable

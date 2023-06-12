@@ -6,8 +6,8 @@ from typing import List, Tuple
 from BaH.order import Order, OrderPreviewSorter
 from BaH.order import OrderPreview
 from BaH.product import Product
-from BaH.user import User
-from Caps.fm import FileManager
+from ioconnection.user import User
+from ioconnection.fm import FileManager
 from Caps.mail import MailAccount
 
 

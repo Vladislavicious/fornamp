@@ -4,7 +4,7 @@ from new_GUI.stepField import stepField
 from new_GUI.textField import TextField
 from tkabs.button import Button
 from tkabs.frame import Frame
-from tkabs.fontFabric import FontFabric
+from UIadjusters.fontFabric import FontFabric
 from uiabs.container import Container
 from uiabs.editable import Editable
 

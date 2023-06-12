@@ -7,9 +7,9 @@ from cryptography.fernet import Fernet
 from BaH.order import Order
 from BaH.order import OrderPreview
 from BaH.product import Product
-from BaH.uh import UserHandler
+from ioconnection.uh import UserHandler
 from Caps.listFuncs import createHTMLfromList
-from Caps.cm import ConfigManager
+from ioconnection.cm import ConfigManager
 
 
 class FileManager():

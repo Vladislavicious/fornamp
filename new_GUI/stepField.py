@@ -1,10 +1,10 @@
 from typing import Tuple
-from BaH.App import App
+from ioconnection.App import App
 from BaH.step import Step
 from new_GUI.runner import Runner
 from new_GUI.textField import TextField
 from tkabs.frame import Frame
-from tkabs.fontFabric import FontFabric
+from UIadjusters.fontFabric import FontFabric
 from uiabs.container import Container
 from uiabs.editable import Editable
 

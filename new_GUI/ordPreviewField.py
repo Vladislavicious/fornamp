@@ -1,7 +1,7 @@
 from BaH.order import OrderPreview
 from tkabs.frame import Frame
 from tkabs.label import Label
-from tkabs.fontFabric import FontFabric
+from UIadjusters.fontFabric import FontFabric
 from uiabs.container import Container
 
 

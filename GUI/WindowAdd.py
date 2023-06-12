@@ -3,7 +3,7 @@ import tkinter as tk
 from typing import List
 import customtkinter as ctk
 
-from BaH import App
+from ioconnection import App
 from BaH.order import Order
 from BaH.product import Product
 from BaH.step import Step

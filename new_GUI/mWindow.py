@@ -2,7 +2,7 @@ import logging
 
 from os import path
 from typing import List, Tuple
-from BaH.App import App
+from ioconnection.App import App
 from BaH.order import OrderPreview
 from new_GUI.prodField import ProductField
 from new_GUI.ordPreviewField import OrderPreviewField
