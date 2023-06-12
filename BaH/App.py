@@ -168,6 +168,7 @@ class App(metaclass=Singleton):
         self.order_previews.append(order.createPreview())
 
         self.file_manager.saveOrder(order)
+        self.__saveNewOrderPreviews()
 
     def deleteOrderByID(self, ID: int) -> Tuple[bool, bool, bool]:
         """Возвращает три була, если bool is True, то удаление успешно.
@@ -208,6 +209,7 @@ class App(metaclass=Singleton):
         self.file_manager.saveOrder(order)
         index = self.__getOrderPreviewIndexByID(order.id)
         self.order_previews[index] = order.createPreview()
+        self.__saveNewOrderPreviews()
 
     def saveOrderByID(self, ID: int):
         """то же, что и сверху"""

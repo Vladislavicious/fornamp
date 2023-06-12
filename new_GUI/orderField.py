@@ -43,7 +43,8 @@ def validate_date(parsed_date: str) -> Tuple[bool, str]:
         days = int(parsed_date[:2])
         month = int(parsed_date[3:5])
         years = int(parsed_date[6:10])
-        data = date(years, month, days)
+
+        date(years, month, days)
 
         return True, ""
     except ValueError:
@@ -74,8 +75,8 @@ def validate_date_ov(parsed_date: str) -> Tuple[bool, str]:
 
 
 class OrderField(Frame, Editable):
-    def __init__(self, parental_widget: Container, master: any, order: Order = None,
-                 width: int = 250, height: int = 200,
+    def __init__(self, parental_widget: Container, master: any, save_button,
+                 order: Order = None, width: int = 250, height: int = 200,
                  border_width: int | str | None = 2,
                  bg_color: str | Tuple[str, str] = "transparent",
                  fg_color: str | Tuple[str, str] | None = None,
@@ -97,26 +98,33 @@ class OrderField(Frame, Editable):
             self.date_oc = order.date_of_creation.strftime("%d/%m/%Y")
             self.date_ov = order.date_of_vidacha.strftime("%d/%m/%Y")
             self.description = order.commentary
+            self.vidan = order.isVidan
+            self.isDone = order.isDone
         else:
             self.id = ""
             self.customer = ""
             self.date_oc = ""
             self.date_ov = ""
             self.description = ""
+            self.vidan = False
+            self.isDone = False
 
         self.change_preview_func = change_preview_func
-
+        self.save_button = save_button
+        self.vidat_button = None
         self.initialize()
 
     def set_as_edited(self) -> bool:
         if Editable.set_as_edited(self):
-            self.__add_save_button()
+            self.__enable_save_button()
 
     def initialize(self) -> bool:
         if Frame.initialize(self):
 
             self.frame.grid_columnconfigure(0, weight=1)
             self.frame.grid_propagate(False)
+
+            self.__add_vidat_button()
 
             self.edit_button = Button(parental_widget=self, master=self.frame, text="edit",
                                       command=self.edit, font=self.base_font, width=40)
@@ -153,8 +161,6 @@ class OrderField(Frame, Editable):
             self.description_field.frame.grid(row=5, column=0, padx=10, pady=3, sticky="ew")
             self.add_widget(self.description_field)
 
-            self.save_button = None
-
             self.__configure_colors()
 
             return True
@@ -182,7 +188,9 @@ class OrderField(Frame, Editable):
         editable_list = self.get_class_instances(Editable)
         for widget in editable_list:
             widget.save()
+
         self.save_button.hide()
+
         if Editable.save(self):
             self.__assemble_order()
 
@@ -190,7 +198,7 @@ class OrderField(Frame, Editable):
         return False
 
     def __configure_colors(self):
-        if self.order.CheckIfDone():
+        if self.order is not None and self.order.CheckIfDone():
             if self.order.isVidan:
                 self.frame.configure(border_color="#7FFF00")
             else:
@@ -203,25 +211,44 @@ class OrderField(Frame, Editable):
         date_oc = get_date(self.date_oc_field.get())
         date_ov = get_date(self.date_ov_field.get())
 
-        self.order.zakazchik = customer
-        self.order.date_of_creation = date_oc
-        self.order.date_of_vidacha = date_ov
-        self.order.CheckIfDone()
+        if self.order is None:
+            print("Надо собрать заказ")
+            return
+        else:
+            self.order.zakazchik = customer
+            self.order.date_of_creation = date_oc
+            self.order.date_of_vidacha = date_ov
+            self.order.isVidan = self.vidan
+            self.isDone = self.order.CheckIfDone()
 
         if self.change_preview_func is not None:
             self.change_preview_func(self.order.createPreview())
 
+        self.__add_vidat_button()
         self.__configure_colors()
 
         app_reference = App()
 
         app_reference.saveOrder(self.order)
 
-    def __add_save_button(self):
+    def __enable_save_button(self):
         if self.save_button is not None:
             self.save_button.show()
             return
-        self.save_button = Button(self, self.frame, command=self.save,
-                                  text="Сохранить изменения")
-        self.save_button.button.grid(row=6, column=0, padx=10, pady=3, sticky="s")
-        self.add_widget(self.save_button)
+
+    def __add_vidat_button(self):
+        if not self.vidan and self.isDone:
+            self.vidat_button = Button(parental_widget=self, master=self.frame, text="Выдать",
+                                       command=self.__vidat_order, font=self.base_font, width=40)
+            self.vidat_button.button.grid(row=0, column=0, padx=3, pady=3, sticky="nw")
+            self.add_widget(self.vidat_button)
+        else:
+            if self.vidat_button is not None:
+                self.delete_widget(self.vidat_button)
+                self.vidat_button.hide()
+            self.vidat_button = None
+
+    def __vidat_order(self):
+        self.vidan = True
+        self.vidat_button.hide()
+        self.set_as_edited()

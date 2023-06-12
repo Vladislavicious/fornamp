@@ -112,6 +112,7 @@ class Runner(Frame, Editable):
     def __slider_change(self, value):
         self.from_field.change_text(str(int(value)))
         self.from_field.edit()
+        self.from_field.text_entry.entry.focus()
 
     def edit(self):
         for field in self.get_class_instances(Editable):

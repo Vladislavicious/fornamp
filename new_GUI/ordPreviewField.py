@@ -37,6 +37,8 @@ class OrderPreviewField(Frame):
                 self.frame.configure(border_color="#7FFF00")
             else:
                 self.frame.configure(border_color="#FFA500")
+        else:
+            self.frame.configure(border_color="#B22222")
 
     def change_order_preview(self, order_preview: OrderPreview):
         self.order_preview = order_preview

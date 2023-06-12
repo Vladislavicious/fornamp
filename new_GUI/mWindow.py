@@ -96,6 +96,8 @@ class MainWindow(TopLevel):
             self.right_title_frame = Frame(height=25, parental_widget=self, master=self,
                                            border_width=1, border_color="#BB1111")
             self.right_title_frame.frame.grid(row=0, column=1, sticky="nsew")
+            self.right_title_frame.frame.grid_rowconfigure(0, weight=1)
+            self.right_title_frame.frame.grid_columnconfigure(0, weight=1)
 
             self.add_widget(self.left_title_frame)
             self.add_widget(self.right_title_frame)
@@ -106,10 +108,9 @@ class MainWindow(TopLevel):
 
             self.left_frame.frame.grid(row=1, column=0, sticky="nsew")
             self.left_frame.frame.grid_columnconfigure(0, weight=1)
-            self.left_frame.frame.grid_rowconfigure(0, weight=1)
-            self.left_frame.frame.grid_rowconfigure(1, weight=10)
+            self.left_frame.frame.grid_rowconfigure(1, weight=1)
 
-            self.search_frame = Frame(height=25, parental_widget=self.left_frame,
+            self.search_frame = Frame(parental_widget=self.left_frame,
                                       master=self.left_frame.frame, border_width=1,
                                       border_color="#CF1241")
 
@@ -120,7 +121,7 @@ class MainWindow(TopLevel):
 
             self.search_label = Label(parental_widget=self.search_frame,
                                       master=self.search_frame.frame, text="Поиск")
-            self.search_label.label.grid(row=0, column=0)
+            self.search_label.label.grid(row=0, column=0, pady=3)
 
             self.search_frame.add_widget(self.search_label)
 
@@ -203,8 +204,18 @@ class MainWindow(TopLevel):
         order = self.app.getOrderByID(id)
         self.current_order = order
 
+        self.save_button = Button(parental_widget=self.right_title_frame, master=self.right_title_frame.frame,
+                                  text="Сохранить")
+        self.save_button.button.grid(column=0, row=0, pady=3, padx=3, sticky="e")
+        self.right_title_frame.add_widget(self.save_button)
+
         order_field = OrderField(parental_widget=self.order_frame, master=self.order_frame.frame,
-                                 order=order, change_preview_func=self.change_order_preview)
+                                 order=order, change_preview_func=self.change_order_preview,
+                                 save_button=self.save_button)
+
+        self.save_button.button.configure(command=order_field.save)
+        self.save_button.hide()
+
         order_field.frame.grid(row=0, column=0, pady=0, ipady=5, sticky="nsew")
         self.order_frame.add_widget(order_field)
 

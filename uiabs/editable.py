@@ -37,8 +37,8 @@ class Editable():
     def confirm(self) -> bool:
         """Возвращает True, если до этого был в состоянии редактирования"""
         if self.__is_being_edited is True:
-            self.set_as_edited()
             self.__is_being_edited = False
+            self.set_as_edited()
             return True
         return False
 
