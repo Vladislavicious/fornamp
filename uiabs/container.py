@@ -47,8 +47,11 @@ class Container(Widget):
             return True
         return False
 
-    def delete_widget(self, widget: Widget):
+    def remove_widget(self, widget: Widget):
         self.__widgets.discard(widget)
+
+    def delete_widget(self, widget: Widget):
+        self.remove_widget(widget)
         widget.destroy()
 
     def add_widget(self, widget: Widget):

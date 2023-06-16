@@ -1,16 +1,10 @@
 import logging
 
 from os import path
-from typing import Dict, List, Tuple
+from typing import Dict, Tuple
 from types import FunctionType
-from BaH.order import OrderPreview
-from new_GUI.prodField import ProductField
 from UIadjusters.fontFabric import FontFabric
 from ioconnection.App import App
-from new_GUI.ordPreviewField import OrderPreviewField
-from new_GUI.orderField import OrderField
-from tkabs.scroller import Scroller
-from tkabs.button import Button
 
 from tkabs.frame import Frame
 from tkabs.label import Label
@@ -53,8 +47,6 @@ class MenuItem(Frame):
         self.function = item_function
         self.base_font = font
         self.initialize()
-
-
 
     @property
     def item_name(self) -> str:

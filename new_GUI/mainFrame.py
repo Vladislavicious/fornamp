@@ -84,6 +84,10 @@ class mainFrame(Frame):
                 return i, order_preview
         return -1, None
 
+    def insert_menu(self, menu: Menu):
+        self.menu_frame = menu
+        self.menu_frame.frame.grid(row=0, column=0, sticky="nsew")
+
     def initialize(self) -> bool:
         if super().initialize():
             self.frame.grid_rowconfigure(0, weight=0)
@@ -93,18 +97,12 @@ class mainFrame(Frame):
 
             # Настройка тайтлов
 
-            self.menu_frame = Menu(parental_widget=self, master=self.frame,
-                                   open_menu_function=self.press_menu,
-                                   menu_options={"aboba": self.press_menu, "ziga": self.press_menu})
-            self.menu_frame.frame.grid(row=0, column=0, sticky="nsew")
-
             self.right_title_frame = Frame(height=25, parental_widget=self, master=self.frame,
                                            border_width=1, border_color="#BB1111")
             self.right_title_frame.frame.grid(row=0, column=1, sticky="nsew")
             self.right_title_frame.frame.grid_rowconfigure(0, weight=1)
             self.right_title_frame.frame.grid_columnconfigure(0, weight=1)
 
-            self.add_widget(self.menu_frame)
             self.add_widget(self.right_title_frame)
             # Настройка левого фрейма
 
@@ -166,7 +164,6 @@ class mainFrame(Frame):
             self.menu_frame.frame.lift()
         else:
             self.menu_frame.frame.grid(row=0, column=0, rowspan=1, sticky="nsew")
-            #self.menu_frame.frame.lower()
 
     def __initialize_open_order(self):
         self.order_frame = Frame(parental_widget=self.right_frame, master=self.right_frame.frame,

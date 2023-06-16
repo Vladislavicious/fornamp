@@ -4,6 +4,7 @@ from os import path
 from typing import Tuple
 from ioconnection.App import App
 from new_GUI.mainFrame import mainFrame
+from new_GUI.menu import Menu
 from tkabs.toplevel import TopLevel
 
 logger = logging.getLogger(__name__)
@@ -45,6 +46,14 @@ class MainWindow(TopLevel):
             self.mainFrame = mainFrame(parental_widget=self, master=self,
                                        border_width=0)
             self.mainFrame.frame.grid(row=0, column=0, sticky="nsew")
+
+            self.menu = Menu(parental_widget=self.mainFrame, master=self.mainFrame.frame,
+                             open_menu_function=self.mainFrame.press_menu,
+                             menu_options={"aboba": self.mainFrame.press_menu,
+                                           "ziga": self.mainFrame.press_menu})
+            self.mainFrame.insert_menu(self.menu)
+            self.mainFrame.add_widget(self.menu)
+
             self.add_widget(self.mainFrame)
             self.show()
             return True
