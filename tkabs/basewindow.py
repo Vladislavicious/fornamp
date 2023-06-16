@@ -7,9 +7,7 @@ from typing import Tuple
 
 from customtkinter import CTk
 from new_GUI.runner import Runner
-from new_GUI.textField import TextField
 from tkabs.button import Button
-from tkabs.slider import Slider
 
 from uiabs.container import Container
 from new_GUI.mWindow import MainWindow

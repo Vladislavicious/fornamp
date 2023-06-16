@@ -1,15 +1,13 @@
 import os
-import shutil
 import pickle
+import shutil
 from typing import List, Tuple
-from cryptography.fernet import Fernet
 
-from BaH.order import Order
-from BaH.order import OrderPreview
+from BaH.order import Order, OrderPreview
 from BaH.product import Product
-from ioconnection.uh import UserHandler
 from Caps.listFuncs import createHTMLfromList
-from ioconnection.cm import ConfigManager
+from ioconnection.conf import ConfigManager
+from ioconnection.uh import UserHandler
 
 
 class FileManager():
@@ -20,7 +18,7 @@ class FileManager():
     операции над пользователями в приложении
     """
     def __init__(self) -> None:
-        self.config_manager = ConfigManager.standard_cm()
+        self.config_manager = ConfigManager.get_config()
 
         self.__parseOrderFilenames()
 

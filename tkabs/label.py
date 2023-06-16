@@ -65,6 +65,10 @@ class Label(Container):
 
     def show(self) -> bool:
         if super().show():
+            text = self.label.cget("text")
+            text_length = len(text)
+            if text_length > 25:
+                self.label.update()
 
             self.__check_text_length()
 

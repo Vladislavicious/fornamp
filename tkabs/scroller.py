@@ -1,7 +1,7 @@
 import logging
 
 from os import path
-from typing import List, Literal, Tuple
+from typing import Literal, Tuple
 from customtkinter import CTkScrollableFrame
 from customtkinter.windows.widgets.font import CTkFont
 

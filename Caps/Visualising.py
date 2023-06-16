@@ -1,4 +1,4 @@
-"""функции для отображения информации"""
+"""функции для отображения информации
 import pandas as pd
 pd.plotting.register_matplotlib_converters()
 import matplotlib.pyplot as plt
@@ -11,7 +11,7 @@ from Caps.sorting import *
 
 
 def SaveBarplot(data: pd.Series, startDate: datetime, endDate: datetime, title: str = ""):
-    """Сохраняет график в рабочей директории"""
+    # Сохраняет график в рабочей директории
     series = data[startDate:endDate]
 
     label_rotation = 45
@@ -50,3 +50,4 @@ def SaveLinechartComparison(startDate: datetime, endDate: datetime, series_list:
 
     save_fig = fig.get_figure()
     save_fig.savefig(title+".png")
+"""

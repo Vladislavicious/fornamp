@@ -9,19 +9,19 @@ from cryptography.fernet import Fernet
 
 class ConfigManager():
     @classmethod
-    def standard_cm(cls):
+    def get_config(cls):
         dir_name = os.getenv('APPDATA') + "\\fornamp"
         in_dir_path = "\\.ordconfig"
 
         try:
             with open(dir_name + in_dir_path, "rb") as file:
-                cm = pickle.load(file, encoding="utf-8")
+                config_manager = pickle.load(file, encoding="utf-8")
         except FileNotFoundError:
             os.makedirs(dir_name, exist_ok=True)
-            cm = ConfigManager()
-            cm.save()
+            config_manager = ConfigManager()
+            config_manager.save()
 
-        return cm
+        return config_manager
 
     def __init__(self) -> None:
         self.__config_dir_path = os.getenv('APPDATA') + "\\fornamp"
