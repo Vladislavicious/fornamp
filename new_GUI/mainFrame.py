@@ -158,12 +158,12 @@ class mainFrame(Frame):
             return True
         return False
 
-    def press_menu(self):
-        if self.menu_frame.menu_opened is False:
-            self.menu_frame.frame.grid(row=0, column=0, rowspan=2, sticky="nsew")
-            self.menu_frame.frame.lift()
-        else:
-            self.menu_frame.frame.grid(row=0, column=0, rowspan=1, sticky="nsew")
+    def open_menu(self):
+        self.menu_frame.frame.grid(row=0, column=0, rowspan=2, sticky="nsew")
+        self.menu_frame.frame.lift()
+
+    def close_menu(self):
+        self.menu_frame.frame.grid(row=0, column=0, rowspan=1, sticky="nsew")
 
     def __initialize_open_order(self):
         self.order_frame = Frame(parental_widget=self.right_frame, master=self.right_frame.frame,

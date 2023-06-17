@@ -33,6 +33,7 @@ class MainWindow(TopLevel):
         self.current_order = None
         self.menu_opened = False
         self.current_window = None
+        self.current_menu_holder = None
 
         self.initialize()
 
@@ -56,22 +57,33 @@ class MainWindow(TopLevel):
             self.additionFrame.frame.grid_remove()
 
             self.menu = Menu(parental_widget=self.mainFrame, master=self.mainFrame.frame,
-                             open_menu_function=self.mainFrame.press_menu,
+                             open_menu_function=self.mainFrame.open_menu,
+                             close_menu_function=self.mainFrame.close_menu,
                              menu_options={"Добавить заказ":
                                            lambda window=self.additionFrame: self.open_window(window)})
             self.current_window = self.mainFrame
-            self.mainFrame.insert_menu(self.menu)
-            self.mainFrame.add_widget(self.menu)
+
+            self.change_menu_holder(self.mainFrame)
 
             self.add_widget(self.mainFrame)
             self.show()
             return True
         return False
 
+    def change_menu_holder(self, holder):
+        if holder != self.current_menu_holder:
+            if self.current_menu_holder is not None:
+                self.current_menu_holder.remove_widget(self.menu)
+
+            holder.insert_menu(self.menu)
+            holder.add_widget(self.menu)
+            self.current_menu_holder = holder
+
     def open_window(self, window):
         if self.current_window != window:
             # self.current_window.remove_widget(self.menu)
             # # В дальнейшем будет необходима проверка
+            self.current_menu_holder.close_menu()
             self.current_window.hide()
             window.show()
             self.current_window = window

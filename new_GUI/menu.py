@@ -74,7 +74,8 @@ class MenuItem(Frame):
 
 class Menu(Frame):
     def __init__(self, parental_widget: Container, master: any,
-                 open_menu_function, menu_options: Dict[str, FunctionType] = dict(),
+                 open_menu_function, close_menu_function,
+                 menu_options: Dict[str, FunctionType] = dict(),
                  width: int = 50, height: int = 25,
                  corner_radius: int | str | None = None,
                  border_width: int | str | None = None,
@@ -96,6 +97,7 @@ class Menu(Frame):
         self.option_dict = menu_options
         self.menu_items = list()
         self.open_menu_function = open_menu_function
+        self.close_menu_function = close_menu_function
         self.initialize()
 
     @property
@@ -104,6 +106,10 @@ class Menu(Frame):
 
     @menu_opened.setter
     def menu_opened(self, value: bool):
+        if value is True:
+            self.open_menu.item_name = "Return"
+        else:
+            self.open_menu.item_name = "Menu"
         self.__menu_opened = value
 
     def initialize(self) -> bool:
@@ -129,15 +135,20 @@ class Menu(Frame):
     def press(self):
         logger.debug(f"нажатие в {self.name}")
 
-        self.open_menu_function()
         if self.menu_opened is False:
-            self.open_menu.item_name = "Return"
+            self.open_menu_function()
             self.unfold()
             self.menu_opened = True
         else:
+            self.close_menu_function()
             self.menu_opened = False
             self.fold()
-            self.open_menu.item_name = "Menu"
+
+    def hide(self) -> bool:
+        if super().hide():
+            self.menu_opened = False
+            return True
+        return False
 
     def show(self) -> bool:
         if super().show():
