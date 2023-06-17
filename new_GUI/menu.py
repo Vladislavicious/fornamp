@@ -67,7 +67,7 @@ class MenuItem(Frame):
             self.add_widget(self.name_label)
 
             self.frame.configure(cursor="hand2")
-            self.frame.bind('<Button-1>', command=self.function)
+            self.frame.bind('<Button-1>', command=lambda event: self.function())
             self.name_label.label.configure(cursor="hand2")
             self.name_label.label.bind('<Button-1>', command=lambda event: self.function())
 

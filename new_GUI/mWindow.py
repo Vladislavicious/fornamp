@@ -3,6 +3,7 @@ import logging
 from os import path
 from typing import Tuple
 from ioconnection.App import App
+from new_GUI.additionFrame import additionFrame
 from new_GUI.mainFrame import mainFrame
 from new_GUI.menu import Menu
 from tkabs.toplevel import TopLevel
@@ -31,6 +32,7 @@ class MainWindow(TopLevel):
         self.app = App()
         self.current_order = None
         self.menu_opened = False
+        self.current_window = None
 
         self.initialize()
 
@@ -47,10 +49,17 @@ class MainWindow(TopLevel):
                                        border_width=0)
             self.mainFrame.frame.grid(row=0, column=0, sticky="nsew")
 
+            self.additionFrame = additionFrame(parental_widget=self, master=self, border_width=0,
+                                               go_to_main_function=lambda window=self.mainFrame:
+                                               self.open_window(window))
+            self.additionFrame.frame.grid(row=0, column=0, sticky="nsew")
+            self.additionFrame.frame.grid_remove()
+
             self.menu = Menu(parental_widget=self.mainFrame, master=self.mainFrame.frame,
                              open_menu_function=self.mainFrame.press_menu,
-                             menu_options={"aboba": self.mainFrame.press_menu,
-                                           "ziga": self.mainFrame.press_menu})
+                             menu_options={"Добавить заказ":
+                                           lambda window=self.additionFrame: self.open_window(window)})
+            self.current_window = self.mainFrame
             self.mainFrame.insert_menu(self.menu)
             self.mainFrame.add_widget(self.menu)
 
@@ -58,3 +67,11 @@ class MainWindow(TopLevel):
             self.show()
             return True
         return False
+
+    def open_window(self, window):
+        if self.current_window != window:
+            # self.current_window.remove_widget(self.menu)
+            # # В дальнейшем будет необходима проверка
+            self.current_window.hide()
+            window.show()
+            self.current_window = window
