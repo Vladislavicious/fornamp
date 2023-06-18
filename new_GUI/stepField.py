@@ -1,29 +1,13 @@
 from typing import Tuple
 from ioconnection.App import App
 from BaH.step import Step
+from Caps.validator import Validator
 from new_GUI.runner import Runner
 from new_GUI.textField import TextField
 from tkabs.frame import Frame
 from UIadjusters.fontFabric import FontFabric
 from uiabs.container import Container
 from uiabs.editable import Editable
-
-
-def is_valid_string(s):
-    allowed_chars = set('abcdefghijklmnopqrstuvwxyzабвгдеёжзийклмнопрстуфхцчшщъыьэюя.,:/" ')
-    return all(c in allowed_chars for c in s)
-
-
-def validate_name(string: str = "") -> Tuple[bool, str]:
-    """Проверяет строку на соответствие параметрам"""
-    length = len(string)
-    if length < 2:
-        return False, "Название слишком короткое"
-    if length > 32:
-        return False, "Название слишком длинное"
-    if not is_valid_string(string.lower()):
-        return False, "Содержит неподобающие символы"
-    return True, ""
 
 
 class stepField(Frame, Editable):
@@ -59,7 +43,7 @@ class stepField(Frame, Editable):
             self.frame.grid_rowconfigure(0, weight=1)
 
             self.name_field = TextField(parental_widget=self, master=self.frame,
-                                        validation_method=validate_name, title="Название шага",
+                                        validation_method=Validator.validate_name, title="Название шага",
                                         placeholder_text="Введите название", initial_text=self.name_text)
             self.name_field.frame.grid(row=0, column=0, padx=5, pady=3, sticky="nsew")
             self.add_widget(self.name_field)

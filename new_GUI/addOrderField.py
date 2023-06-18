@@ -1,6 +1,6 @@
 from datetime import date
 from typing import Tuple
-from ioconnection.App import App
+from Caps.validator import Validator
 from BaH.order import Order
 from new_GUI.textField import TextField
 from tkabs.button import Button
@@ -18,60 +18,6 @@ def get_date(date_string: str) -> date:
     years = int(date_string[6:10])
     data = date(years, month, days)
     return data
-
-
-def is_valid_string(s):
-    allowed_chars = set('abcdefghijklmnopqrstuvwxyzабвгдеёжзийклмнопрстуфхцчшщъыьэюя.,:/" ')
-    return all(c in allowed_chars for c in s)
-
-
-def validate_customer(string: str = "") -> Tuple[bool, str]:
-    """Проверяет строку на соответствие параметрам"""
-    length = len(string)
-    if length < 2:
-        return False, "Строка слишком короткая"
-    if length > 32:
-        return False, "Строка слишком длинная"
-    if not is_valid_string(string.lower()):
-        return False, "Содержит неподобающие символы"
-    return True, ""
-
-
-def validate_date(parsed_date: str) -> Tuple[bool, str]:
-    """Проверяет дату на соответствие ДД-ММ-ГГГГ"""
-    try:
-        days = int(parsed_date[:2])
-        month = int(parsed_date[3:5])
-        years = int(parsed_date[6:10])
-
-        date(years, month, days)
-
-        return True, ""
-    except ValueError:
-        return False, "Введена невозможная дата"
-
-
-def validate_description(string: str = "") -> Tuple[bool, str]:
-    if len(string) > 256:
-        return False, "Слишком длинное описание"
-    if is_valid_string(string.lower()):
-        return True, ""
-    return False, "Содержит неподобающие символы"
-
-
-def validate_date_ov(parsed_date: str) -> Tuple[bool, str]:
-    try:
-        days = int(parsed_date[:2])
-        month = int(parsed_date[3:5])
-        years = int(parsed_date[6:10])
-        data = date(years, month, days)
-
-        if data >= date.today():
-            return True, ""
-        else:
-            return False, "Выдача не может быть в прошлом"
-    except ValueError:
-        return False, "Введена невозможная дата"
 
 
 class AddOrderField(Frame, Editable):
@@ -118,25 +64,25 @@ class AddOrderField(Frame, Editable):
             self.add_widget(self.id_label)
 
             self.customer_field = TextField(parental_widget=self, master=self.frame,
-                                            validation_method=validate_customer, title="Заказчик",
+                                            validation_method=Validator.validate_name, title="Заказчик",
                                             placeholder_text="Введите заказчика", initial_text=self.customer)
             self.customer_field.frame.grid(row=1, column=0, padx=10, pady=3, sticky="ew")
             self.add_widget(self.customer_field)
 
             self.date_oc_field = TextField(parental_widget=self, master=self.frame,
-                                           validation_method=validate_date, title="Дата создания",
+                                           validation_method=Validator.validate_date, title="Дата создания",
                                            placeholder_text="ДД-ММ-ГГГГ", initial_text=self.date_oc)
             self.date_oc_field.frame.grid(row=2, column=0, padx=10, pady=3, sticky="ew")
             self.add_widget(self.date_oc_field)
 
             self.date_ov_field = TextField(parental_widget=self, master=self.frame,
-                                           validation_method=validate_date_ov, title="Дата Выдачи",
+                                           validation_method=Validator.validate_date_ov, title="Дата Выдачи",
                                            placeholder_text="ДД-ММ-ГГГГ", initial_text=self.date_ov)
             self.date_ov_field.frame.grid(row=3, column=0, padx=10, pady=3, sticky="ew")
             self.add_widget(self.date_ov_field)
 
             self.description_field = TextField(parental_widget=self, master=self.frame,
-                                               validation_method=validate_description, title="Комментарий",
+                                               validation_method=Validator.validate_description, title="Комментарий",
                                                placeholder_text="Уточнения по заказу",
                                                initial_text=self.description)
             self.description_field.frame.grid(row=4, column=0, padx=10, pady=3, sticky="ew")
@@ -193,10 +139,6 @@ class AddOrderField(Frame, Editable):
         self.order = Order(int(self.id), zakazchik=customer,
                            date_of_creation=date_oc, date_of_vidacha=date_ov,
                            commentary=description)
-
-        #app_reference = App()
-
-        #app_reference.saveOrder(self.order)
 
     def __enable_save_button(self):
         if self.save_button is not None:
