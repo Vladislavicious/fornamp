@@ -7,7 +7,7 @@ from new_GUI.menu import Menu
 from new_GUI.prodField import ProductField
 from UIadjusters.fontFabric import FontFabric
 from ioconnection.App import App
-from new_GUI.ordPreviewField import OrderPreviewField
+from new_GUI.addOrderField import AddOrderField
 from new_GUI.orderField import OrderField
 from tkabs.scroller import Scroller
 from tkabs.button import Button
@@ -65,26 +65,58 @@ class additionFrame(Frame):
                                font=self.base_font)
             self.label.label.grid(row=0, column=0, sticky="ew")
             self.add_widget(self.label)
-            self.label.label.bind('<Button-1>', command=lambda event: self.back_function())
+            self.label.label.bind('<Button-1>', command=lambda event: self.back_to_main())
 
             self.order_frame = Frame(parental_widget=self, master=self.frame,
                                      border_width=2)
             self.order_frame.frame.grid(row=1, column=0, sticky="nsew")
+            self.order_frame.frame.grid_columnconfigure(index=0, weight=1)
+            self.order_frame.frame.grid_rowconfigure(index=0, weight=1)
             self.add_widget(self.order_frame)
 
             self.product_frame = Frame(parental_widget=self, master=self.frame,
                                        border_width=2)
             self.product_frame.frame.grid(row=1, column=1, sticky="nsew")
+            self.product_frame.frame.grid_columnconfigure(index=0, weight=1)
             self.add_widget(self.product_frame)
 
             self.step_frame = Frame(parental_widget=self, master=self.frame,
                                     border_width=2)
             self.step_frame.frame.grid(row=1, column=2, sticky="nsew")
+            self.step_frame.frame.grid_columnconfigure(index=0, weight=1)
             self.add_widget(self.step_frame)
+
+            self.save_button = Button(parental_widget=self, master=self.frame,
+                                      text="Save", command=self.save_new_order, state="disabled")
+            self.save_button.button.grid(row=0, column=2, pady=2, padx=2, sticky="ew")
+            self.add_widget(self.save_button)
+
+            self.__create_order_addition()
 
             return True
         return False
 
-    """
-    2 ряда, 2 колонны разделены 1 к 3, слева сверху будет меню, справа сверху свободное место под что-нибудь.
-    """
+    def show(self) -> bool:
+        if super().show():
+            self.save_button.hide()
+            return True
+        return False
+
+    def __create_order_addition(self):
+        self.addOrder = AddOrderField(parental_widget=self.order_frame, master=self.order_frame.frame,
+                                      save_button=self.save_button)
+        self.addOrder.frame.grid(row=0, column=0, padx=1, pady=1, sticky="nsew")
+        self.add_widget(self.addOrder)
+        self.addOrder.edit()
+
+        pass
+
+    def back_to_main(self):
+        # указание мейн фрейму о том, что этот фрейм необходимо удалить
+        self.back_function()
+
+    def save_new_order(self):
+        self.addOrder.save()
+
+        # Здесь код сохранения заказа в память и возвращения на мейн экран
+        self.back_to_main()

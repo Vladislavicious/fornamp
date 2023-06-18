@@ -132,6 +132,12 @@ class Menu(Frame):
                 self.add_widget(menu_item)
                 self.menu_items.append(menu_item)
 
+    def change_open_function(self, function: FunctionType):
+        self.open_menu_function = function
+
+    def change_close_function(self, function: FunctionType):
+        self.close_menu_function = function
+
     def press(self):
         logger.debug(f"нажатие в {self.name}")
 

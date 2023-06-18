@@ -84,10 +84,6 @@ class mainFrame(Frame):
                 return i, order_preview
         return -1, None
 
-    def insert_menu(self, menu: Menu):
-        self.menu_frame = menu
-        self.menu_frame.frame.grid(row=0, column=0, sticky="nsew")
-
     def initialize(self) -> bool:
         if super().initialize():
             self.frame.grid_rowconfigure(0, weight=0)
@@ -158,6 +154,12 @@ class mainFrame(Frame):
             return True
         return False
 
+    def insert_menu(self, menu: Menu):
+        self.menu_frame = menu
+        menu.change_open_function(self.open_menu)
+        menu.change_close_function(self.close_menu)
+        self.menu_frame.frame.grid(row=0, column=0, sticky="nsew")
+
     def open_menu(self):
         self.menu_frame.frame.grid(row=0, column=0, rowspan=2, sticky="nsew")
         self.menu_frame.frame.lift()
@@ -214,7 +216,7 @@ class mainFrame(Frame):
                                  order=order, change_preview_func=self.change_order_preview,
                                  save_button=self.save_button)
 
-        self.save_button.button.configure(command=order_field.save)
+        self.save_button.button.configure(command=order_field.save, state="disabled")
         self.save_button.hide()
 
         order_field.frame.grid(row=0, column=0, pady=0, ipady=5, sticky="nsew")

@@ -35,6 +35,7 @@ class MainWindow(TopLevel):
         self.current_window = None
         self.current_menu_holder = None
 
+        self.additionFrame = None
         self.initialize()
 
     def initialize(self) -> bool:
@@ -50,25 +51,33 @@ class MainWindow(TopLevel):
                                        border_width=0)
             self.mainFrame.frame.grid(row=0, column=0, sticky="nsew")
 
-            self.additionFrame = additionFrame(parental_widget=self, master=self, border_width=0,
-                                               go_to_main_function=lambda window=self.mainFrame:
-                                               self.open_window(window))
-            self.additionFrame.frame.grid(row=0, column=0, sticky="nsew")
-            self.additionFrame.frame.grid_remove()
+            self.__create_addition_frame()
 
             self.menu = Menu(parental_widget=self.mainFrame, master=self.mainFrame.frame,
                              open_menu_function=self.mainFrame.open_menu,
                              close_menu_function=self.mainFrame.close_menu,
-                             menu_options={"Добавить заказ":
-                                           lambda window=self.additionFrame: self.open_window(window)})
+                             menu_options={"Добавить заказ": self.__open_addition_frame})
             self.current_window = self.mainFrame
 
             self.change_menu_holder(self.mainFrame)
-
             self.add_widget(self.mainFrame)
             self.show()
             return True
         return False
+
+    def __create_addition_frame(self):
+        if self.additionFrame is not None:
+            self.additionFrame.destroy()
+            self.additionFrame.frame.destroy()
+            del self.additionFrame
+
+        self.additionFrame = additionFrame(parental_widget=self, master=self, border_width=0,
+                                           go_to_main_function=self.back_from_addition_frame)
+        self.additionFrame.frame.grid(row=0, column=0, sticky="nsew")
+        self.additionFrame.frame.grid_remove()
+
+    def __open_addition_frame(self):
+        self.open_window(self.additionFrame)
 
     def change_menu_holder(self, holder):
         if holder != self.current_menu_holder:
@@ -87,3 +96,7 @@ class MainWindow(TopLevel):
             self.current_window.hide()
             window.show()
             self.current_window = window
+
+    def back_from_addition_frame(self):
+        self.open_window(self.mainFrame)
+        self.__create_addition_frame()

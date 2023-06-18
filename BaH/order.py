@@ -50,6 +50,14 @@ class OrderPreviewSorter:
 
 
 class Order:
+    @classmethod
+    def generate_id(cls) -> int:
+        today = datetime.datetime.today()
+        number = (today.year * today.day // today.month) + (today.hour * today.minute + today.second)
+        rand = Random()
+        rand.seed(number)
+        return rand.randint(10000000000, 99999999999)
+
     def __init__(self, id: int, zakazchik: str, date_of_creation: date,
                  date_of_vidacha: date, products: List[Product] = list(), commentary="",
                  isDone=False, isVidan=False) -> None:
@@ -71,11 +79,7 @@ class Order:
     @id.setter
     def id(self, id: int):
         if id <= 10000000000 or id >= 99999999999:
-            today = datetime.datetime.today()
-            number = (today.year * today.day // today.month) + (today.hour * today.minute + today.second * id)
-            rand = Random()
-            rand.seed(number)
-            self.__id = rand.randint(10000000000, 99999999999)
+            self.__id = Order.generate_id()
         else:
             self.__id = id
 
