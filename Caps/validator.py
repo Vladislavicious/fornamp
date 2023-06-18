@@ -69,3 +69,15 @@ class Validator():
         elif len(string) == 0:
             return False, f"Введите {name}"
         return False, "Введите число"
+
+    @classmethod
+    def validate_complexity(cls, string: str = "") -> Tuple[bool, str]:
+        if string.isdecimal():
+            if int(string) < 1:
+                return False, "сложность меньше 1"
+            elif int(string) > 5:
+                return False, "сложность больше 5"
+            return True, ""
+        elif len(string) == 0:
+            return False, "Введите сложность"
+        return False, "Введите число"

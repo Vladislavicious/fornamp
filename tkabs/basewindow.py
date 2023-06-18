@@ -6,8 +6,6 @@ from typing import Tuple
 
 
 from customtkinter import CTk
-from new_GUI.FileInput import FileInput
-from new_GUI.runner import Runner
 from tkabs.button import Button
 
 from uiabs.container import Container
@@ -56,12 +54,6 @@ class FornampWindow(CTk, Container):
                 self.grid_rowconfigure(i, weight=1)  # configure grid system
             self.grid_columnconfigure(0, weight=1)
             self.grid_propagate(True)
-
-            self.file_input = FileInput(parental_widget=self, master=self,
-                                        purpose_name="Выберите фотографии для вставки")
-
-            self.file_input.frame.grid(row=0, column=0, padx=4, pady=4, sticky="nsew")
-            self.add_widget(self.file_input)
 
             self.main_open_button = Button(parental_widget=self, master=self, text="Открыть Main",
                                            command=self.press, width=40, height=10)

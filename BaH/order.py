@@ -170,6 +170,9 @@ class Order:
     def ClearProducts(self):
         self.__products.clear()
 
+    def addProductList(self, product_list: List[Product]):
+        self.__products.extend(product_list)
+
     def __str__(self) -> str:
         """вывод инф-и о классе для отладки"""
         prods_str = "\n".join(list(prod.__str__() for prod in self.GetProducts()))

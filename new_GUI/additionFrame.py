@@ -1,19 +1,16 @@
 import logging
 
 from os import path
-from typing import List, Tuple
-from BaH.order import OrderPreview
-from new_GUI.menu import Menu
-from new_GUI.prodField import ProductField
+from typing import Tuple
+from BaH.product import Product
+from new_GUI.addProdField import addProductField
 from UIadjusters.fontFabric import FontFabric
 from ioconnection.App import App
 from new_GUI.addOrderField import AddOrderField
-from new_GUI.orderField import OrderField
 from tkabs.scroller import Scroller
 from tkabs.button import Button
 
 from tkabs.frame import Frame
-from tkabs.label import Label
 from uiabs.container import Container
 
 logger = logging.getLogger(__name__)
@@ -51,6 +48,10 @@ class additionFrame(Frame):
         self.back_function = go_to_main_function
         self.base_font = FontFabric.get_base_font()
         self.app = App()
+
+        self.product_fields = list()
+        self.current_product = None
+
         self.initialize()
 
     def initialize(self) -> bool:
@@ -61,11 +62,31 @@ class additionFrame(Frame):
             self.frame.grid_columnconfigure(1, weight=3)
             self.frame.grid_columnconfigure(2, weight=3)
 
-            self.label = Label(self, self.frame, text="Абоба",
-                               font=self.base_font)
-            self.label.label.grid(row=0, column=0, sticky="ew")
-            self.add_widget(self.label)
-            self.label.label.bind('<Button-1>', command=lambda event: self.back_to_main())
+            self.back_button = Button(parental_widget=self, master=self.frame,
+                                      text="Back", font=self.base_font,
+                                      command=self.back_function)
+            self.back_button.button.grid(row=0, column=0, pady=2, sticky="w")
+            self.add_widget(self.back_button)
+
+            self.save_button = Button(parental_widget=self, master=self.frame,
+                                      text="Save", command=self.save_new_order, state="disabled")
+            self.save_button.button.grid(row=0, column=0, pady=2, padx=2, sticky="e")
+            self.add_widget(self.save_button)
+
+            self.add_prod_button = Button(parental_widget=self, master=self.frame, text="Добавить Товар",
+                                          command=self.create_product_addition)
+            self.add_prod_button.button.grid(row=0, column=1, pady=2, sticky="w")
+            self.add_widget(self.add_prod_button)
+
+            self.template_button = Button(parental_widget=self, master=self.frame, text="Выбрать шаблон",
+                                          command=self.choose_from_template, state="disabled")
+            self.template_button.button.grid(row=0, column=1, pady=2, sticky="e")
+            self.add_widget(self.template_button)
+
+            self.add_step_button = Button(parental_widget=self, master=self.frame, text="Добавить Шаг",
+                                          command=self.create_step_addition)
+            self.add_step_button.button.grid(row=0, column=2, pady=2)
+            self.add_widget(self.add_step_button)
 
             self.order_frame = Frame(parental_widget=self, master=self.frame,
                                      border_width=2)
@@ -74,24 +95,20 @@ class additionFrame(Frame):
             self.order_frame.frame.grid_rowconfigure(index=0, weight=1)
             self.add_widget(self.order_frame)
 
-            self.product_frame = Frame(parental_widget=self, master=self.frame,
-                                       border_width=2)
-            self.product_frame.frame.grid(row=1, column=1, sticky="nsew")
-            self.product_frame.frame.grid_columnconfigure(index=0, weight=1)
+            self.product_frame = Scroller(parental_widget=self, master=self.frame,
+                                          border_width=2)
+            self.product_frame.scroller.grid(row=1, column=1, ipadx=2, sticky="nsew")
+            self.product_frame.scroller.grid_columnconfigure(index=0, weight=1)
             self.add_widget(self.product_frame)
 
-            self.step_frame = Frame(parental_widget=self, master=self.frame,
-                                    border_width=2)
-            self.step_frame.frame.grid(row=1, column=2, sticky="nsew")
-            self.step_frame.frame.grid_columnconfigure(index=0, weight=1)
+            self.step_frame = Scroller(parental_widget=self, master=self.frame,
+                                       border_width=2)
+            self.step_frame.scroller.grid(row=1, column=2, ipadx=2, sticky="nsew")
+            self.step_frame.scroller.grid_columnconfigure(index=0, weight=1)
             self.add_widget(self.step_frame)
 
-            self.save_button = Button(parental_widget=self, master=self.frame,
-                                      text="Save", command=self.save_new_order, state="disabled")
-            self.save_button.button.grid(row=0, column=2, pady=2, padx=2, sticky="ew")
-            self.add_widget(self.save_button)
-
             self.__create_order_addition()
+            self.create_product_addition()
 
             return True
         return False
@@ -109,7 +126,30 @@ class additionFrame(Frame):
         self.add_widget(self.addOrder)
         self.addOrder.edit()
 
+    def product_click(self, product: addProductField):
+        if product is self.current_product:
+            return
+        self.current_product.hide_steps()
+        product.show_steps()
+        self.current_product = product
+
+    def choose_from_template(self):
         pass
+
+    def create_product_addition(self, product: Product = None):
+        if self.current_product is not None:
+            self.current_product.hide_steps()
+
+        self.current_product = addProductField(parental_widget=self.addOrder, master=self.product_frame.scroller,
+                                               product=product, step_frame=self.step_frame,
+                                               click_function=self.product_click)
+        self.current_product.frame.grid(pady=2, sticky="nsew")
+        self.addOrder.add_widget(self.current_product)
+        self.current_product.edit()
+        self.product_fields.append(self.current_product)
+
+    def create_step_addition(self):
+        self.current_product.create_step_addition()
 
     def back_to_main(self):
         # указание мейн фрейму о том, что этот фрейм необходимо удалить
@@ -117,6 +157,13 @@ class additionFrame(Frame):
 
     def save_new_order(self):
         self.addOrder.save()
+
+        products = list()
+        for product_field in self.product_fields:
+            products.append(product_field.product)
+
+        order = self.addOrder.order
+        order.addProductList(products)
 
         # Здесь код сохранения заказа в память и возвращения на мейн экран
         self.back_to_main()

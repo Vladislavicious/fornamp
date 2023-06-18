@@ -27,7 +27,7 @@ class AddOrderField(Frame, Editable):
                  border_width: int | str | None = 2,
                  bg_color: str | Tuple[str, str] = "transparent",
                  fg_color: str | Tuple[str, str] | None = None,
-                 border_color: str | Tuple[str, str] | None = "#B22222"):
+                 border_color: str | Tuple[str, str] | None = None):
 
         Frame.__init__(self, parental_widget=parental_widget, master=master,
                        width=width, height=height,
@@ -91,7 +91,7 @@ class AddOrderField(Frame, Editable):
             self.add_widget(self.description_field)
 
             self.file_input = FileInput(parental_widget=self, master=self.frame,
-                                        purpose_name="Прикрепите фото к заказу",
+                                        purpose_name="Прикрепить фото к заказу",
                                         border_width=1)
             self.file_input.frame.grid(row=5, column=0, padx=10, pady=3, sticky="nsew")
             self.add_widget(self.file_input)
