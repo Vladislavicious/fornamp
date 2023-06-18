@@ -6,6 +6,7 @@ from typing import Tuple
 
 
 from customtkinter import CTk
+from new_GUI.FileInput import FileInput
 from new_GUI.runner import Runner
 from tkabs.button import Button
 
@@ -56,10 +57,11 @@ class FornampWindow(CTk, Container):
             self.grid_columnconfigure(0, weight=1)
             self.grid_propagate(True)
 
-            self.runner = Runner(parental_widget=self, master=self, from_value=4, to_value=15,
-                                 steps_count=16, runner_title="Бегунок")
-            self.runner.frame.grid(row=0, column=0, padx=4, pady=4, sticky="nsew")
-            self.add_widget(self.runner)
+            self.file_input = FileInput(parental_widget=self, master=self,
+                                        purpose_name="Выберите фотографии для вставки")
+
+            self.file_input.frame.grid(row=0, column=0, padx=4, pady=4, sticky="nsew")
+            self.add_widget(self.file_input)
 
             self.main_open_button = Button(parental_widget=self, master=self, text="Открыть Main",
                                            command=self.press, width=40, height=10)

@@ -2,6 +2,7 @@ from datetime import date
 from typing import Tuple
 from Caps.validator import Validator
 from BaH.order import Order
+from new_GUI.FileInput import FileInput
 from new_GUI.textField import TextField
 from tkabs.button import Button
 from tkabs.frame import Frame
@@ -50,6 +51,7 @@ class AddOrderField(Frame, Editable):
         if Frame.initialize(self):
 
             self.frame.grid_columnconfigure(0, weight=1)
+            self.frame.grid_rowconfigure(5, weight=1)
             self.frame.grid_propagate(False)
 
             self.confirm_button = Button(parental_widget=self, master=self.frame, text="conf",
@@ -87,6 +89,12 @@ class AddOrderField(Frame, Editable):
                                                initial_text=self.description)
             self.description_field.frame.grid(row=4, column=0, padx=10, pady=3, sticky="ew")
             self.add_widget(self.description_field)
+
+            self.file_input = FileInput(parental_widget=self, master=self.frame,
+                                        purpose_name="Прикрепите фото к заказу",
+                                        border_width=1)
+            self.file_input.frame.grid(row=5, column=0, padx=10, pady=3, sticky="nsew")
+            self.add_widget(self.file_input)
 
             return True
         return False
@@ -126,9 +134,13 @@ class AddOrderField(Frame, Editable):
 
         if Editable.save(self):
             self.__assemble_order()
-
+            self.__parse_photos()
             return True
         return False
+
+    def __parse_photos(self):
+        for photo_path in self.file_input.contained_paths:
+            print(photo_path)
 
     def __assemble_order(self):
         customer = self.customer_field.get()
