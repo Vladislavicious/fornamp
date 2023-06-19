@@ -7,7 +7,6 @@ from typing import Tuple
 
 from customtkinter import CTk
 from tkabs.button import Button
-
 from uiabs.container import Container
 from new_GUI.mWindow import MainWindow
 

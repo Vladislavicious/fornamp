@@ -165,5 +165,5 @@ class additionFrame(Frame):
         order = self.addOrder.order
         order.addProductList(products)
 
-        # Здесь код сохранения заказа в память и возвращения на мейн экран
+        self.app.add_from_addition_frame(order, self.addOrder.file_input.contained_paths)
         self.back_to_main()

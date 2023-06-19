@@ -8,7 +8,7 @@ class Validator():
     @classmethod
     def is_valid_string(cls, string: str) -> bool:
         """Проверяет строку на соответствие обычному тексту"""
-        allowed_chars = set('abcdefghijklmnopqrstuvwxyzабвгдеёжзийклмнопрстуфхцчшщъыьэюя.,:/" ')
+        allowed_chars = set('abcdefghijklmnopqrstuvwxyzабвгдеёжзийклмнопрстуфхцчшщъыьэюя.,:/" 1234567890')
         return all(c in allowed_chars for c in string)
 
     @classmethod

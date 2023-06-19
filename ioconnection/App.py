@@ -161,7 +161,14 @@ class App(metaclass=Singleton):
 
         return order
 
+    def add_from_addition_frame(self, order: Order, sources: List[str]):
+        self.addNewOrder(order)
+        destination = self.file_manager.get_order_directory(order.id)
+        self.file_manager.copy_file_list(sources, destination)
+
     def addNewOrder(self, order: Order):
+        """Функция сохранения заказа в личный файл,
+        вызывается для новых, не существовавших до этого заказов"""
         self.__orders[order.id] = order
         self.order_previews.append(order.createPreview())
 

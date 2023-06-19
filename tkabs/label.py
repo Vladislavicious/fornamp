@@ -49,7 +49,8 @@ class Label(Container):
 
     @property
     def contained_text(self) -> str:
-        return self.label.cget("text")
+        text = self.label.cget("text")
+        return text.replace("\n", "")
 
     def destroy(self) -> bool:
         if super().destroy():
@@ -94,7 +95,8 @@ class Label(Container):
 
             new_string_length = label_width // mean_width - 5
 
-            wrapped_text = '\n'.join(wrap(text, new_string_length))
+            wrapped_text = '\n'.join(wrap(text, new_string_length,
+                                          replace_whitespace=False, drop_whitespace=False))
             self.label.configure(text=wrapped_text)
             return True
         return False

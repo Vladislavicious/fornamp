@@ -152,7 +152,7 @@ class FileManager():
 
     def deleteOrderByID(self, ID: int) -> bool:
         """Удаляет как файл, так и элемент словаря"""
-        filename = self.__getOrderDirectory(ID)
+        filename = self.get_order_directory(ID)
         if filename == "":
             return False
 
@@ -162,7 +162,7 @@ class FileManager():
 
     def saveOrder(self, order: Order):
         """Если ордер с таким айди уже существовал, удаляет его"""
-        previous_order_filename = self.__getOrderDirectory(order.id)
+        previous_order_filename = self.get_order_directory(order.id)
         if previous_order_filename != "":
             shutil.rmtree(previous_order_filename)
 
@@ -175,6 +175,13 @@ class FileManager():
 
         Order.toFile(order, self.orders_dir_path)
 
+    def copy_file_list(self, sources: List[str], destination: str):
+        for source in sources:
+
+            _, _, source_name = source.rpartition("/")
+
+            shutil.copyfile(source, destination + "\\" + source_name)
+
     def __getOrderFilename(self, ID: int):
         """Возвращает имя файла, либо '' """
         id_str = str(ID)
@@ -186,7 +193,7 @@ class FileManager():
 
         return filename
 
-    def __getOrderDirectory(self, ID: int):
+    def get_order_directory(self, ID: int):
         id_str = str(ID)
         try:
             directory_name = self.orders_dir_path + "\\" + self.ordered_filenames[id_str] + id_str
