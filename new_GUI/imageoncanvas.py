@@ -40,7 +40,8 @@ class ImageOnCanvas(Frame):
             self.add_widget(self.canvas)
 
             self.image = Image(parental_widget=self.canvas,
-                               image_path=self.light_image_path)
+                               image_path=self.light_image_path,
+                               size=(self.width, self.height))
             self.add_widget(self.image)
 
             if self.image_function is not None:
@@ -52,7 +53,7 @@ class ImageOnCanvas(Frame):
         return False
 
     def fit(self):
-        if self.image.resize(self.width, self.height):
+        if self.image.resize(self.parental_widget.width, self.parental_widget.height):
             self.canvas.create_image(self.image)
 
     def show(self) -> bool:

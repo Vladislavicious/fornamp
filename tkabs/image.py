@@ -20,7 +20,7 @@ class Image(Widget):
         if width == img_width and height == img_height:
             return False
 
-        self.image_raw = self.image_raw.resize((width, height))
+        self.image = self.image_raw.resize((width, height))
 
-        self.image = ImageTk.PhotoImage(self.image_raw)
+        self.image = ImageTk.PhotoImage(self.image)
         return True

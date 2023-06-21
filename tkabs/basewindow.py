@@ -7,7 +7,6 @@ from typing import Tuple
 
 from customtkinter import CTk
 from ioconnection.App import Singleton
-from new_GUI.imageoncanvas import ImageOnCanvas
 from new_GUI.photo import Photo
 from tkabs.button import Button
 from tkabs.dialog import Dialog
@@ -61,7 +60,7 @@ class FornampWindow(CTk, Container, metaclass=Singleton):
             self.grid_propagate(True)
 
             self.photo = Photo(parental_widget=self, master=self,
-                               photopath="C:\\Users\\vlads\\Dropbox\\ПК\\Desktop\\Расписание 4 семестр.png")
+                               photopath="C:\\Users\\vlads\\Dropbox\\ПК\\Desktop\\i.jpeg")
             self.photo.frame.grid(row=0, column=0, sticky="nsew")
             self.add_widget(self.photo)
 
@@ -72,6 +71,7 @@ class FornampWindow(CTk, Container, metaclass=Singleton):
 
             self.protocol("WM_DELETE_WINDOW", lambda: self.destroy())
             self.update()
+            self.update_idletasks()
             self.show()
 
             self.dialog.hide()

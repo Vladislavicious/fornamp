@@ -20,6 +20,14 @@ class Dialog(CTkToplevel, Container, metaclass=Singleton):
         self.widget_frame = None
         self.initialize()
 
+    @property
+    def width(self) -> int:
+        return self.winfo_width()
+
+    @property
+    def height(self) -> int:
+        return self.winfo_height()
+
     def hide(self):
         if Container.hide(self):
             self.withdraw()
@@ -73,8 +81,8 @@ class Dialog(CTkToplevel, Container, metaclass=Singleton):
         self.geometry(string)
 
     def center(self):
-        screen_width = self.winfo_screenwidth()
-        screen_height = self.winfo_screenheight()
+        screen_width = self.master.winfo_screenwidth()
+        screen_height = self.master.winfo_screenheight()
 
         window_width = int(screen_width * 2 / 3)
         window_height = int(screen_height * 2 / 3)

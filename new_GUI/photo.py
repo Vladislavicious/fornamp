@@ -1,10 +1,8 @@
-from copy import copy, deepcopy
 import logging
 
 from os import path
 from typing import Tuple
 from UIadjusters.fontFabric import FontFabric
-from new_GUI.FileInput import FileInput
 from new_GUI.imageoncanvas import ImageOnCanvas
 from tkabs.dialog import Dialog
 
@@ -69,30 +67,21 @@ class Photo(Frame):
             return True
         return False
 
-    def pr1(self):
-        print("Нажатие Внутри")
+    def withdraw_dialog(self):
+        self.dialog.disappear()
 
     def press(self):
-        print("Нажатие на фото")
         if self.dialog is None:
             self.dialog = Dialog.get_instance()
 
-        frame = ImageOnCanvas(parental_widget=self.dialog, master=self.dialog.frame.frame,
-                              image_path=self.photopath,
-                              image_function=self.pr1)
-        #frame.frame.grid(row=0, column=0, sticky="nsew")
-
         self.dialog.set_name(self.name)
         self.dialog.center()
+
+        frame = ImageOnCanvas(parental_widget=self.dialog, master=self.dialog.frame.frame,
+                              image_path=self.photopath, width=self.dialog.width,
+                              image_function=self.withdraw_dialog, height=self.dialog.height)
+
         self.dialog.set_widget_frame(frame)
 
-        self.dialog.update_idletasks()
         self.dialog.show()
-        frame.frame.update_idletasks()
         frame.fit()
-
-
-"""
-Класс фотографии. По умолчанию является рамкой с Лэйблом и канвасом, на канвасе фото.
-при нажатии на фото открывается увеличенная версия фото с крестиком в правом верхнем углу
-"""
