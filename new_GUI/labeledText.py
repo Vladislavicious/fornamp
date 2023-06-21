@@ -31,31 +31,31 @@ class labeledText(Frame):
 
     def change_title(self, title: str):
         self.title_text = title
-        self.title_label.label.configure(text=title)
+        self.title_label.item.configure(text=title)
 
     def change_text(self, text: str):
         self.initial_text = text
-        self.text_label.label.configure(text=text)
+        self.text_label.item.configure(text=text)
 
     def get(self) -> str:
         return self.initial_text
 
     def initialize(self) -> bool:
         if super().initialize():
-            self.frame.grid_columnconfigure(0, weight=1)
-            self.frame.grid_rowconfigure(0, weight=1)
-            self.frame.grid_rowconfigure(1, weight=3)
-            self.frame.grid_propagate(True)
+            self.item.grid_columnconfigure(0, weight=1)
+            self.item.grid_rowconfigure(0, weight=1)
+            self.item.grid_rowconfigure(1, weight=3)
+            self.item.grid_propagate(True)
 
-            self.title_label = Label(parental_widget=self, master=self.frame,
+            self.title_label = Label(parental_widget=self, master=self.item,
                                      text=self.title_text,
                                      font=FontFabric.get_changed_font(weight='bold'))
-            self.title_label.label.grid(row=0, column=0, sticky="nsew")
+            self.title_label.item.grid(row=0, column=0, sticky="nsew")
             self.add_widget(self.title_label)
 
-            self.text_label = Label(parental_widget=self, master=self.frame,
+            self.text_label = Label(parental_widget=self, master=self.item,
                                     text=self.initial_text, font=self.base_font)
-            self.text_label.label.grid(row=1, column=0, sticky="nsew")
+            self.text_label.item.grid(row=1, column=0, sticky="nsew")
             self.add_widget(self.text_label)
 
             return True

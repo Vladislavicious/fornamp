@@ -10,17 +10,17 @@ class Image(Widget):
                  size: Tuple[int, int] = ...):
         super().__init__(parental_widget)
         self.image_raw = Img.open(image_path)
-        self.image = ImageTk.PhotoImage(self.image_raw)
+        self.item = ImageTk.PhotoImage(self.image_raw)
 
     def resize(self, width, height):
         """Возвращает True, если размер изменился
         """
-        img_width = self.image.width()
-        img_height = self.image.height()
+        img_width = self.item.width()
+        img_height = self.item.height()
         if width == img_width and height == img_height:
             return False
 
-        self.image = self.image_raw.resize((width, height))
+        self.item = self.image_raw.resize((width, height))
 
-        self.image = ImageTk.PhotoImage(self.image)
+        self.item = ImageTk.PhotoImage(self.item)
         return True

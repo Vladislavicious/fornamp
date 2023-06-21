@@ -35,20 +35,20 @@ class addStepField(Frame, Editable):
     def initialize(self) -> bool:
         if super().initialize():
 
-            self.frame.grid_columnconfigure(0, weight=1)
-            self.frame.grid_rowconfigure(0, weight=1)
+            self.item.grid_columnconfigure(0, weight=1)
+            self.item.grid_rowconfigure(0, weight=1)
 
-            self.name_field = TextField(parental_widget=self, master=self.frame,
+            self.name_field = TextField(parental_widget=self, master=self.item,
                                         validation_method=Validator.validate_name, title="Название шага",
                                         placeholder_text="Введите название", initial_text=self.name_text)
-            self.name_field.frame.grid(row=0, column=0, padx=3, sticky="nsew")
+            self.name_field.item.grid(row=0, column=0, padx=3, sticky="nsew")
             self.add_widget(self.name_field)
 
-            self.complexity_field = TextField(parental_widget=self, master=self.frame,
+            self.complexity_field = TextField(parental_widget=self, master=self.item,
                                               validation_method=Validator.validate_complexity,
                                               title="Сложность шага", initial_text=self.complexity,
                                               placeholder_text="Сложность от 1 до 5")
-            self.complexity_field.frame.grid(row=1, column=0, padx=3, sticky="nsew")
+            self.complexity_field.item.grid(row=1, column=0, padx=3, sticky="nsew")
             self.add_widget(self.complexity_field)
 
             return True

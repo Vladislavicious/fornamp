@@ -63,9 +63,9 @@ class Dialog(CTkToplevel, Container, metaclass=Singleton):
             self.grid_columnconfigure(0, weight=1)
 
             self.frame = Frame(parental_widget=self, master=self)
-            self.frame.frame.grid(row=0, column=0, sticky="nsew")
-            self.frame.frame.grid_columnconfigure(0, weight=1)
-            self.frame.frame.grid_rowconfigure(0, weight=1)
+            self.frame.item.grid(row=0, column=0, sticky="nsew")
+            self.frame.item.grid_columnconfigure(0, weight=1)
+            self.frame.item.grid_rowconfigure(0, weight=1)
             self.add_widget(self.frame)
 
             self.protocol("WM_DELETE_WINDOW", lambda: self.disappear())
@@ -98,5 +98,5 @@ class Dialog(CTkToplevel, Container, metaclass=Singleton):
             self.widget_frame = None
 
         self.widget_frame = widget_frame
-        self.widget_frame.frame.grid(row=0, column=0, sticky="nsew")
+        self.widget_frame.item.grid(row=0, column=0, sticky="nsew")
         self.add_widget(self.widget_frame)

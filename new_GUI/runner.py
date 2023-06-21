@@ -64,37 +64,37 @@ class Runner(Frame, Editable):
 
     def initialize(self) -> bool:
         if super().initialize():
-            self.frame.grid_rowconfigure(1, weight=1)
-            self.frame.grid_columnconfigure(1, weight=1)
-            self.frame.grid_propagate(False)
+            self.item.grid_rowconfigure(1, weight=1)
+            self.item.grid_columnconfigure(1, weight=1)
+            self.item.grid_propagate(False)
 
-            self.runner_title = Label(parental_widget=self, master=self.frame,
+            self.runner_title = Label(parental_widget=self, master=self.item,
                                       text=self.runner_title_text, font=FontFabric.get_bold_font())
-            self.runner_title.label.grid(row=0, columnspan=3, padx=2)
+            self.runner_title.item.grid(row=0, columnspan=3, padx=2)
             self.add_widget(self.runner_title)
 
-            self.from_field = TextField(parental_widget=self, master=self.frame,
+            self.from_field = TextField(parental_widget=self, master=self.item,
                                         title="От", width=30,
                                         validation_method=lambda value:
                                         Validator.validate_number(string=value, name="От"),
                                         initial_text=self.from_value_text,
                                         enter_pressed_function=self.confirm)
-            self.from_field.frame.grid(row=1, column=0, padx=2)
+            self.from_field.item.grid(row=1, column=0, padx=2)
             self.add_widget(self.from_field)
 
             from_int = int(self.from_value_text)
             to_int = int(self.to_value_text)
-            self.slider = Slider(parental_widget=self, master=self.frame,
+            self.slider = Slider(parental_widget=self, master=self.item,
                                  from_=0, to=to_int, height=25, width=550,
                                  number_of_steps=self.steps_count, state="normal",
                                  command=self.__slider_change)
-            self.slider.slider.set(from_int)
-            self.slider.slider.grid(row=1, column=1, sticky="ew")
+            self.slider.item.set(from_int)
+            self.slider.item.grid(row=1, column=1, sticky="ew")
             self.add_widget(self.slider)
 
-            self.to_field = labeledText(parental_widget=self, master=self.frame,
+            self.to_field = labeledText(parental_widget=self, master=self.item,
                                         title="До", initial_text=self.to_value_text)
-            self.to_field.frame.grid(row=1, column=2, padx=2)
+            self.to_field.item.grid(row=1, column=2, padx=2)
             self.add_widget(self.to_field)
 
             return True
@@ -103,7 +103,7 @@ class Runner(Frame, Editable):
     def __slider_change(self, value):
         self.from_field.change_text(str(int(value)))
         self.from_field.edit()
-        self.from_field.text_entry.entry.focus()
+        self.from_field.text_entry.item.focus()
 
     def edit(self):
         for field in self.get_class_instances(Editable):

@@ -32,11 +32,11 @@ class ImageOnCanvas(Frame):
 
     def initialize(self) -> bool:
         if super().initialize():
-            self.frame.grid_columnconfigure(0, weight=1)
-            self.frame.grid_rowconfigure(0, weight=1)
+            self.item.grid_columnconfigure(0, weight=1)
+            self.item.grid_rowconfigure(0, weight=1)
 
-            self.canvas = Canvas(parental_widget=self, master=self.frame)
-            self.canvas.canvas.grid(row=0, column=0, sticky="nsew")
+            self.canvas = Canvas(parental_widget=self, master=self.item)
+            self.canvas.item.grid(row=0, column=0, sticky="nsew")
             self.add_widget(self.canvas)
 
             self.image = Image(parental_widget=self.canvas,
@@ -45,7 +45,7 @@ class ImageOnCanvas(Frame):
             self.add_widget(self.image)
 
             if self.image_function is not None:
-                self.canvas.canvas.bind('<Button-1>', func=lambda event: self.image_function())
+                self.canvas.item.bind('<Button-1>', func=lambda event: self.image_function())
 
             self.canvas.create_image(self.image)
 

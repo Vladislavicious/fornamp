@@ -23,26 +23,26 @@ class Slider(Container, Editable):
         Container.__init__(self, parental_widget=parental_widget)
         Editable.__init__(self)
         if self.initialize():
-            self.slider = CTkSlider(master=master, width=width, height=height,
-                                    corner_radius=corner_radius,
-                                    bg_color=bg_color, fg_color=fg_color,
-                                    border_color=border_color, progress_color=progress_color,
-                                    button_color=button_color,
-                                    button_hover_color=button_hover_color,
-                                    from_=from_, to=to, state=state,
-                                    number_of_steps=number_of_steps,
-                                    hover=hover, command=command,
-                                    variable=variable, orientation=orientation, **kwargs)
+            self.item = CTkSlider(master=master, width=width, height=height,
+                                  corner_radius=corner_radius,
+                                  bg_color=bg_color, fg_color=fg_color,
+                                  border_color=border_color, progress_color=progress_color,
+                                  button_color=button_color,
+                                  button_hover_color=button_hover_color,
+                                  from_=from_, to=to, state=state,
+                                  number_of_steps=number_of_steps,
+                                  hover=hover, command=command,
+                                  variable=variable, orientation=orientation, **kwargs)
             self.name = "Slider in" + self.parental_widget.name
 
             self.initial_value = from_
 
     @property
     def slider_value(self):
-        return self.slider.get()
+        return self.item.get()
 
     def set_value(self, value: int):
-        self.slider.set(value)
+        self.item.set(value)
 
     def destroy(self) -> bool:
         if super().destroy():
@@ -51,12 +51,12 @@ class Slider(Container, Editable):
 
     def hide(self) -> bool:
         if super().hide():
-            self.slider.grid_remove()
+            self.item.grid_remove()
             return True
         return False
 
     def show(self) -> bool:
         if super().show():
-            self.slider.grid()
+            self.item.grid()
             return True
         return False

@@ -54,32 +54,32 @@ class FileInput(Frame):
 
     def initialize(self) -> bool:
         if super().initialize():
-            self.frame.grid_columnconfigure(0, weight=1)
-            self.frame.grid_columnconfigure(1, weight=1)
-            self.frame.grid_rowconfigure(0, weight=0)
-            self.frame.grid_rowconfigure(1, weight=0)
-            self.frame.grid_rowconfigure(2, weight=1)
+            self.item.grid_columnconfigure(0, weight=1)
+            self.item.grid_columnconfigure(1, weight=1)
+            self.item.grid_rowconfigure(0, weight=0)
+            self.item.grid_rowconfigure(1, weight=0)
+            self.item.grid_rowconfigure(2, weight=1)
 
-            self.label = Label(parental_widget=self, master=self.frame,
+            self.label = Label(parental_widget=self, master=self.item,
                                text=self.purpose_name, font=self.base_font)
-            self.label.label.grid(row=0, column=0, columnspan=2, pady=2, padx=1, sticky="nsew")
+            self.label.item.grid(row=0, column=0, columnspan=2, pady=2, padx=1, sticky="nsew")
             self.add_widget(self.label)
 
-            self.add_button = Button(parental_widget=self, master=self.frame,
+            self.add_button = Button(parental_widget=self, master=self.item,
                                      text="Добавить", font=self.base_font,
                                      command=self.add_path)
-            self.add_button.button.grid(row=1, column=1, pady=2, padx=1, sticky="e")
+            self.add_button.item.grid(row=1, column=1, pady=2, padx=1, sticky="e")
             self.add_widget(self.add_button)
 
-            self.clear_button = Button(parental_widget=self, master=self.frame,
+            self.clear_button = Button(parental_widget=self, master=self.item,
                                        text="Очистить", font=self.base_font,
                                        command=self.clear_paths)
-            self.clear_button.button.grid(row=1, column=0, pady=2, padx=1, sticky="w")
+            self.clear_button.item.grid(row=1, column=0, pady=2, padx=1, sticky="w")
             self.add_widget(self.clear_button)
 
-            self.scroller = Scroller(parental_widget=self, master=self.frame)
-            self.scroller.scroller.grid(row=2, column=0, columnspan=2, sticky="nsew")
-            self.scroller.scroller.grid_columnconfigure(index=0, weight=1)
+            self.scroller = Scroller(parental_widget=self, master=self.item)
+            self.scroller.item.grid(row=2, column=0, columnspan=2, sticky="nsew")
+            self.scroller.item.grid_columnconfigure(index=0, weight=1)
             self.add_widget(self.scroller)
 
             return True
@@ -105,9 +105,9 @@ class FileInput(Frame):
         filenames = self.__select_files()
         if len(filenames) != 0:
             for filename in filenames:
-                pathway = TextWithButton(self.scroller, self.scroller.scroller,
+                pathway = TextWithButton(self.scroller, self.scroller.item,
                                          text=filename, button_text="Удалить")
-                pathway.frame.grid(padx=2, pady=2, sticky="ew")
+                pathway.item.grid(padx=2, pady=2, sticky="ew")
                 self.scroller.add_widget(pathway)
                 pathway.change_button_function(lambda: self.scroller.delete_widget(pathway))
 

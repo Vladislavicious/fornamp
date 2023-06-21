@@ -9,27 +9,27 @@ class Canvas(Container):
 
         super().__init__(parental_widget=parental_widget)
 
-        self.canvas = cv(master, *args, **kwargs)
+        self.item = cv(master, *args, **kwargs)
 
     @property
     def width(self) -> int:
-        return self.canvas.winfo_width()
+        return self.item.winfo_width()
 
     @property
     def height(self) -> int:
-        return self.canvas.winfo_height()
+        return self.item.winfo_height()
 
     def create_image(self, image: Image):
-        self.canvas.create_image(0, 0, anchor="nw", image=image.image)
+        self.item.create_image(0, 0, anchor="nw", image=image.item)
 
     def show(self) -> bool:
         if super().show():
-            self.canvas.grid()
+            self.item.grid()
             return True
         return False
 
     def hide(self) -> bool:
         if super().hide():
-            self.canvas.grid_remove()
+            self.item.grid_remove()
             return True
         return False

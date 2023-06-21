@@ -49,11 +49,11 @@ class MainWindow(TopLevel, metaclass=Singleton):
 
             self.mainFrame = mainFrame(parental_widget=self, master=self,
                                        border_width=0)
-            self.mainFrame.frame.grid(row=0, column=0, sticky="nsew")
+            self.mainFrame.item.grid(row=0, column=0, sticky="nsew")
 
             self.__create_addition_frame()
 
-            self.menu = Menu(parental_widget=self.mainFrame, master=self.mainFrame.frame,
+            self.menu = Menu(parental_widget=self.mainFrame, master=self.mainFrame.item,
                              open_menu_function=self.mainFrame.open_menu,
                              close_menu_function=self.mainFrame.close_menu,
                              menu_options={"Добавить заказ": self.__open_addition_frame})
@@ -68,14 +68,14 @@ class MainWindow(TopLevel, metaclass=Singleton):
     def __create_addition_frame(self):
         if self.additionFrame is not None:
             self.additionFrame.destroy()
-            self.additionFrame.frame.destroy()
+            self.additionFrame.item.destroy()
             del self.additionFrame
 
         self.additionFrame = additionFrame(parental_widget=self, master=self, border_width=0,
                                            go_to_main_function=self.back_from_addition_frame,
                                            add_order_preview_func=self.mainFrame.add_order_preview)
-        self.additionFrame.frame.grid(row=0, column=0, sticky="nsew")
-        self.additionFrame.frame.grid_remove()
+        self.additionFrame.item.grid(row=0, column=0, sticky="nsew")
+        self.additionFrame.item.grid_remove()
 
     def __open_addition_frame(self):
         self.open_window(self.additionFrame)

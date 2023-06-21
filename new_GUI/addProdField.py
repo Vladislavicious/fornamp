@@ -49,60 +49,60 @@ class addProductField(Frame, Editable):
 
     def initialize(self) -> bool:
         if super().initialize():
-            self.frame.grid_columnconfigure(0, weight=1)
+            self.item.grid_columnconfigure(0, weight=1)
 
-            self.edit_button = Button(parental_widget=self, master=self.frame, text="edit",
+            self.edit_button = Button(parental_widget=self, master=self.item, text="edit",
                                       command=self.edit, font=self.base_font, width=40)
-            self.edit_button.button.grid(row=0, column=0, padx=3, pady=3, sticky="ne")
+            self.edit_button.item.grid(row=0, column=0, padx=3, pady=3, sticky="ne")
             self.add_widget(self.edit_button)
 
-            self.prod_name_field = TextField(parental_widget=self, master=self.frame,
+            self.prod_name_field = TextField(parental_widget=self, master=self.item,
                                              validation_method=Validator.validate_name, title="Название",
                                              placeholder_text="Введите название", initial_text=self.prod_name)
-            self.prod_name_field.frame.grid(row=1, column=0, padx=10, pady=3, sticky="ew")
+            self.prod_name_field.item.grid(row=1, column=0, padx=10, pady=3, sticky="ew")
             self.add_widget(self.prod_name_field)
 
-            self.quantity_field = TextField(parental_widget=self, master=self.frame,
+            self.quantity_field = TextField(parental_widget=self, master=self.item,
                                             validation_method=lambda value:
                                             Validator.validate_number(string=value, name="Количество"),
                                             title="Количество", placeholder_text="Введите количество, шт.",
                                             initial_text=self.quantity)
-            self.quantity_field.frame.grid(row=2, column=0, padx=10, pady=3, sticky="ew")
+            self.quantity_field.item.grid(row=2, column=0, padx=10, pady=3, sticky="ew")
             self.add_widget(self.quantity_field)
 
-            self.prod_cost_field = TextField(parental_widget=self, master=self.frame,
+            self.prod_cost_field = TextField(parental_widget=self, master=self.item,
                                              validation_method=lambda value:
                                              Validator.validate_number(string=value, name="Стоимость производства"),
                                              title="Стоимость производства", initial_text=self.production_cost,
                                              placeholder_text="Введите стоимость, ₽")
-            self.prod_cost_field.frame.grid(row=3, column=0, padx=10, pady=3, sticky="ew")
+            self.prod_cost_field.item.grid(row=3, column=0, padx=10, pady=3, sticky="ew")
             self.add_widget(self.prod_cost_field)
 
-            self.selling_cost_field = TextField(parental_widget=self, master=self.frame,
+            self.selling_cost_field = TextField(parental_widget=self, master=self.item,
                                                 validation_method=lambda value:
                                                 Validator.validate_number(string=value, name="Стоимость продажи"),
                                                 title="Стоимость продажи", placeholder_text="Введите стоимость, ₽",
                                                 initial_text=self.selling_cost)
-            self.selling_cost_field.frame.grid(row=4, column=0, padx=10, pady=3, sticky="ew")
+            self.selling_cost_field.item.grid(row=4, column=0, padx=10, pady=3, sticky="ew")
 
             self.add_widget(self.selling_cost_field)
 
-            self.description_field = TextField(parental_widget=self, master=self.frame,
+            self.description_field = TextField(parental_widget=self, master=self.item,
                                                validation_method=Validator.validate_description, title="Описание",
                                                placeholder_text="Описание товара",
                                                initial_text=self.description)
-            self.description_field.frame.grid(row=5, column=0, padx=10, pady=3, sticky="ew")
+            self.description_field.item.grid(row=5, column=0, padx=10, pady=3, sticky="ew")
             self.add_widget(self.description_field)
 
             self.__parse_steps()
 
-            self.frame.bind('<Button-1>', command=lambda event: self.click_function(self))
+            self.item.bind('<Button-1>', command=lambda event: self.click_function(self))
 
             return True
         return False
 
     def edit(self):
-        self.edit_button.button.configure(text="conf", command=self.confirm)
+        self.edit_button.item.configure(text="conf", command=self.confirm)
         for field in self.get_class_instances(Editable):
             field.edit()
         Editable.edit(self)
@@ -118,7 +118,7 @@ class addProductField(Frame, Editable):
         if is_confirmed:
             Editable.confirm(self)
             self.set_as_edited()
-            self.edit_button.button.configure(text="edit", command=self.edit)
+            self.edit_button.item.configure(text="edit", command=self.edit)
             return True
         return False
 
@@ -167,8 +167,8 @@ class addProductField(Frame, Editable):
 
     def create_step_addition(self, step: Step = None):
         step_field = addStepField(parental_widget=self,
-                                  master=self.step_frame.scroller, step=step)
-        step_field.frame.grid(padx=2, pady=2, sticky="nsew")
+                                  master=self.step_frame.item, step=step)
+        step_field.item.grid(padx=2, pady=2, sticky="nsew")
         self.add_widget(step_field)
         step_field.edit()
         self.step_fields.append(step_field)

@@ -38,18 +38,18 @@ class Label(Container):
         super().__init__(parental_widget)
         if self.initialize():
             self.font = font
-            self.label = CTkLabel(master, width, height, corner_radius,
-                                  bg_color, fg_color, text_color, text,
-                                  font, image, compound, anchor, wraplength, **kwargs)
+            self.item = CTkLabel(master, width, height, corner_radius,
+                                 bg_color, fg_color, text_color, text,
+                                 font, image, compound, anchor, wraplength, **kwargs)
             self.name = "Метка " + text
             logger.debug(f"{self.name} инициализирована")
 
     def change_text(self, text: str):
-        self.label.configure(text=text)
+        self.item.configure(text=text)
 
     @property
     def contained_text(self) -> str:
-        text = self.label.cget("text")
+        text = self.item.cget("text")
         return text.replace("\n", "")
 
     def destroy(self) -> bool:
@@ -60,34 +60,34 @@ class Label(Container):
 
     def hide(self) -> bool:
         if super().hide():
-            self.label.grid_remove()
+            self.item.grid_remove()
             return True
         return False
 
     def show(self) -> bool:
         if super().show():
-            text = self.label.cget("text")
+            text = self.item.cget("text")
             text_length = len(text)
             if text_length > 25:
-                self.label.update()
+                self.item.update()
 
             self.__check_text_length()
 
-            self.label.grid()
+            self.item.grid()
 
-            logger.debug(f"second width: {self.label.winfo_width()}")
+            logger.debug(f"second width: {self.item.winfo_width()}")
             return True
         return False
 
     def __check_text_length(self):
         """Если длина строки больше, чем ей выделено места,
            делает переносы строки"""
-        text = self.label.cget("text")
+        text = self.item.cget("text")
         text_length = len(text)
         if text_length <= 25:
             return False
 
-        label_width = self.label.winfo_width()
+        label_width = self.item.winfo_width()
         if label_width > 1:
             mean_width = FontFabric.calculate_mean_width(self.font)
             if label_width > text_length * mean_width:
@@ -97,6 +97,6 @@ class Label(Container):
 
             wrapped_text = '\n'.join(wrap(text, new_string_length,
                                           replace_whitespace=False, drop_whitespace=False))
-            self.label.configure(text=wrapped_text)
+            self.item.configure(text=wrapped_text)
             return True
         return False

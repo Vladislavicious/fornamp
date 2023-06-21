@@ -49,19 +49,19 @@ class Photo(Frame):
     def initialize(self) -> bool:
         if super().initialize():
 
-            self.frame.grid_rowconfigure(0, weight=1)
-            self.frame.grid_columnconfigure(0, weight=1)
+            self.item.grid_rowconfigure(0, weight=1)
+            self.item.grid_columnconfigure(0, weight=1)
 
             _, _, self.name = self.photopath.rpartition("\\")
 
-            self.label = Label(parental_widget=self, master=self.frame,
+            self.label = Label(parental_widget=self, master=self.item,
                                text=self.name, font=self.base_font)
-            self.label.label.grid(row=1, column=0, pady=2, sticky="nsew")
+            self.label.item.grid(row=1, column=0, pady=2, sticky="nsew")
             self.add_widget(self.label)
 
-            self.canvas = ImageOnCanvas(parental_widget=self, master=self.frame,
+            self.canvas = ImageOnCanvas(parental_widget=self, master=self.item,
                                         image_path=self.photopath, image_function=self.press)
-            self.canvas.frame.grid(row=0, column=0, pady=1, sticky="ns")
+            self.canvas.item.grid(row=0, column=0, pady=1, sticky="ns")
             self.add_widget(self.canvas)
 
             return True

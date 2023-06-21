@@ -86,63 +86,63 @@ class mainFrame(Frame):
 
     def initialize(self) -> bool:
         if super().initialize():
-            self.frame.grid_rowconfigure(0, weight=0)
-            self.frame.grid_rowconfigure(1, weight=1)
-            self.frame.grid_columnconfigure(0, weight=1)
-            self.frame.grid_columnconfigure(1, weight=6)
+            self.item.grid_rowconfigure(0, weight=0)
+            self.item.grid_rowconfigure(1, weight=1)
+            self.item.grid_columnconfigure(0, weight=1)
+            self.item.grid_columnconfigure(1, weight=6)
 
             # Настройка тайтлов
 
-            self.right_title_frame = Frame(height=25, parental_widget=self, master=self.frame,
+            self.right_title_frame = Frame(height=25, parental_widget=self, master=self.item,
                                            border_width=1, border_color="#BB1111")
-            self.right_title_frame.frame.grid(row=0, column=1, sticky="nsew")
-            self.right_title_frame.frame.grid_rowconfigure(0, weight=1)
-            self.right_title_frame.frame.grid_columnconfigure(0, weight=1)
+            self.right_title_frame.item.grid(row=0, column=1, sticky="nsew")
+            self.right_title_frame.item.grid_rowconfigure(0, weight=1)
+            self.right_title_frame.item.grid_columnconfigure(0, weight=1)
 
             self.add_widget(self.right_title_frame)
             # Настройка левого фрейма
 
-            self.left_frame = Frame(parental_widget=self, master=self.frame,
+            self.left_frame = Frame(parental_widget=self, master=self.item,
                                     border_width=1, border_color="#AA0A00")
 
-            self.left_frame.frame.grid(row=1, column=0, sticky="nsew")
-            self.left_frame.frame.grid_columnconfigure(0, weight=1)
-            self.left_frame.frame.grid_rowconfigure(1, weight=1)
+            self.left_frame.item.grid(row=1, column=0, sticky="nsew")
+            self.left_frame.item.grid_columnconfigure(0, weight=1)
+            self.left_frame.item.grid_rowconfigure(1, weight=1)
 
             self.search_frame = Frame(parental_widget=self.left_frame,
-                                      master=self.left_frame.frame, border_width=1,
+                                      master=self.left_frame.item, border_width=1,
                                       border_color="#CF1241")
 
-            self.search_frame.frame.grid_columnconfigure(0, weight=1)
-            self.search_frame.frame.grid_rowconfigure(0, weight=1)
-            self.search_frame.frame.grid(row=0, column=0, sticky="nsew")
+            self.search_frame.item.grid_columnconfigure(0, weight=1)
+            self.search_frame.item.grid_rowconfigure(0, weight=1)
+            self.search_frame.item.grid(row=0, column=0, sticky="nsew")
             self.left_frame.add_widget(self.search_frame)
 
             self.search_label = Label(parental_widget=self.search_frame,
-                                      master=self.search_frame.frame, text="Поиск")
-            self.search_label.label.grid(row=0, column=0, pady=3)
+                                      master=self.search_frame.item, text="Поиск")
+            self.search_label.item.grid(row=0, column=0, pady=3)
 
             self.search_frame.add_widget(self.search_label)
 
-            self.scroller = Scroller(parental_widget=self.left_frame, master=self.left_frame.frame,
+            self.scroller = Scroller(parental_widget=self.left_frame, master=self.left_frame.item,
                                      border_width=1, border_color="#4E8BC7")
-            self.scroller.scroller.grid_columnconfigure(0, weight=1)
+            self.scroller.item.grid_columnconfigure(0, weight=1)
 
-            self.scroller.scroller.grid(row=1, column=0, sticky="nsew")
+            self.scroller.item.grid(row=1, column=0, sticky="nsew")
 
             self.left_frame.add_widget(self.scroller)
 
             self.__parse_order_previews()
 
             # Настройка правого фрейма
-            self.right_frame = Frame(parental_widget=self, master=self.frame,
+            self.right_frame = Frame(parental_widget=self, master=self.item,
                                      border_width=1, border_color="#2E8B57")
 
-            self.right_frame.frame.grid(row=1, column=1, sticky="nsew")
+            self.right_frame.item.grid(row=1, column=1, sticky="nsew")
 
-            self.right_frame.frame.grid_columnconfigure(0, weight=0)
-            self.right_frame.frame.grid_columnconfigure(1, weight=5)
-            self.right_frame.frame.grid_rowconfigure(0, weight=1)
+            self.right_frame.item.grid_columnconfigure(0, weight=0)
+            self.right_frame.item.grid_columnconfigure(1, weight=5)
+            self.right_frame.item.grid_rowconfigure(0, weight=1)
 
             self.__initialize_open_order()
 
@@ -158,27 +158,27 @@ class mainFrame(Frame):
         self.menu_frame = menu
         menu.change_open_function(self.open_menu)
         menu.change_close_function(self.close_menu)
-        self.menu_frame.frame.grid(row=0, column=0, sticky="nsew")
+        self.menu_frame.item.grid(row=0, column=0, sticky="nsew")
 
     def open_menu(self):
-        self.menu_frame.frame.grid(row=0, column=0, rowspan=2, sticky="nsew")
-        self.menu_frame.frame.lift()
+        self.menu_frame.item.grid(row=0, column=0, rowspan=2, sticky="nsew")
+        self.menu_frame.item.lift()
 
     def close_menu(self):
-        self.menu_frame.frame.grid(row=0, column=0, rowspan=1, sticky="nsew")
+        self.menu_frame.item.grid(row=0, column=0, rowspan=1, sticky="nsew")
 
     def __initialize_open_order(self):
-        self.order_frame = Frame(parental_widget=self.right_frame, master=self.right_frame.frame,
+        self.order_frame = Frame(parental_widget=self.right_frame, master=self.right_frame.item,
                                  border_width=1, border_color="#EE8B57")
-        self.order_frame.frame.grid_columnconfigure(0, weight=1)
-        self.order_frame.frame.grid_rowconfigure(0, weight=1)
-        self.order_frame.frame.grid(row=0, column=0, pady=0, sticky="nsew")
+        self.order_frame.item.grid_columnconfigure(0, weight=1)
+        self.order_frame.item.grid_rowconfigure(0, weight=1)
+        self.order_frame.item.grid(row=0, column=0, pady=0, sticky="nsew")
         self.right_frame.add_widget(self.order_frame)
 
-        self.product_frame = Scroller(parental_widget=self.right_frame, master=self.right_frame.frame,
+        self.product_frame = Scroller(parental_widget=self.right_frame, master=self.right_frame.item,
                                       border_width=1, border_color="#432B57")
-        self.product_frame.scroller.grid(row=0, column=1, pady=0, sticky="nsew")
-        self.product_frame.scroller.grid_columnconfigure(0, weight=1)
+        self.product_frame.item.grid(row=0, column=1, pady=0, sticky="nsew")
+        self.product_frame.item.grid_columnconfigure(0, weight=1)
         self.right_frame.add_widget(self.product_frame)
 
     def __parse_order_previews(self):
@@ -188,13 +188,13 @@ class mainFrame(Frame):
                 self.add_order_preview(order_preview)
 
     def add_order_preview(self, order_preview: OrderPreview):
-        order_preview_field = OrderPreviewField(self.scroller, self.scroller.scroller,
+        order_preview_field = OrderPreviewField(self.scroller, self.scroller.item,
                                                 order_preview=order_preview)
 
         index = len(self.order_previews)
-        order_preview_field.frame.grid(row=index, column=0, pady=2, sticky="nsew")
-        order_preview_field.frame.configure(cursor="hand2")
-        order_preview_field.frame.bind('<Button-1>', lambda event,
+        order_preview_field.item.grid(row=index, column=0, pady=2, sticky="nsew")
+        order_preview_field.item.configure(cursor="hand2")
+        order_preview_field.item.bind('<Button-1>', lambda event,
                                        ID=order_preview.id: self.open_info(ID))
         self.scroller.add_widget(order_preview_field)
         self.add_order_preview_field(order_preview_field)
@@ -209,23 +209,23 @@ class mainFrame(Frame):
         order = self.app.getOrderByID(id)
         self.current_order = order
 
-        self.save_button = Button(parental_widget=self.right_title_frame, master=self.right_title_frame.frame,
+        self.save_button = Button(parental_widget=self.right_title_frame, master=self.right_title_frame.item,
                                   text="Сохранить")
-        self.save_button.button.grid(column=0, row=0, pady=3, padx=3, sticky="e")
+        self.save_button.item.grid(column=0, row=0, pady=3, padx=3, sticky="e")
         self.right_title_frame.add_widget(self.save_button)
 
-        order_field = OrderField(parental_widget=self.order_frame, master=self.order_frame.frame,
+        order_field = OrderField(parental_widget=self.order_frame, master=self.order_frame.item,
                                  order=order, change_preview_func=self.change_order_preview,
                                  save_button=self.save_button)
 
-        self.save_button.button.configure(command=order_field.save, state="disabled")
+        self.save_button.item.configure(command=order_field.save, state="disabled")
         self.save_button.hide()
 
-        order_field.frame.grid(row=0, column=0, pady=0, ipady=5, sticky="nsew")
+        order_field.item.grid(row=0, column=0, pady=0, ipady=5, sticky="nsew")
         self.order_frame.add_widget(order_field)
 
         for product in order.GetProducts():
-            product_field = ProductField(parental_widget=order_field, master=self.product_frame.scroller,
+            product_field = ProductField(parental_widget=order_field, master=self.product_frame.item,
                                          product=product)
-            product_field.frame.grid(sticky="ew", pady=2, ipadx=1, ipady=5)
+            product_field.item.grid(sticky="ew", pady=2, ipadx=1, ipady=5)
             order_field.add_widget(product_field)

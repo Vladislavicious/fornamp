@@ -61,12 +61,12 @@ class FornampWindow(CTk, Container, metaclass=Singleton):
 
             self.photo = Photo(parental_widget=self, master=self,
                                photopath="C:\\Users\\vlads\\Dropbox\\ПК\\Desktop\\i.jpeg")
-            self.photo.frame.grid(row=0, column=0, sticky="nsew")
+            self.photo.item.grid(row=0, column=0, sticky="nsew")
             self.add_widget(self.photo)
 
             self.main_open_button = Button(parental_widget=self, master=self, text="Открыть Main",
                                            command=self.press, width=40, height=10)
-            self.main_open_button.button.grid(row=1, column=0, ipadx=6, ipady=6, padx=4, pady=4, sticky=tk.NSEW)
+            self.main_open_button.item.grid(row=1, column=0, ipadx=6, ipady=6, padx=4, pady=4, sticky=tk.NSEW)
             self.add_widget(self.main_open_button)
 
             self.protocol("WM_DELETE_WINDOW", lambda: self.destroy())

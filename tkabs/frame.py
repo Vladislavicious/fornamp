@@ -36,18 +36,18 @@ class Frame(Container):
         super().__init__(parental_widget)
         self.name = "Frame в " + parental_widget.name
 
-        self.frame = CTkFrame(master, width, height, corner_radius,
-                              border_width, bg_color, fg_color, border_color,
-                              background_corner_colors, overwrite_preferred_drawing_method, **kwargs)
+        self.item = CTkFrame(master, width, height, corner_radius,
+                             border_width, bg_color, fg_color, border_color,
+                             background_corner_colors, overwrite_preferred_drawing_method, **kwargs)
         logger.debug(f"{self.name} инициализирован")
 
     @property
     def width(self) -> int:
-        return self.frame.winfo_width()
+        return self.item.winfo_width()
 
     @property
     def height(self) -> int:
-        return self.frame.winfo_height()
+        return self.item.winfo_height()
 
     def destroy(self) -> bool:
         if super().destroy():
@@ -57,12 +57,12 @@ class Frame(Container):
 
     def hide(self) -> bool:
         if super().hide():
-            self.frame.grid_remove()
+            self.item.grid_remove()
             return True
         return False
 
     def show(self) -> bool:
         if super().show():
-            self.frame.grid()
+            self.item.grid()
             return True
         return False

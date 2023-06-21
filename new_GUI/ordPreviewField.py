@@ -34,11 +34,11 @@ class OrderPreviewField(Frame):
     def __configure_colors(self):
         if self.order_preview.isDone:
             if self.order_preview.isVidan:
-                self.frame.configure(border_color="#7FFF00")
+                self.item.configure(border_color="#7FFF00")
             else:
-                self.frame.configure(border_color="#FFA500")
+                self.item.configure(border_color="#FFA500")
         else:
-            self.frame.configure(border_color="#B22222")
+            self.item.configure(border_color="#B22222")
 
     def change_order_preview(self, order_preview: OrderPreview):
         self.order_preview = order_preview
@@ -52,26 +52,26 @@ class OrderPreviewField(Frame):
     def initialize(self) -> bool:
         if super().initialize():
             self.__configure_colors()
-            self.frame.rowconfigure(0, weight=1)
-            self.frame.rowconfigure(1, weight=1)
-            self.frame.rowconfigure(2, weight=1)
+            self.item.rowconfigure(0, weight=1)
+            self.item.rowconfigure(1, weight=1)
+            self.item.rowconfigure(2, weight=1)
 
-            self.frame.columnconfigure(0, weight=1)
+            self.item.columnconfigure(0, weight=1)
 
             id = "id: " + str(self.order_preview.id)
-            self.id_label = Label(self, self.frame, text=id, font=self.base_font)
-            self.id_label.label.grid(column=0, row=0, padx=5, pady=2, sticky="nw")
+            self.id_label = Label(self, self.item, text=id, font=self.base_font)
+            self.id_label.item.grid(column=0, row=0, padx=5, pady=2, sticky="nw")
             self.add_widget(self.id_label)
 
             customer = "Заказчик: " + self.order_preview.zakazchik
-            self.customer_label = Label(self, self.frame, text=customer, font=self.base_font)
-            self.customer_label.label.grid(column=0, row=1, padx=5, pady=2, sticky="w")
+            self.customer_label = Label(self, self.item, text=customer, font=self.base_font)
+            self.customer_label.item.grid(column=0, row=1, padx=5, pady=2, sticky="w")
             self.add_widget(self.customer_label)
 
             date_of_vidacha = "Дата выдачи: " + \
                               self.order_preview.date_of_vidacha.strftime("%d.%m.%Y")
-            self.date_of_vidacha_label = Label(self, self.frame, text=date_of_vidacha, font=self.base_font)
-            self.date_of_vidacha_label.label.grid(column=0, padx=5, pady=2, row=2, sticky="sw")
+            self.date_of_vidacha_label = Label(self, self.item, text=date_of_vidacha, font=self.base_font)
+            self.date_of_vidacha_label.item.grid(column=0, padx=5, pady=2, row=2, sticky="sw")
             self.add_widget(self.date_of_vidacha_label)
 
             return True

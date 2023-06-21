@@ -59,17 +59,17 @@ class MenuItem(Frame):
 
     def initialize(self) -> bool:
         if super().initialize():
-            self.frame.grid_columnconfigure(0, weight=1)
+            self.item.grid_columnconfigure(0, weight=1)
 
-            self.name_label = Label(parental_widget=self, master=self.frame,
+            self.name_label = Label(parental_widget=self, master=self.item,
                                     text=self.item_name, font=self.base_font)
-            self.name_label.label.grid(row=0, column=0, sticky="ew")
+            self.name_label.item.grid(row=0, column=0, sticky="ew")
             self.add_widget(self.name_label)
 
-            self.frame.configure(cursor="hand2")
-            self.frame.bind('<Button-1>', command=lambda event: self.function())
-            self.name_label.label.configure(cursor="hand2")
-            self.name_label.label.bind('<Button-1>', command=lambda event: self.function())
+            self.item.configure(cursor="hand2")
+            self.item.bind('<Button-1>', command=lambda event: self.function())
+            self.name_label.item.configure(cursor="hand2")
+            self.name_label.item.bind('<Button-1>', command=lambda event: self.function())
 
 
 class Menu(Frame):
@@ -114,21 +114,21 @@ class Menu(Frame):
 
     def initialize(self) -> bool:
         if super().initialize():
-            self.frame.grid_columnconfigure(0, weight=1)
+            self.item.grid_columnconfigure(0, weight=1)
 
-            self.open_menu = MenuItem(parental_widget=self, master=self.frame,
+            self.open_menu = MenuItem(parental_widget=self, master=self.item,
                                       item_name="Menu", item_function=self.press,
                                       font=self.base_font)
-            self.open_menu.frame.grid(row=0, column=0, pady=2, sticky="ew")
+            self.open_menu.item.grid(row=0, column=0, pady=2, sticky="ew")
             self.add_widget(self.open_menu)
 
             for option_name in self.option_dict.keys():
                 function = self.option_dict[option_name]
 
-                menu_item = MenuItem(parental_widget=self, master=self.frame,
+                menu_item = MenuItem(parental_widget=self, master=self.item,
                                      item_name=option_name, item_function=function,
                                      font=self.base_font)
-                menu_item.frame.grid(pady=2, sticky="ew")
+                menu_item.item.grid(pady=2, sticky="ew")
                 self.add_widget(menu_item)
                 self.menu_items.append(menu_item)
 

@@ -23,15 +23,15 @@ class Entry(Container):
 
         super().__init__(parental_widget)
         if self.initialize():
-            self.entry = CTkEntry(master, width, height, corner_radius,
-                                  border_width, bg_color, fg_color, border_color,
-                                  text_color, placeholder_text_color, textvariable,
-                                  placeholder_text, font, state, **kwargs)
+            self.item = CTkEntry(master, width, height, corner_radius,
+                                 border_width, bg_color, fg_color, border_color,
+                                 text_color, placeholder_text_color, textvariable,
+                                 placeholder_text, font, state, **kwargs)
             self.name = "Entry " + placeholder_text
 
     @property
     def contained_text(self) -> str:
-        return self.entry.get()
+        return self.item.get()
 
     def destroy(self) -> bool:
         if super().destroy():
@@ -40,13 +40,13 @@ class Entry(Container):
 
     def hide(self) -> bool:
         if super().hide():
-            self.entry.grid_remove()
+            self.item.grid_remove()
             return True
         return False
 
     def show(self) -> bool:
         if super().show():
-            self.entry.grid()
+            self.item.grid()
             return True
         return False
 
@@ -54,5 +54,5 @@ class Entry(Container):
         text = self.contained_text
         length = len(text)
         if string != text:
-            self.entry.delete(0, length)
-            self.entry.insert(0, string)
+            self.item.delete(0, length)
+            self.item.insert(0, string)

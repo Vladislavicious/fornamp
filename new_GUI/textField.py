@@ -56,36 +56,36 @@ class TextField(Frame, Editable):
 
     def initialize(self) -> bool:
         if super().initialize():
-            self.frame.grid_columnconfigure(0, weight=1)
-            self.frame.grid_columnconfigure(1, weight=0)
-            self.frame.grid_rowconfigure(0, weight=1)
-            self.frame.grid_rowconfigure(1, weight=3)
-            self.frame.grid_propagate(True)
+            self.item.grid_columnconfigure(0, weight=1)
+            self.item.grid_columnconfigure(1, weight=0)
+            self.item.grid_rowconfigure(0, weight=1)
+            self.item.grid_rowconfigure(1, weight=3)
+            self.item.grid_propagate(True)
 
-            self.title_label = Label(parental_widget=self, master=self.frame,
+            self.title_label = Label(parental_widget=self, master=self.item,
                                      text=self.title_text,
                                      font=FontFabric.get_changed_font(weight='bold'))
-            self.title_label.label.grid(row=0, column=0, sticky="nsew")
+            self.title_label.item.grid(row=0, column=0, sticky="nsew")
             self.add_widget(self.title_label)
 
-            self.text_label = Label(parental_widget=self, master=self.frame,
+            self.text_label = Label(parental_widget=self, master=self.item,
                                     text=self.initial_text, font=self.base_font)
-            self.text_label.label.grid(row=1, column=0, sticky="nsew")
+            self.text_label.item.grid(row=1, column=0, sticky="nsew")
             self.add_widget(self.text_label)
 
-            self.text_entry = Entry(parental_widget=self, master=self.frame,
+            self.text_entry = Entry(parental_widget=self, master=self.item,
                                     placeholder_text=self.placeholder_text,
                                     font=self.base_font)
-            self.text_entry.entry.grid(row=1, column=0, sticky="nsew")
-            self.text_entry.entry.bind('<FocusIn>', lambda event: self.__focused_entry())
-            self.text_entry.entry.bind('<FocusOut>', lambda event: self.__unfocused_entry())
+            self.text_entry.item.grid(row=1, column=0, sticky="nsew")
+            self.text_entry.item.bind('<FocusIn>', lambda event: self.__focused_entry())
+            self.text_entry.item.bind('<FocusOut>', lambda event: self.__unfocused_entry())
 
             self.add_widget(self.text_entry)
 
             if self.__with_button:
-                self.button = Button(parental_widget=self, master=self.frame, width=40,
+                self.button = Button(parental_widget=self, master=self.item, width=40,
                                      text="edit", font=self.base_font, command=self.edit)
-                self.button.button.grid(row=0, column=1, rowspan=2, sticky="nsew")
+                self.button.item.grid(row=0, column=1, rowspan=2, sticky="nsew")
                 self.add_widget(self.button)
 
             return True
@@ -98,10 +98,10 @@ class TextField(Frame, Editable):
                     self.enter_pressed_function()
 
     def __focused_entry(self):
-        self.text_entry.entry.bind('<Key>', command=self.__check_for_enter)
+        self.text_entry.item.bind('<Key>', command=self.__check_for_enter)
 
     def __unfocused_entry(self):
-        self.text_entry.entry.unbind('<Key>')
+        self.text_entry.item.unbind('<Key>')
         self.confirm()
 
     def show(self) -> bool:
@@ -117,27 +117,27 @@ class TextField(Frame, Editable):
         """редактирование поля"""
         Editable.edit(self)
         if self.__with_button:
-            self.button.button.configure(command=self.confirm, text="conf")
+            self.button.item.configure(command=self.confirm, text="conf")
         self.text_entry.place_text(self.initial_text)
         self.hide()
         self.show()
 
     def confirm(self) -> bool:
         """Проверка редакции поля, при успешном возвращает True"""
-        new_text = self.text_entry.entry.get()
+        new_text = self.text_entry.item.get()
         valid, report = self.validation_method(new_text)
         if valid:
             Editable.confirm(self)
             if self.__with_button:
-                self.button.button.configure(command=self.edit, text="edit")
+                self.button.item.configure(command=self.edit, text="edit")
 
             self.initial_text = new_text
-            self.text_label.label.configure(text=new_text)
+            self.text_label.item.configure(text=new_text)
             self.hide()
             self.show()
             return True
         else:
-            self.text_entry.entry.delete(0, len(new_text))
-            self.text_entry.entry.configure(placeholder_text=report, placeholder_text_color="#DC143C")
-            self.title_label.label.focus()
+            self.text_entry.item.delete(0, len(new_text))
+            self.text_entry.item.configure(placeholder_text=report, placeholder_text_color="#DC143C")
+            self.title_label.item.focus()
             return False

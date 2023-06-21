@@ -45,12 +45,12 @@ class Button(Container):
 
         super().__init__(parental_widget)
         if self.initialize():
-            self.button = CTkButton(master, width, height, corner_radius, border_width,
-                                    border_spacing, bg_color, fg_color, hover_color,
-                                    border_color, text_color, text_color_disabled,
-                                    background_corner_colors, round_width_to_even_numbers,
-                                    round_height_to_even_numbers, text, font, textvariable,
-                                    image, state, hover, command, compound, anchor, **kwargs)
+            self.item = CTkButton(master, width, height, corner_radius, border_width,
+                                  border_spacing, bg_color, fg_color, hover_color,
+                                  border_color, text_color, text_color_disabled,
+                                  background_corner_colors, round_width_to_even_numbers,
+                                  round_height_to_even_numbers, text, font, textvariable,
+                                  image, state, hover, command, compound, anchor, **kwargs)
             self.name = "Кнопка " + text
 
             logger.debug(f"{self.name} инициализирована")
@@ -63,12 +63,12 @@ class Button(Container):
 
     def hide(self) -> bool:
         if super().hide():
-            self.button.grid_remove()
+            self.item.grid_remove()
             return True
         return False
 
     def show(self) -> bool:
         if super().show():
-            self.button.grid()
+            self.item.grid()
             return True
         return False

@@ -39,21 +39,21 @@ class stepField(Frame, Editable):
     def initialize(self) -> bool:
         if super().initialize():
 
-            self.frame.grid_columnconfigure(0, weight=1)
-            self.frame.grid_rowconfigure(0, weight=1)
+            self.item.grid_columnconfigure(0, weight=1)
+            self.item.grid_rowconfigure(0, weight=1)
 
-            self.name_field = TextField(parental_widget=self, master=self.frame,
+            self.name_field = TextField(parental_widget=self, master=self.item,
                                         validation_method=Validator.validate_name, title="Название шага",
                                         placeholder_text="Введите название", initial_text=self.name_text)
-            self.name_field.frame.grid(row=0, column=0, padx=5, pady=3, sticky="nsew")
+            self.name_field.item.grid(row=0, column=0, padx=5, pady=3, sticky="nsew")
             self.add_widget(self.name_field)
 
             from_value = 0
             to_value = self.quantity - self.number_of_made
             if to_value > 0:
-                self.runner = Runner(parental_widget=self, master=self.frame, runner_title="Выполнить:",
+                self.runner = Runner(parental_widget=self, master=self.item, runner_title="Выполнить:",
                                      from_value=from_value, to_value=to_value, steps_count=to_value)
-                self.runner.frame.grid(row=1, column=0, padx=5, pady=3, sticky="nsew")
+                self.runner.item.grid(row=1, column=0, padx=5, pady=3, sticky="nsew")
                 self.add_widget(self.runner)
 
             if self.step.isDone:
@@ -90,7 +90,7 @@ class stepField(Frame, Editable):
         return False
 
     def __configure_as_done(self):
-        self.frame.configure(border_color="#7FFF00")
+        self.item.configure(border_color="#7FFF00")
         if self.runner is not None:
             self.runner.hide()
 

@@ -55,24 +55,24 @@ class TextWithButton(Frame):
 
     def change_button_function(self, function: FunctionType):
         self.button_function = function
-        self.button.button.configure(command=function)
+        self.button.item.configure(command=function)
 
     def initialize(self) -> bool:
         if super().initialize():
-            self.frame.grid_columnconfigure(0, weight=1)
-            self.frame.grid_rowconfigure(0, weight=1)
+            self.item.grid_columnconfigure(0, weight=1)
+            self.item.grid_rowconfigure(0, weight=1)
 
-            self.label = Label(parental_widget=self, master=self.frame,
+            self.label = Label(parental_widget=self, master=self.item,
                                text=self.text, font=self.base_font)
-            self.label.label.grid(row=0, column=0, pady=2, padx=1, sticky="nsew")
+            self.label.item.grid(row=0, column=0, pady=2, padx=1, sticky="nsew")
             self.add_widget(self.label)
 
-            self.button = Button(parental_widget=self, master=self.frame,
+            self.button = Button(parental_widget=self, master=self.item,
                                  text=self.button_text, font=self.base_font,
                                  width=100)
             if self.button_function is not None:
                 self.change_button_function(self.button_function)
-            self.button.button.grid(row=0, column=1, pady=2, sticky="e")
+            self.button.item.grid(row=0, column=1, pady=2, sticky="e")
             self.add_widget(self.button)
 
             return True
@@ -80,8 +80,8 @@ class TextWithButton(Frame):
 
     def destroy(self) -> bool:
         if super().destroy():
-            self.label.label.destroy()
-            self.button.button.destroy()
-            self.frame.destroy()
+            self.label.item.destroy()
+            self.button.item.destroy()
+            self.item.destroy()
             return True
         return False
