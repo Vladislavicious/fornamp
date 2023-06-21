@@ -30,7 +30,7 @@ logger.info(f"Testing the custom logger for module {__name__}...")
 
 class additionFrame(Frame):
     def __init__(self, parental_widget: Container, master: any,
-                 go_to_main_function,
+                 go_to_main_function, add_order_preview_func,
                  width: int = 200, height: int = 200,
                  corner_radius: int | str | None = None,
                  border_width: int | str | None = None,
@@ -46,6 +46,7 @@ class additionFrame(Frame):
                          background_corner_colors,
                          overwrite_preferred_drawing_method, **kwargs)
         self.back_function = go_to_main_function
+        self.add_order_preview_func = add_order_preview_func
         self.base_font = FontFabric.get_base_font()
         self.app = App()
 
@@ -166,4 +167,6 @@ class additionFrame(Frame):
         order.addProductList(products)
 
         self.app.add_from_addition_frame(order, self.addOrder.file_input.contained_paths)
+        self.add_order_preview_func(order.createPreview())
+
         self.back_to_main()

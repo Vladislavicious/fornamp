@@ -6,6 +6,8 @@ from typing import Tuple
 
 
 from customtkinter import CTk
+from ioconnection.App import Singleton
+from new_GUI.imageoncanvas import ImageOnCanvas
 from tkabs.button import Button
 from uiabs.container import Container
 from new_GUI.mWindow import MainWindow
@@ -34,7 +36,7 @@ def validate_string(string: str = "") -> Tuple[bool, str]:
     return True, ""
 
 
-class FornampWindow(CTk, Container):
+class FornampWindow(CTk, Container, metaclass=Singleton):
     def __init__(self):
         CTk.__init__(self)
         Container.__init__(self, None)
@@ -54,12 +56,18 @@ class FornampWindow(CTk, Container):
             self.grid_columnconfigure(0, weight=1)
             self.grid_propagate(True)
 
+            self.canvas_image = ImageOnCanvas(parental_widget=self, master=self, image_function=self.press,
+                                              light_image_path="C:\\Users\\vlads\\Dropbox\\ПК\\Desktop\\Расписание 4 семестр.png")
+            self.canvas_image.frame.grid(row=0, column=0, sticky="nsew")
+            self.add_widget(self.canvas_image)
+
             self.main_open_button = Button(parental_widget=self, master=self, text="Открыть Main",
                                            command=self.press, width=40, height=10)
             self.main_open_button.button.grid(row=1, column=0, ipadx=6, ipady=6, padx=4, pady=4, sticky=tk.NSEW)
             self.add_widget(self.main_open_button)
 
             self.protocol("WM_DELETE_WINDOW", lambda: self.destroy())
+            self.update()
             self.show()
             return True
         return False
@@ -86,7 +94,7 @@ class FornampWindow(CTk, Container):
     def press(self):
         logger.debug(f"press в {self.name}")
         if self.main_window is None:
-            self.main_window = MainWindow(parental_widget=self)
+            self.main_window = MainWindow(parental_widget=self, master=self)
         self.main_window.show()
         self.hide()
 

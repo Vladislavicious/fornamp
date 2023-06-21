@@ -7,9 +7,9 @@ from uiabs.container import Container
 
 
 class TopLevel(CTkToplevel, Container):
-    def __init__(self, *args, parental_widget,
+    def __init__(self, *args, parental_widget, master,
                  fg_color: str | Tuple[str, str] | None = None, **kwargs):
-        CTkToplevel.__init__(self, *args, parental_widget, fg_color=fg_color, **kwargs)
+        CTkToplevel.__init__(self, master, fg_color=fg_color, *args, **kwargs)
         Container.__init__(self, parental_widget)
         self.name = "TopLevel"
 

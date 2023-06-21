@@ -58,7 +58,7 @@ class mainFrame(Frame):
     def order_previews(self) -> List[OrderPreviewField]:
         return self.__order_previews
 
-    def add_order_preview(self, order_preview: OrderPreviewField):
+    def add_order_preview_field(self, order_preview: OrderPreviewField):
         self.__order_previews.append(order_preview)
 
     def clear_order_previews(self):
@@ -69,7 +69,7 @@ class mainFrame(Frame):
 
         index, order_preview_field = self.__get_order_preview(id)
         if index == -1:
-            logger.error("Попытка парсить несущетсвующий ордер превью")
+            logger.error("Попытка парсить несуществующий ордер превью")
             return
 
         order_preview_field.change_order_preview(order_preview)
@@ -185,17 +185,19 @@ class mainFrame(Frame):
         logger.debug("Выводим заказы")
         if self.scroller.items_count == 0:
             for order_preview in self.app.sorted_order_previews:
-                self.__add_order_preview_field(order_preview)
+                self.add_order_preview(order_preview)
 
-    def __add_order_preview_field(self, order_preview: OrderPreview):
+    def add_order_preview(self, order_preview: OrderPreview):
         order_preview_field = OrderPreviewField(self.scroller, self.scroller.scroller,
                                                 order_preview=order_preview)
-        self.scroller.add_widget(order_preview_field)
-        order_preview_field.frame.grid(sticky="nsew", pady=2)
+
+        index = len(self.order_previews)
+        order_preview_field.frame.grid(row=index, column=0, pady=2, sticky="nsew")
         order_preview_field.frame.configure(cursor="hand2")
         order_preview_field.frame.bind('<Button-1>', lambda event,
                                        ID=order_preview.id: self.open_info(ID))
-        self.add_order_preview(order_preview_field)
+        self.scroller.add_widget(order_preview_field)
+        self.add_order_preview_field(order_preview_field)
 
     def open_info(self, id: int):
         logger.debug(f"Нажатие по заказу {id}")

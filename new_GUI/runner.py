@@ -9,16 +9,7 @@ from UIadjusters.fontFabric import FontFabric
 from tkabs.frame import Frame
 from uiabs.container import Container
 from uiabs.editable import Editable
-
-
-def validate_number(string: str = "", name: str = "Количество") -> Tuple[bool, str]:
-    if string.isdecimal():
-        if int(string) < 0:
-            return False, f"{name} меньше 0"
-        return True, ""
-    elif len(string) == 0:
-        return False, f"Введите {name}"
-    return False, "Введите число"
+from Caps.validator import Validator
 
 
 class Runner(Frame, Editable):
@@ -85,7 +76,7 @@ class Runner(Frame, Editable):
             self.from_field = TextField(parental_widget=self, master=self.frame,
                                         title="От", width=30,
                                         validation_method=lambda value:
-                                        validate_number(string=value, name="От"),
+                                        Validator.validate_number(string=value, name="От"),
                                         initial_text=self.from_value_text,
                                         enter_pressed_function=self.confirm)
             self.from_field.frame.grid(row=1, column=0, padx=2)

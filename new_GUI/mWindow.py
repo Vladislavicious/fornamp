@@ -2,7 +2,7 @@ import logging
 
 from os import path
 from typing import Tuple
-from ioconnection.App import App
+from ioconnection.App import App, Singleton
 from new_GUI.additionFrame import additionFrame
 from new_GUI.mainFrame import mainFrame
 from new_GUI.menu import Menu
@@ -23,11 +23,11 @@ logger.addHandler(handler)
 logger.info(f"Testing the custom logger for module {__name__}...")
 
 
-class MainWindow(TopLevel):
-    def __init__(self, *args, parental_widget,
+class MainWindow(TopLevel, metaclass=Singleton):
+    def __init__(self, *args, parental_widget, master,
                  fg_color: str | Tuple[str, str] | None = None, **kwargs):
-        super().__init__(*args, parental_widget=parental_widget,
-                         fg_color=fg_color, **kwargs)
+        super().__init__(parental_widget=parental_widget, master=master,
+                         fg_color=fg_color, *args, **kwargs)
         self.name = "MainWindow"
         self.app = App()
         self.current_order = None
@@ -72,7 +72,8 @@ class MainWindow(TopLevel):
             del self.additionFrame
 
         self.additionFrame = additionFrame(parental_widget=self, master=self, border_width=0,
-                                           go_to_main_function=self.back_from_addition_frame)
+                                           go_to_main_function=self.back_from_addition_frame,
+                                           add_order_preview_func=self.mainFrame.add_order_preview)
         self.additionFrame.frame.grid(row=0, column=0, sticky="nsew")
         self.additionFrame.frame.grid_remove()
 

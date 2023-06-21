@@ -182,6 +182,21 @@ class FileManager():
 
             shutil.copyfile(source, destination + "\\" + source_name)
 
+    def get_associated_photos_by_id(self, id: int) -> List[str]:
+        """
+        Возвращает список всех путей до фотографии в файле заказа
+        """
+        directory = self.get_order_directory(id)
+        filenames = os.listdir(directory)
+
+        photos = list()
+        for filename in filenames:
+            if filename.endswith(".jpg") or filename.endswith(".jpeg") or filename.endswith(".png") \
+               or filename.endswith(".bmp") or filename.endswith(".gif") or filename.endswith(".tiff"):
+                photos.append(directory + "\\" + filename)
+
+        return photos
+
     def __getOrderFilename(self, ID: int):
         """Возвращает имя файла, либо '' """
         id_str = str(ID)
