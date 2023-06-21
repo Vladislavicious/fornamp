@@ -10,13 +10,14 @@ from uiabs.container import Container
 class Dialog(CTkToplevel, Container, metaclass=Singleton):
     """Диалоговое окно, всегда одно на приложение, удаляется при закрытии приложения,
     в остальных случаях просто скрывается."""
-    def __init__(self, *args, parental_widget, master,
-                 fg_color: str | Tuple[str, str] | None = None, **kwargs):
+    def __init__(self, parental_widget, master,
+                 fg_color: str | Tuple[str, str] | None = None,
+                 *args, **kwargs):
         CTkToplevel.__init__(self, master, fg_color=fg_color, *args, **kwargs)
         Container.__init__(self, parental_widget)
 
         self.name = "Dialog"
-        self.frame = None
+        self.widget_frame = None
         self.initialize()
 
     def hide(self):
@@ -39,6 +40,12 @@ class Dialog(CTkToplevel, Container, metaclass=Singleton):
             return True
         return False
 
+    def disappear(self):
+        self.hide()
+        if self.widget_frame is not None:
+            self.delete_widget(self.widget_frame)
+            self.widget_frame = None
+
     def initialize(self) -> bool:
         if Container.initialize(self):
             self.resizable(False, False)
@@ -47,7 +54,13 @@ class Dialog(CTkToplevel, Container, metaclass=Singleton):
             self.grid_rowconfigure(0, weight=1)  # configure grid system
             self.grid_columnconfigure(0, weight=1)
 
-            self.protocol("WM_DELETE_WINDOW", lambda: self.hide())
+            self.frame = Frame(parental_widget=self, master=self)
+            self.frame.frame.grid(row=0, column=0, sticky="nsew")
+            self.frame.frame.grid_columnconfigure(0, weight=1)
+            self.frame.frame.grid_rowconfigure(0, weight=1)
+            self.add_widget(self.frame)
+
+            self.protocol("WM_DELETE_WINDOW", lambda: self.disappear())
             return True
         return False
 
@@ -59,11 +72,23 @@ class Dialog(CTkToplevel, Container, metaclass=Singleton):
         string = str(width) + "x" + str(height) + "+" + str(xpos) + "+" + str(ypos)
         self.geometry(string)
 
-    def set_frame(self, frame: Frame):
-        if self.frame is not None:
-            self.delete_widget(self.frame)
+    def center(self):
+        screen_width = self.winfo_screenwidth()
+        screen_height = self.winfo_screenheight()
 
-        self.frame = frame
-        self.frame.show()
-        self.frame.frame.grid(row=0, column=0, sticky="nsew")
-        self.add_widget(self.frame)
+        window_width = int(screen_width * 2 / 3)
+        window_height = int(screen_height * 2 / 3)
+
+        offset_x = (screen_width - window_width) // 2
+        offset_y = (screen_height - window_height) // 2
+
+        self.set_geometry(window_width, window_height, offset_x, offset_y)
+
+    def set_widget_frame(self, widget_frame: Frame):
+        if self.widget_frame is not None:
+            self.delete_widget(self.widget_frame)
+            self.widget_frame = None
+
+        self.widget_frame = widget_frame
+        self.widget_frame.frame.grid(row=0, column=0, sticky="nsew")
+        self.add_widget(self.widget_frame)

@@ -8,7 +8,9 @@ from typing import Tuple
 from customtkinter import CTk
 from ioconnection.App import Singleton
 from new_GUI.imageoncanvas import ImageOnCanvas
+from new_GUI.photo import Photo
 from tkabs.button import Button
+from tkabs.dialog import Dialog
 from uiabs.container import Container
 from new_GUI.mWindow import MainWindow
 
@@ -50,16 +52,18 @@ class FornampWindow(CTk, Container, metaclass=Singleton):
             self.resizable(True, True)
             self.title("Fornamp")
 
+            self.dialog = Dialog(parental_widget=self, master=self)
+            self.dialog.show()
             self.main_window = None
             for i in range(2):
                 self.grid_rowconfigure(i, weight=1)  # configure grid system
             self.grid_columnconfigure(0, weight=1)
             self.grid_propagate(True)
 
-            self.canvas_image = ImageOnCanvas(parental_widget=self, master=self, image_function=self.press,
-                                              light_image_path="C:\\Users\\vlads\\Dropbox\\ПК\\Desktop\\Расписание 4 семестр.png")
-            self.canvas_image.frame.grid(row=0, column=0, sticky="nsew")
-            self.add_widget(self.canvas_image)
+            self.photo = Photo(parental_widget=self, master=self,
+                               photopath="C:\\Users\\vlads\\Dropbox\\ПК\\Desktop\\Расписание 4 семестр.png")
+            self.photo.frame.grid(row=0, column=0, sticky="nsew")
+            self.add_widget(self.photo)
 
             self.main_open_button = Button(parental_widget=self, master=self, text="Открыть Main",
                                            command=self.press, width=40, height=10)
@@ -69,6 +73,8 @@ class FornampWindow(CTk, Container, metaclass=Singleton):
             self.protocol("WM_DELETE_WINDOW", lambda: self.destroy())
             self.update()
             self.show()
+
+            self.dialog.hide()
             return True
         return False
 

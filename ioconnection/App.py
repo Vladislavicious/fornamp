@@ -20,6 +20,9 @@ class Singleton(type):
             cls._instances[cls] = super(Singleton, cls).__call__(*args, **kwargs)
         return cls._instances[cls]
 
+    def get_instance(cls):
+        return cls._instances[cls]
+
 
 class App(metaclass=Singleton):
     def __init__(self) -> None:

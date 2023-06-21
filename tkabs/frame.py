@@ -41,6 +41,14 @@ class Frame(Container):
                               background_corner_colors, overwrite_preferred_drawing_method, **kwargs)
         logger.debug(f"{self.name} инициализирован")
 
+    @property
+    def width(self) -> int:
+        return self.frame.winfo_width()
+
+    @property
+    def height(self) -> int:
+        return self.frame.winfo_height()
+
     def destroy(self) -> bool:
         if super().destroy():
             logger.debug(f"{self.name} уничтожен")

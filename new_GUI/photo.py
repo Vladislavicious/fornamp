@@ -1,8 +1,12 @@
+from copy import copy, deepcopy
 import logging
 
 from os import path
 from typing import Tuple
 from UIadjusters.fontFabric import FontFabric
+from new_GUI.FileInput import FileInput
+from new_GUI.imageoncanvas import ImageOnCanvas
+from tkabs.dialog import Dialog
 
 from tkabs.frame import Frame
 from tkabs.label import Label
@@ -39,6 +43,7 @@ class Photo(Frame):
                          bg_color, fg_color, border_color,
                          background_corner_colors,
                          overwrite_preferred_drawing_method, **kwargs)
+        self.dialog = None
         self.photopath = photopath
         self.base_font = FontFabric.get_base_font()
         self.initialize()
@@ -46,18 +51,45 @@ class Photo(Frame):
     def initialize(self) -> bool:
         if super().initialize():
 
-            self.frame.grid_rowconfigure(1, weight=1)
+            self.frame.grid_rowconfigure(0, weight=1)
             self.frame.grid_columnconfigure(0, weight=1)
 
-            _, _, name = self.photopath.rpartition("\\")
+            _, _, self.name = self.photopath.rpartition("\\")
 
             self.label = Label(parental_widget=self, master=self.frame,
-                               text=name, font=self.base_font)
-            self.label.label.grid(row=0, column=0, pady=2, sticky="nsew")
+                               text=self.name, font=self.base_font)
+            self.label.label.grid(row=1, column=0, pady=2, sticky="nsew")
             self.add_widget(self.label)
+
+            self.canvas = ImageOnCanvas(parental_widget=self, master=self.frame,
+                                        image_path=self.photopath, image_function=self.press)
+            self.canvas.frame.grid(row=0, column=0, pady=1, sticky="ns")
+            self.add_widget(self.canvas)
 
             return True
         return False
+
+    def pr1(self):
+        print("Нажатие Внутри")
+
+    def press(self):
+        print("Нажатие на фото")
+        if self.dialog is None:
+            self.dialog = Dialog.get_instance()
+
+        frame = ImageOnCanvas(parental_widget=self.dialog, master=self.dialog.frame.frame,
+                              image_path=self.photopath,
+                              image_function=self.pr1)
+        #frame.frame.grid(row=0, column=0, sticky="nsew")
+
+        self.dialog.set_name(self.name)
+        self.dialog.center()
+        self.dialog.set_widget_frame(frame)
+
+        self.dialog.update_idletasks()
+        self.dialog.show()
+        frame.frame.update_idletasks()
+        frame.fit()
 
 
 """

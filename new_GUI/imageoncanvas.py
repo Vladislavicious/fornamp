@@ -6,10 +6,12 @@ from tkabs.image import Image
 from uiabs.container import Container
 
 
+
+
 class ImageOnCanvas(Frame):
     def __init__(self, parental_widget: Container, master: any,
-                 light_image_path: str, image_function=None,
-                 width: int = 200, height: int = 200,
+                 image_path: str, image_function=None,
+                 width: int = 100, height: int = 100,
                  corner_radius: int | str | None = None,
                  border_width: int | str | None = None,
                  bg_color: str | Tuple[str, str] = "transparent",
@@ -24,7 +26,7 @@ class ImageOnCanvas(Frame):
                          background_corner_colors,
                          overwrite_preferred_drawing_method, **kwargs)
 
-        self.light_image_path = light_image_path
+        self.light_image_path = image_path
         self.image_function = image_function
         self.initialize()
 
@@ -50,7 +52,7 @@ class ImageOnCanvas(Frame):
         return False
 
     def fit(self):
-        if self.image.resize(self.canvas.width, self.canvas.height):
+        if self.image.resize(self.width, self.height):
             self.canvas.create_image(self.image)
 
     def show(self) -> bool:
