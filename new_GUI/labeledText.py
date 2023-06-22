@@ -1,13 +1,10 @@
 """Класс, представляющий собой лейбл с кнопкой, при нажатию на которую
    лейбл скрывается, на его место ставится Entry и открывается возможность поменять содержимое Entry
    на вход принимает Фрейм, в котором будет распологаться, а также функцию проверки"""
-from tkinter import Event
 from typing import Tuple
-from tkabs.button import Button
 from UIadjusters.fontFabric import FontFabric
 from tkabs.frame import Frame
 from tkabs.label import Label
-from tkabs.entry import Entry
 from uiabs.container import Container
 
 
