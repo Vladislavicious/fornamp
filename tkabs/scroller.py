@@ -40,14 +40,13 @@ class Scroller(Container):
 
         super().__init__(parental_widget)
         self.name = f"Scroller в {parental_widget.name}"
-        if self.initialize():
-            self.item = CTkScrollableFrame(master, width, height, corner_radius,
-                                           border_width, bg_color, fg_color,
-                                           border_color, scrollbar_fg_color,
-                                           scrollbar_button_color, scrollbar_button_hover_color,
-                                           label_fg_color, label_text_color, label_text,
-                                           label_font, label_anchor, orientation)
-            logger.debug(f"{self.name} инициализирован")
+        self.item = CTkScrollableFrame(master, width, height, corner_radius,
+                                       border_width, bg_color, fg_color,
+                                       border_color, scrollbar_fg_color,
+                                       scrollbar_button_color, scrollbar_button_hover_color,
+                                       label_fg_color, label_text_color, label_text,
+                                       label_font, label_anchor, orientation)
+        logger.debug(f"{self.name} инициализирован")
 
     def destroy(self) -> bool:
         if super().destroy():

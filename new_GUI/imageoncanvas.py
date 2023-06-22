@@ -6,8 +6,6 @@ from tkabs.image import Image
 from uiabs.container import Container
 
 
-
-
 class ImageOnCanvas(Frame):
     def __init__(self, parental_widget: Container, master: any,
                  image_path: str, image_function=None,

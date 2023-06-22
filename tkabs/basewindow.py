@@ -7,7 +7,6 @@ from typing import Tuple
 
 from customtkinter import CTk
 from ioconnection.App import Singleton
-from new_GUI.photo import Photo
 from tkabs.button import Button
 from tkabs.dialog import Dialog
 from uiabs.container import Container
@@ -58,11 +57,6 @@ class FornampWindow(CTk, Container, metaclass=Singleton):
                 self.grid_rowconfigure(i, weight=1)  # configure grid system
             self.grid_columnconfigure(0, weight=1)
             self.grid_propagate(True)
-
-            self.photo = Photo(parental_widget=self, master=self,
-                               photopath="C:\\Users\\vlads\\Dropbox\\ПК\\Desktop\\i.jpeg")
-            self.photo.item.grid(row=0, column=0, sticky="nsew")
-            self.add_widget(self.photo)
 
             self.main_open_button = Button(parental_widget=self, master=self, text="Открыть Main",
                                            command=self.press, width=40, height=10)

@@ -77,7 +77,7 @@ class Photo(Frame):
         self.dialog.set_name(self.name)
         self.dialog.center()
 
-        frame = ImageOnCanvas(parental_widget=self.dialog, master=self.dialog.frame.frame,
+        frame = ImageOnCanvas(parental_widget=self.dialog, master=self.dialog.frame.item,
                               image_path=self.photopath, width=self.dialog.width,
                               image_function=self.withdraw_dialog, height=self.dialog.height)
 
@@ -85,3 +85,9 @@ class Photo(Frame):
 
         self.dialog.show()
         frame.fit()
+
+    def show(self) -> bool:
+        self.item.update_idletasks()
+        if super().show():
+            return True
+        return False

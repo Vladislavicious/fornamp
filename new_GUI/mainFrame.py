@@ -151,6 +151,8 @@ class mainFrame(Frame):
             self.add_widget(self.right_frame)
 
             self.show()
+
+            self.save_button = None
             return True
         return False
 
@@ -195,7 +197,7 @@ class mainFrame(Frame):
         order_preview_field.item.grid(row=index, column=0, pady=2, sticky="nsew")
         order_preview_field.item.configure(cursor="hand2")
         order_preview_field.item.bind('<Button-1>', lambda event,
-                                       ID=order_preview.id: self.open_info(ID))
+                                      ID=order_preview.id: self.open_info(ID))
         self.scroller.add_widget(order_preview_field)
         self.add_order_preview_field(order_preview_field)
 
@@ -208,7 +210,9 @@ class mainFrame(Frame):
 
         order = self.app.getOrderByID(id)
         self.current_order = order
-
+        if self.save_button is not None:
+            self.delete_widget(self.save_button)
+            del self.save_button
         self.save_button = Button(parental_widget=self.right_title_frame, master=self.right_title_frame.item,
                                   text="Сохранить")
         self.save_button.item.grid(column=0, row=0, pady=3, padx=3, sticky="e")

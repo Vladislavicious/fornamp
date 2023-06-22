@@ -3,11 +3,12 @@ from typing import Tuple
 from ioconnection.App import App
 from BaH.order import Order
 from Caps.validator import Validator
+from new_GUI.photo import Photo
 from new_GUI.textField import TextField
 from tkabs.button import Button
-from tkabs.frame import Frame
 from tkabs.label import Label
 from UIadjusters.fontFabric import FontFabric
+from tkabs.scroller import Scroller
 from uiabs.container import Container
 
 from uiabs.editable import Editable
@@ -21,7 +22,7 @@ def get_date(date_string: str) -> date:
     return data
 
 
-class OrderField(Frame, Editable):
+class OrderField(Scroller, Editable):
     def __init__(self, parental_widget: Container, master: any, save_button: Button,
                  order: Order = None, width: int = 250, height: int = 200,
                  border_width: int | str | None = 2,
@@ -30,10 +31,10 @@ class OrderField(Frame, Editable):
                  border_color: str | Tuple[str, str] | None = "#B22222",
                  change_preview_func=None):
 
-        Frame.__init__(self, parental_widget=parental_widget, master=master,
-                       width=width, height=height,
-                       border_width=border_width, bg_color=bg_color,
-                       fg_color=fg_color, border_color=border_color)
+        Scroller.__init__(self, parental_widget=parental_widget, master=master,
+                          width=width, height=height,
+                          border_width=border_width, bg_color=bg_color,
+                          fg_color=fg_color, border_color=border_color)
         Editable.__init__(self, parental_unit=None)
 
         self.base_font = FontFabric.get_base_font()
@@ -68,10 +69,9 @@ class OrderField(Frame, Editable):
         return False
 
     def initialize(self) -> bool:
-        if Frame.initialize(self):
+        if Scroller.initialize(self):
 
             self.item.grid_columnconfigure(0, weight=1)
-            self.item.grid_propagate(False)
 
             self.__add_vidat_button()
 
@@ -111,6 +111,7 @@ class OrderField(Frame, Editable):
             self.add_widget(self.description_field)
 
             self.__configure_colors()
+            self.__parse_photos()
 
             return True
         return False
@@ -145,6 +146,17 @@ class OrderField(Frame, Editable):
 
             return True
         return False
+
+    def __parse_photos(self):
+        app_reference = App()
+
+        photos = app_reference.file_manager.get_associated_photos_by_id(self.order.id)
+
+        for photo_path in photos:
+            photo = Photo(parental_widget=self, master=self.item,
+                          photopath=photo_path)
+            photo.item.grid(padx=10, pady=3, sticky="ew")
+            self.add_widget(photo)
 
     def __configure_colors(self):
         if self.order is not None and self.order.CheckIfDone():
@@ -195,7 +207,6 @@ class OrderField(Frame, Editable):
         else:
             if self.vidat_button is not None:
                 self.delete_widget(self.vidat_button)
-                self.vidat_button.hide()
             self.vidat_button = None
 
     def __vidat_order(self):
