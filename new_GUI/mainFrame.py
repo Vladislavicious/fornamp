@@ -78,6 +78,10 @@ class mainFrame(Frame):
         index, order_preview = self.__get_order_preview(id)
         self.__order_previews.pop(index)
 
+        self.scroller.delete_widget(order_preview)
+        order_preview.hide()
+        del order_preview
+
     def __get_order_preview(self, id: int) -> Tuple[int, OrderPreviewField]:
         for i, order_preview in enumerate(self.__order_previews):
             if order_preview.order_preview.id == id:
@@ -153,6 +157,7 @@ class mainFrame(Frame):
             self.show()
 
             self.save_button = None
+            self.delete_button = None
             return True
         return False
 
@@ -201,18 +206,46 @@ class mainFrame(Frame):
         self.scroller.add_widget(order_preview_field)
         self.add_order_preview_field(order_preview_field)
 
-    def open_info(self, id: int):
-        logger.debug(f"Нажатие по заказу {id}")
+    def __clear_right_frame(self):
         self.right_frame.delete_widget(self.order_frame)
         self.right_frame.delete_widget(self.product_frame)
 
-        self.__initialize_open_order()
+        if self.delete_button is not None:
+            self.delete_widget(self.delete_button)
+            del self.delete_button
+            self.delete_button = None
 
-        order = self.app.getOrderByID(id)
-        self.current_order = order
         if self.save_button is not None:
             self.delete_widget(self.save_button)
             del self.save_button
+            self.save_button = None
+
+        self.__initialize_open_order()
+
+    def __delete_order(self, id: int, order_field: OrderField):
+        self.__clear_right_frame()
+        self.delete_order_preview(id)
+
+        self.delete_widget(order_field)
+        self.app.deleteOrderByID(id)
+
+    def __delete_product(self, order_field: OrderField, product_field: ProductField):
+        product_field.hide()
+        order_field.delete_widget(product_field)
+
+        order = order_field.order
+        product = product_field.product
+        order.DeleteProduct(product.name)
+
+        del product_field
+
+    def open_info(self, id: int):
+        logger.debug(f"Нажатие по заказу {id}")
+        self.__clear_right_frame()
+
+        order = self.app.getOrderByID(id)
+        self.current_order = order
+
         self.save_button = Button(parental_widget=self.right_title_frame, master=self.right_title_frame.item,
                                   text="Сохранить")
         self.save_button.item.grid(column=0, row=0, pady=3, padx=3, sticky="e")
@@ -231,5 +264,17 @@ class mainFrame(Frame):
         for product in order.GetProducts():
             product_field = ProductField(parental_widget=order_field, master=self.product_frame.item,
                                          product=product)
+            product_field.insert_deletion_method(func=lambda product_field:
+                                                 self.__delete_product(order_field=order_field,
+                                                                       product_field=product_field))
             product_field.item.grid(sticky="ew", pady=2, ipadx=1, ipady=5)
             order_field.add_widget(product_field)
+
+        self.delete_button = Button(parental_widget=self.right_title_frame, master=self.right_title_frame.item,
+                                    text="Удалить", fg_color="#AA0A00", hover_color="#AA0AE0",
+                                    command=lambda: self.__delete_order(order.id, order_field))
+
+        self.delete_button.item.grid(column=0, row=0, pady=3, padx=3, sticky="w")
+        self.right_title_frame.add_widget(self.delete_button)
+
+        order_field.show()

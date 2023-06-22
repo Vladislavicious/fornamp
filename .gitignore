@@ -146,8 +146,13 @@ dmypy.json
 # debug html
 aboba.html
 
-#any png
+#any photos
 *.png
+*.jpeg
+*.jpg
+*.tiff
+*.gif
+*.bmp
 
 #datafiles
 *.order

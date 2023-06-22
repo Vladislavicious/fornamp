@@ -37,6 +37,7 @@ class ProductField(Frame, Editable):
             self.description = ""
 
         self.step_fields = list()
+        self.deletion_method = None
         self.initialize()
 
     def initialize(self) -> bool:
@@ -50,6 +51,12 @@ class ProductField(Frame, Editable):
                                       command=self.edit, font=self.base_font, width=40)
             self.edit_button.item.grid(row=0, column=0, padx=3, pady=3, sticky="ne")
             self.add_widget(self.edit_button)
+
+            self.delete_button = Button(parental_widget=self, master=self.item, text="удалить",
+                                        command=self.__self_delete, font=self.base_font, width=40,
+                                        fg_color="#AA0A00", hover_color="#AA0AE0")
+            self.delete_button.item.grid(row=0, column=0, padx=3, pady=3, sticky="nw")
+            self.add_widget(self.delete_button)
 
             self.prod_name_field = TextField(parental_widget=self, master=self.item,
                                              validation_method=Validator.validate_name, title="Название",
@@ -99,6 +106,13 @@ class ProductField(Frame, Editable):
 
             return True
         return False
+
+    def insert_deletion_method(self, func):
+        self.deletion_method = func
+
+    def __self_delete(self):
+        self.set_as_edited()
+        self.deletion_method(self)
 
     def edit(self):
         self.edit_button.item.configure(text="conf", command=self.confirm)
