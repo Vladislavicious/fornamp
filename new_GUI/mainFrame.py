@@ -248,16 +248,24 @@ class mainFrame(Frame):
         self.current_order = order
 
         self.save_button = Button(parental_widget=self.right_title_frame, master=self.right_title_frame.item,
-                                  text="Сохранить")
-        self.save_button.item.grid(column=0, row=0, pady=3, padx=3, sticky="e")
+                                  text="Сохранить", font=self.base_font, width=40, fg_color="#FFFF99",
+                                  hover_color="#000000", text_color="#765432")
+        self.save_button.item.grid(row=0, column=1, pady=3, padx=3, sticky="e")
         self.right_title_frame.add_widget(self.save_button)
+
+        self.edit_button = Button(parental_widget=self.right_title_frame, master=self.right_title_frame.item,
+                                  text="Редактировать", font=self.base_font, width=40)
+        self.edit_button.item.grid(row=0, column=2, padx=3, pady=3, sticky="e")
+        self.add_widget(self.edit_button)
 
         order_field = OrderField(parental_widget=self.order_frame, master=self.order_frame.item,
                                  order=order, change_preview_func=self.change_order_preview,
-                                 save_button=self.save_button)
+                                 save_button=self.save_button, edit_button=self.edit_button)
 
         self.save_button.item.configure(command=order_field.save, state="disabled")
         self.save_button.hide()
+
+        self.edit_button.item.configure(command=order_field.edit)
 
         order_field.item.grid(row=0, column=0, pady=0, ipady=5, sticky="nsew")
         self.order_frame.add_widget(order_field)
@@ -272,10 +280,11 @@ class mainFrame(Frame):
             order_field.add_widget(product_field)
 
         self.delete_button = Button(parental_widget=self.right_title_frame, master=self.right_title_frame.item,
-                                    text="Удалить", fg_color="#AA0A00", hover_color="#AA0AE0",
+                                    text="Удалить", fg_color="#AA0A00",
+                                    hover_color="#AA0AE0", font=self.base_font,
                                     command=lambda: self.__delete_order(order.id, order_field))
 
-        self.delete_button.item.grid(column=0, row=0, pady=3, padx=3, sticky="w")
+        self.delete_button.item.grid(column=0, row=0, pady=3, padx=3, sticky="e")
         self.right_title_frame.add_widget(self.delete_button)
 
         order_field.show()

@@ -124,7 +124,7 @@ class TextField(Frame, Editable):
 
     def confirm(self) -> bool:
         """Проверка редакции поля, при успешном возвращает True"""
-        new_text = self.text_entry.item.get()
+        new_text = self.get()
         valid, report = self.validation_method(new_text)
         if valid:
             Editable.confirm(self)

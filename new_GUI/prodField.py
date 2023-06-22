@@ -1,6 +1,7 @@
 from typing import Tuple
 from BaH.product import Product
 from Caps.validator import Validator
+from ioconnection.App import App
 from new_GUI.stepField import stepField
 from new_GUI.textField import TextField
 from tkabs.button import Button
@@ -38,6 +39,11 @@ class ProductField(Frame, Editable):
 
         self.step_fields = list()
         self.deletion_method = None
+
+        self.delete_button = None
+        self.template_button = None
+
+        self.__template_made = False
         self.initialize()
 
     def initialize(self) -> bool:
@@ -47,16 +53,7 @@ class ProductField(Frame, Editable):
 
             self.item.grid_columnconfigure(0, weight=1)
 
-            self.edit_button = Button(parental_widget=self, master=self.item, text="edit",
-                                      command=self.edit, font=self.base_font, width=40)
-            self.edit_button.item.grid(row=0, column=0, padx=3, pady=3, sticky="ne")
-            self.add_widget(self.edit_button)
-
-            self.delete_button = Button(parental_widget=self, master=self.item, text="удалить",
-                                        command=self.__self_delete, font=self.base_font, width=40,
-                                        fg_color="#AA0A00", hover_color="#AA0AE0")
-            self.delete_button.item.grid(row=0, column=0, padx=3, pady=3, sticky="nw")
-            self.add_widget(self.delete_button)
+            self.__add_template_button()
 
             self.prod_name_field = TextField(parental_widget=self, master=self.item,
                                              validation_method=Validator.validate_name, title="Название",
@@ -114,8 +111,32 @@ class ProductField(Frame, Editable):
         self.set_as_edited()
         self.deletion_method(self)
 
+    def __add_delete_button(self):
+        self.template_button.hide()
+        if self.delete_button is None:
+            self.delete_button = Button(parental_widget=self, master=self.item, text="удалить",
+                                        command=self.__self_delete, font=self.base_font, width=40,
+                                        fg_color="#AA0A00", hover_color="#AA0AE0")
+            self.delete_button.item.grid(row=0, column=0, padx=3, pady=3, sticky="ne")
+            self.add_widget(self.delete_button)
+        else:
+            self.delete_button.show()
+
+    def __add_template_button(self):
+        if self.delete_button is not None:
+            self.delete_button.hide()
+        if self.__template_made:
+            return
+        if self.template_button is None:
+            self.template_button = Button(parental_widget=self, master=self.item, text="Сохранить как шаблон",
+                                          command=self.save_as_template, font=self.base_font, width=40)
+            self.template_button.item.grid(row=0, column=0, padx=3, pady=3, sticky="ne")
+            self.add_widget(self.template_button)
+        else:
+            self.template_button.show()
+
     def edit(self):
-        self.edit_button.item.configure(text="conf", command=self.confirm)
+        self.__add_delete_button()
         for field in self.get_class_instances(Editable):
             field.edit()
         Editable.edit(self)
@@ -129,9 +150,9 @@ class ProductField(Frame, Editable):
                 is_confirmed = False
 
         if is_confirmed:
+            self.__add_template_button()
             Editable.confirm(self)
             self.set_as_edited()
-            self.edit_button.item.configure(text="edit", command=self.edit)
             return True
         return False
 
@@ -189,3 +210,11 @@ class ProductField(Frame, Editable):
 
             self.add_widget(step_field)
             self.step_fields.append(step_field)
+
+    def save_as_template(self):
+        app_reference = App()
+        app_reference.makeNewProductTemplate(self.product)
+
+        self.__template_made = True
+        self.template_button.item.configure(state="disabled")
+        self.template_button.hide()

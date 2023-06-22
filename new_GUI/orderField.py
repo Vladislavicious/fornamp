@@ -24,7 +24,8 @@ def get_date(date_string: str) -> date:
 
 class OrderField(Scroller, Editable):
     def __init__(self, parental_widget: Container, master: any, save_button: Button,
-                 order: Order = None, width: int = 250, height: int = 200,
+                 edit_button: Button, order: Order = None,
+                 width: int = 250, height: int = 200,
                  border_width: int | str | None = 2,
                  bg_color: str | Tuple[str, str] = "transparent",
                  fg_color: str | Tuple[str, str] | None = None,
@@ -59,6 +60,7 @@ class OrderField(Scroller, Editable):
 
         self.change_preview_func = change_preview_func
         self.save_button = save_button
+        self.edit_button = edit_button
         self.vidat_button = None
         self.initialize()
 
@@ -74,11 +76,6 @@ class OrderField(Scroller, Editable):
             self.item.grid_columnconfigure(0, weight=1)
 
             self.__add_vidat_button()
-
-            self.edit_button = Button(parental_widget=self, master=self.item, text="edit",
-                                      command=self.edit, font=self.base_font, width=40)
-            self.edit_button.item.grid(row=0, column=0, padx=3, pady=3, sticky="ne")
-            self.add_widget(self.edit_button)
 
             self.id_label = Label(self, self.item, text="id: " + self.id,
                                   font=FontFabric.get_changed_font(weight='bold'))
@@ -117,7 +114,7 @@ class OrderField(Scroller, Editable):
         return False
 
     def edit(self):
-        self.edit_button.item.configure(text="conf", command=self.confirm)
+        self.edit_button.item.configure(text="Подтвердить", command=self.confirm)
         for field in self.get_class_instances(Editable):
             field.edit()
         Editable.edit(self)
@@ -131,7 +128,7 @@ class OrderField(Scroller, Editable):
 
         if is_confirmed:
             Editable.confirm(self)
-            self.edit_button.item.configure(text="edit", command=self.edit)
+            self.edit_button.item.configure(text="Редактировать", command=self.edit)
 
     def save(self):
         print("Сохраняю ордер")

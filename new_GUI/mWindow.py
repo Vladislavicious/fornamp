@@ -65,6 +65,10 @@ class MainWindow(TopLevel, metaclass=Singleton):
             return True
         return False
 
+    def destroy(self) -> bool:
+        self.app.destroy()
+        super().destroy()
+
     def __create_addition_frame(self):
         if self.additionFrame is not None:
             self.additionFrame.destroy()

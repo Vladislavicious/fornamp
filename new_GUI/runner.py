@@ -76,7 +76,7 @@ class Runner(Frame, Editable):
             self.from_field = TextField(parental_widget=self, master=self.item,
                                         title="От", width=30,
                                         validation_method=lambda value:
-                                        Validator.validate_number(string=value, name="От"),
+                                        Validator.validate_number(string=value, name="От", min_number=0),
                                         initial_text=self.from_value_text,
                                         enter_pressed_function=self.confirm)
             self.from_field.item.grid(row=1, column=0, padx=2)
@@ -111,8 +111,9 @@ class Runner(Frame, Editable):
         Editable.edit(self)
 
     def confirm(self):
-        from_field_value = int(self.from_field.get())
-        self.slider.set_value(from_field_value)
-        self.set_as_edited()
-        self.slider.confirm()
-        Editable.confirm(self)
+        if self.from_field.confirm():
+            from_field_value = int(self.from_field.get())
+            self.slider.set_value(from_field_value)
+            self.set_as_edited()
+            self.slider.confirm()
+            Editable.confirm(self)

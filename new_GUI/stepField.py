@@ -98,9 +98,12 @@ class stepField(Frame, Editable):
         if self.step.isDone:
             return
 
-        max_contr_value = int(self.runner.to_value)
-
         contribution = int(self.runner.from_value)
+
+        if contribution == 0:
+            return
+
+        max_contr_value = int(self.runner.to_value)
 
         if contribution > max_contr_value:
             self.runner.from_value = self.runner.to_value

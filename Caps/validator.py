@@ -61,10 +61,11 @@ class Validator():
             return False, "Введена невозможная дата"
 
     @classmethod
-    def validate_number(cls, string: str = "", name: str = "Количество") -> Tuple[bool, str]:
+    def validate_number(cls, string: str = "", name: str = "Количество",
+                        min_number: int = 1) -> Tuple[bool, str]:
         if string.isdecimal():
-            if int(string) <= 0:
-                return False, f"{name} меньше 1"
+            if int(string) < min_number:
+                return False, f"{name} меньше {min_number}"
             return True, ""
         elif len(string) == 0:
             return False, f"Введите {name}"

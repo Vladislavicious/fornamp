@@ -16,7 +16,7 @@ from uiabs.widget import Widget
 class addProductField(Frame, Editable):
     def __init__(self, parental_widget: Container, master: any,
                  step_frame: Scroller, click_function,
-                 product: Product = None,
+                 removal_function, product: Product = None,
                  border_width: int | str | None = 2,
                  bg_color: str | Tuple[str, str] = "transparent",
                  fg_color: str | Tuple[str, str] | None = None,
@@ -40,6 +40,7 @@ class addProductField(Frame, Editable):
             self.selling_cost = ""
             self.description = ""
 
+        self.removal_function = removal_function
         self.click_function = click_function
         self.step_frame = step_frame
         self.base_font = FontFabric.get_base_font()
@@ -51,6 +52,12 @@ class addProductField(Frame, Editable):
     def initialize(self) -> bool:
         if super().initialize():
             self.item.grid_columnconfigure(0, weight=1)
+
+            self.delete_button = Button(parental_widget=self, master=self.item, text="удалить",
+                                        command=self.__self_delete, font=self.base_font, width=40,
+                                        fg_color="#AA0A00", hover_color="#AA0AE0")
+            self.delete_button.item.grid(row=0, column=0, padx=3, pady=3, sticky="nw")
+            self.add_widget(self.delete_button)
 
             self.edit_button = Button(parental_widget=self, master=self.item, text="edit",
                                       command=self.edit, font=self.base_font, width=40)
@@ -141,6 +148,12 @@ class addProductField(Frame, Editable):
         for step in self.step_fields:
             step.show()
 
+    def __self_delete(self):
+        self.hide()
+        self.set_as_edited()
+        self.removal_function(self)
+        self.parental_widget.delete_widget(self)
+
     def delete_widget(self, widget: Widget):
         super().delete_widget(widget)
         self.step_fields.remove(widget)
@@ -167,7 +180,6 @@ class addProductField(Frame, Editable):
             for step in steps:
                 self.create_step_addition(step=step)
         else:
-            # Здесь должно быть добавление одного пустого шага
             self.create_step_addition()
 
     def create_step_addition(self, step: Step = None):

@@ -1,7 +1,7 @@
 import logging
 
 from os import path
-from typing import Tuple
+from typing import List, Tuple
 from BaH.product import Product
 from new_GUI.addProdField import addProductField
 from UIadjusters.fontFabric import FontFabric
@@ -50,10 +50,20 @@ class additionFrame(Frame):
         self.base_font = FontFabric.get_base_font()
         self.app = App()
 
-        self.product_fields = list()
+        self.__product_fields = list()
         self.current_product = None
 
         self.initialize()
+
+    @property
+    def product_fields(self) -> List[addProductField]:
+        return self.__product_fields
+
+    def add_product_field(self, prod_field: addProductField):
+        self.__product_fields.append(prod_field)
+
+    def delete_product_field(self, prod_field: addProductField):
+        self.__product_fields.remove(prod_field)
 
     def initialize(self) -> bool:
         if super().initialize():
@@ -143,11 +153,12 @@ class additionFrame(Frame):
 
         self.current_product = addProductField(parental_widget=self.addOrder, master=self.product_frame.item,
                                                product=product, step_frame=self.step_frame,
-                                               click_function=self.product_click)
+                                               click_function=self.product_click,
+                                               removal_function=lambda prod_f: self.delete_product_field(prod_f))
         self.current_product.item.grid(pady=2, sticky="nsew")
         self.addOrder.add_widget(self.current_product)
         self.current_product.edit()
-        self.product_fields.append(self.current_product)
+        self.add_product_field(self.current_product)
 
     def create_step_addition(self):
         self.current_product.create_step_addition()
