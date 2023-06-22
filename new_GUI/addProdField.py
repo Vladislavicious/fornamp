@@ -10,6 +10,7 @@ from UIadjusters.fontFabric import FontFabric
 from tkabs.scroller import Scroller
 from uiabs.container import Container
 from uiabs.editable import Editable
+from uiabs.widget import Widget
 
 
 class addProductField(Frame, Editable):
@@ -140,6 +141,10 @@ class addProductField(Frame, Editable):
         for step in self.step_fields:
             step.show()
 
+    def delete_widget(self, widget: Widget):
+        super().delete_widget(widget)
+        self.step_fields.remove(widget)
+
     def __assemble_product(self):
         name = self.prod_name_field.get()
         quantity = int(self.quantity_field.get())
@@ -168,14 +173,7 @@ class addProductField(Frame, Editable):
     def create_step_addition(self, step: Step = None):
         step_field = addStepField(parental_widget=self,
                                   master=self.step_frame.item, step=step)
-        step_field.item.grid(padx=2, pady=2, sticky="nsew")
+        step_field.item.grid(padx=2, pady=4, sticky="nsew")
         self.add_widget(step_field)
         step_field.edit()
         self.step_fields.append(step_field)
-
-
-"""
-Клик происходит где-то на территории товара, после этого информация о клике переходит в additionFrame,
-в котором есть currentProduct. Если этот currentProduct != тому, в котором клик, то
-скрываем куррент, открываем новый
-"""

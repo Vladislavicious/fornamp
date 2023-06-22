@@ -78,8 +78,8 @@ class mainFrame(Frame):
         index, order_preview = self.__get_order_preview(id)
         self.__order_previews.pop(index)
 
-        self.scroller.delete_widget(order_preview)
         order_preview.hide()
+        self.scroller.delete_widget(order_preview)
         del order_preview
 
     def __get_order_preview(self, id: int) -> Tuple[int, OrderPreviewField]:
@@ -211,22 +211,23 @@ class mainFrame(Frame):
         self.right_frame.delete_widget(self.product_frame)
 
         if self.delete_button is not None:
-            self.delete_widget(self.delete_button)
+            self.right_title_frame.delete_widget(self.delete_button)
             del self.delete_button
             self.delete_button = None
 
         if self.save_button is not None:
-            self.delete_widget(self.save_button)
+            self.right_title_frame.delete_widget(self.save_button)
             del self.save_button
             self.save_button = None
 
         self.__initialize_open_order()
 
     def __delete_order(self, id: int, order_field: OrderField):
+        order_field.hide()
+        self.order_frame.delete_widget(order_field)
+
         self.__clear_right_frame()
         self.delete_order_preview(id)
-
-        self.delete_widget(order_field)
         self.app.deleteOrderByID(id)
 
     def __delete_product(self, order_field: OrderField, product_field: ProductField):

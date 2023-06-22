@@ -22,7 +22,7 @@ def get_date(date_string: str) -> date:
 
 
 class AddOrderField(Frame, Editable):
-    def __init__(self, parental_widget: Container, master: any, save_button,
+    def __init__(self, parental_widget: Container, master: any, save_button: Button,
                  width: int = 250, height: int = 200,
                  border_width: int | str | None = 2,
                  bg_color: str | Tuple[str, str] = "transparent",
@@ -129,7 +129,7 @@ class AddOrderField(Frame, Editable):
         for widget in editable_list:
             widget.save()
 
-        self.save_button.button.configure(state="disabled")
+        self.save_button.item.configure(state="disabled")
         self.save_button.hide()
 
         if Editable.save(self):
@@ -154,6 +154,6 @@ class AddOrderField(Frame, Editable):
 
     def __enable_save_button(self):
         if self.save_button is not None:
-            self.save_button.button.configure(state="normal")
+            self.save_button.item.configure(state="normal")
             self.save_button.show()
             return
