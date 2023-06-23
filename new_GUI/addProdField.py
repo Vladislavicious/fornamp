@@ -35,7 +35,7 @@ class addProductField(Frame, Editable):
             self.description = product.commentary
         else:
             self.prod_name = ""
-            self.quantity = ""
+            self.quantity = "1"
             self.production_cost = ""
             self.selling_cost = ""
             self.description = ""
@@ -104,8 +104,8 @@ class addProductField(Frame, Editable):
 
             self.__parse_steps()
 
-            self.item.bind('<Button-1>', command=lambda event: self.click_function(self))
-
+            self.bind('<Button-1>', lambda event: self.click_function(self),
+                      bind_to_childs=True)
             return True
         return False
 

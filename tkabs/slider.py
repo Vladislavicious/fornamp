@@ -4,9 +4,10 @@ from customtkinter import CTkSlider
 
 from uiabs.container import Container
 from uiabs.editable import Editable
+from uiabs.widget import Widget
 
 
-class Slider(Container, Editable):
+class Slider(Widget, Editable):
     def __init__(self, parental_widget: Container, master: any, width: int | None = 200,
                  height: int | None = 30, corner_radius: int | None = None,
                  bg_color: str | Tuple[str, str] = "transparent",
@@ -20,7 +21,7 @@ class Slider(Container, Editable):
                  command: Callable[[float], None] | None = None,
                  variable: Variable | None = None, orientation: str = "horizontal", **kwargs):
 
-        Container.__init__(self, parental_widget=parental_widget)
+        Widget.__init__(self, parental_widget=parental_widget)
         Editable.__init__(self)
         if self.initialize():
             self.item = CTkSlider(master=master, width=width, height=height,

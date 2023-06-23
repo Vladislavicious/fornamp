@@ -44,6 +44,7 @@ class ImageOnCanvas(Frame):
 
             if self.image_function is not None:
                 self.canvas.item.bind('<Button-1>', func=lambda event: self.image_function())
+                self.canvas.item.configure(cursor="hand2")
 
             self.canvas.create_image(self.image)
 

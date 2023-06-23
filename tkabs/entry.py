@@ -4,9 +4,10 @@ from customtkinter import CTkEntry
 from customtkinter.windows.widgets.font import CTkFont
 
 from uiabs.container import Container
+from uiabs.widget import Widget
 
 
-class Entry(Container):
+class Entry(Widget):
     def __init__(self, parental_widget: Container, master: any,
                  width: int = 140, height: int = 28,
                  corner_radius: int | None = None,

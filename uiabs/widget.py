@@ -50,3 +50,8 @@ class Widget():
             self.initialize()
         self.__is_visible = False
         return True
+
+    def bind(self, sequence: str, function, bind_to_childs: bool = False):
+        """Функция для бинда комманд на виджет"""
+        if self.item is not None:
+            self.item.bind(sequence, function)

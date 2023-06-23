@@ -58,6 +58,8 @@ class OrderPreviewField(Frame):
 
             self.item.columnconfigure(0, weight=1)
 
+            self.item.configure(cursor="hand2")
+
             id = "id: " + str(self.order_preview.id)
             self.id_label = Label(self, self.item, text=id, font=self.base_font)
             self.id_label.item.grid(column=0, row=0, padx=5, pady=2, sticky="nw")

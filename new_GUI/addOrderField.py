@@ -1,4 +1,5 @@
 from datetime import date
+from datetime import timedelta
 from typing import Tuple
 from Caps.validator import Validator
 from BaH.order import Order
@@ -40,8 +41,10 @@ class AddOrderField(Frame, Editable):
 
         self.id = str(Order.generate_id())
         self.customer = ""
-        self.date_oc = ""
-        self.date_ov = ""
+
+        today = date.today()
+        self.date_oc = today.strftime("%d/%m/%Y")
+        self.date_ov = (today + timedelta(days=1)).strftime("%d/%m/%Y")
         self.description = ""
 
         self.save_button = save_button

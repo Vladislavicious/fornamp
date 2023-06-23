@@ -8,6 +8,7 @@ from customtkinter import CTkLabel, CTkFont
 from customtkinter.windows.widgets.image import CTkImage
 from UIadjusters.fontFabric import FontFabric
 from uiabs.container import Container
+from uiabs.widget import Widget
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
@@ -24,7 +25,7 @@ logger.addHandler(handler)
 logger.info(f"Testing the custom logger for module {__name__}...")
 
 
-class Label(Container):
+class Label(Widget):
     def __init__(self, parental_widget: Container, master: any, width: int = 0,
                  height: int = 28, corner_radius: int | None = None,
                  bg_color: str | Tuple[str, str] = "transparent",

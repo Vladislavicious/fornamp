@@ -62,6 +62,16 @@ class Container(Widget):
     def clear_widgets(self):
         self.__widgets.clear()
 
+    def bind(self, sequence: str, function, bind_to_childs: bool = False):
+        if self.item is not None:
+            self.item.bind(sequence, function)
+
+        if not bind_to_childs:
+            return
+
+        for widget in self.widgets:
+            widget.bind(sequence, function, bind_to_childs)
+
     def __hide_all_widgets(self):
         for widget in self.__widgets:
             widget.hide()

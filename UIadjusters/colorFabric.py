@@ -1,5 +1,7 @@
 from dataclasses import dataclass
 
+from ioconnection.App import Singleton
+
 
 @dataclass
 class ColorSetting:
@@ -15,15 +17,15 @@ class ColorSetting:
     lines_width: int
 
 
-class ColorFabric():
-    """Фабрика customTkinter шрифтов"""
-    initialized = False
+class ColorFabric(metaclass=Singleton):
 
-    @classmethod
-    def initialize_base_settings(cls, undone="#B22222", done="#FFA500", vidan="#7FFF00",
-                                 bg="transparent", fg=None, buttons=None,
-                                 lines=None, font=None, lines_width=1):
+    def __init__(self, undone="#B22222", done="#FFA500", vidan="#7FFF00",
+                 bg="transparent", fg=None, buttons=None,
+                 lines=None, font=None, lines_width=1):
+        self.color_setting = ColorSetting(undone=undone, done=done, vidan=vidan,
+                                          bg=bg, fg=fg, buttons=buttons,
+                                          lines=lines, font=font, lines_width=lines_width)
 
-        cls.color_setting = ColorSetting(undone=undone, done=done, vidan=vidan,
-                                         bg=bg, fg=fg, buttons=buttons,
-                                         lines=lines, font=font)
+    # Сделать геттеры и сеттеры для всех полей
+
+    # Добавить полей для цветов шрифта

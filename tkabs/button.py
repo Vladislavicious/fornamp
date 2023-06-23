@@ -8,6 +8,7 @@ from customtkinter.windows.widgets.font import CTkFont
 from customtkinter.windows.widgets.image import CTkImage
 
 from uiabs.container import Container
+from uiabs.widget import Widget
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
@@ -24,7 +25,7 @@ logger.addHandler(handler)
 logger.info(f"Testing the custom logger for module {__name__}...")
 
 
-class Button(Container):
+class Button(Widget):
     def __init__(self, parental_widget: Container, master: any, width: int = 140,
                  height: int = 28, corner_radius: int | None = None,
                  border_width: int | None = None, border_spacing: int = 2,

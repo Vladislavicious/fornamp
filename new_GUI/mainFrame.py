@@ -200,9 +200,9 @@ class mainFrame(Frame):
 
         index = len(self.order_previews)
         order_preview_field.item.grid(row=index, column=0, pady=2, sticky="nsew")
-        order_preview_field.item.configure(cursor="hand2")
-        order_preview_field.item.bind('<Button-1>', lambda event,
-                                      ID=order_preview.id: self.open_info(ID))
+
+        order_preview_field.bind(function=lambda event: self.open_info(order_preview.id),
+                                 bind_to_childs=True, sequence='<Button-1>')
         self.scroller.add_widget(order_preview_field)
         self.add_order_preview_field(order_preview_field)
 
