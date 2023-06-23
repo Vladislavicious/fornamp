@@ -22,7 +22,8 @@ class ProductField(Frame, Editable):
                        fg_color=fg_color, border_color=border_color)
         Editable.__init__(self, parental_unit=parental_widget)
         self.product = product
-        self.base_font = FontFabric.get_base_font()
+        self.ff = FontFabric()
+        self.font = self.ff.get_base_font()
         # все характеристики product будут в виде строк
         if product is not None:
             self.prod_name = product.name
@@ -115,7 +116,7 @@ class ProductField(Frame, Editable):
         self.template_button.hide()
         if self.delete_button is None:
             self.delete_button = Button(parental_widget=self, master=self.item, text="удалить",
-                                        command=self.__self_delete, font=self.base_font, width=40,
+                                        command=self.__self_delete, font=self.font, width=40,
                                         fg_color="#AA0A00", hover_color="#AA0AE0")
             self.delete_button.item.grid(row=0, column=0, padx=3, pady=3, sticky="ne")
             self.add_widget(self.delete_button)
@@ -129,7 +130,7 @@ class ProductField(Frame, Editable):
             return
         if self.template_button is None:
             self.template_button = Button(parental_widget=self, master=self.item, text="Сохранить как шаблон",
-                                          command=self.save_as_template, font=self.base_font, width=40)
+                                          command=self.save_as_template, font=self.font, width=40)
             self.template_button.item.grid(row=0, column=0, padx=3, pady=3, sticky="ne")
             self.add_widget(self.template_button)
         else:

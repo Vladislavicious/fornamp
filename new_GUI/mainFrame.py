@@ -50,7 +50,8 @@ class mainFrame(Frame):
 
         self.current_order = None
         self.__order_previews = list()
-        self.base_font = FontFabric.get_base_font()
+        self.ff = FontFabric()
+        self.font = self.ff.get_base_font()
         self.app = App()
         self.initialize()
 
@@ -248,13 +249,13 @@ class mainFrame(Frame):
         self.current_order = order
 
         self.save_button = Button(parental_widget=self.right_title_frame, master=self.right_title_frame.item,
-                                  text="Сохранить", font=self.base_font, width=40, fg_color="#FFFF99",
+                                  text="Сохранить", font=self.font, width=40, fg_color="#FFFF99",
                                   hover_color="#000000", text_color="#765432")
         self.save_button.item.grid(row=0, column=1, pady=3, padx=3, sticky="e")
         self.right_title_frame.add_widget(self.save_button)
 
         self.edit_button = Button(parental_widget=self.right_title_frame, master=self.right_title_frame.item,
-                                  text="Редактировать", font=self.base_font, width=40)
+                                  text="Редактировать", font=self.font, width=40)
         self.edit_button.item.grid(row=0, column=2, padx=3, pady=3, sticky="e")
         self.add_widget(self.edit_button)
 
@@ -281,7 +282,7 @@ class mainFrame(Frame):
 
         self.delete_button = Button(parental_widget=self.right_title_frame, master=self.right_title_frame.item,
                                     text="Удалить", fg_color="#AA0A00",
-                                    hover_color="#AA0AE0", font=self.base_font,
+                                    hover_color="#AA0AE0", font=self.font,
                                     command=lambda: self.__delete_order(order.id, order_field))
 
         self.delete_button.item.grid(column=0, row=0, pady=3, padx=3, sticky="e")

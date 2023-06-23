@@ -13,7 +13,8 @@ class OrderPreviewField(Frame):
         super().__init__(parental_widget, master, border_width=border_width,
                          border_color=border_color)
         self.order_preview = order_preview
-        self.base_font = FontFabric.get_base_font()
+        self.ff = FontFabric()
+        self.font = self.ff.get_base_font()
 
         self.initialize()
 
@@ -61,18 +62,18 @@ class OrderPreviewField(Frame):
             self.item.configure(cursor="hand2")
 
             id = "id: " + str(self.order_preview.id)
-            self.id_label = Label(self, self.item, text=id, font=self.base_font)
+            self.id_label = Label(self, self.item, text=id, font=self.font)
             self.id_label.item.grid(column=0, row=0, padx=5, pady=2, sticky="nw")
             self.add_widget(self.id_label)
 
             customer = "Заказчик: " + self.order_preview.zakazchik
-            self.customer_label = Label(self, self.item, text=customer, font=self.base_font)
+            self.customer_label = Label(self, self.item, text=customer, font=self.font)
             self.customer_label.item.grid(column=0, row=1, padx=5, pady=2, sticky="w")
             self.add_widget(self.customer_label)
 
             date_of_vidacha = "Дата выдачи: " + \
                               self.order_preview.date_of_vidacha.strftime("%d.%m.%Y")
-            self.date_of_vidacha_label = Label(self, self.item, text=date_of_vidacha, font=self.base_font)
+            self.date_of_vidacha_label = Label(self, self.item, text=date_of_vidacha, font=self.font)
             self.date_of_vidacha_label.item.grid(column=0, padx=5, pady=2, row=2, sticky="sw")
             self.add_widget(self.date_of_vidacha_label)
 

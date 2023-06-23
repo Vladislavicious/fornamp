@@ -23,7 +23,8 @@ class labeledText(Frame):
         self.initial_text = initial_text
         self.title_text = title
 
-        self.base_font = FontFabric.get_base_font()
+        self.ff = FontFabric()
+        self.font = self.ff.get_base_font()
         self.initialize()
 
     def change_title(self, title: str):
@@ -46,12 +47,12 @@ class labeledText(Frame):
 
             self.title_label = Label(parental_widget=self, master=self.item,
                                      text=self.title_text,
-                                     font=FontFabric.get_changed_font(weight='bold'))
+                                     font=self.ff.get_changed_font(weight='bold'))
             self.title_label.item.grid(row=0, column=0, sticky="nsew")
             self.add_widget(self.title_label)
 
             self.text_label = Label(parental_widget=self, master=self.item,
-                                    text=self.initial_text, font=self.base_font)
+                                    text=self.initial_text, font=self.font)
             self.text_label.item.grid(row=1, column=0, sticky="nsew")
             self.add_widget(self.text_label)
 

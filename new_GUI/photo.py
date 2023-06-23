@@ -43,7 +43,8 @@ class Photo(Frame):
                          overwrite_preferred_drawing_method, **kwargs)
         self.dialog = None
         self.photopath = photopath
-        self.base_font = FontFabric.get_base_font()
+        self.ff = FontFabric()
+        self.font = self.ff.get_base_font()
         self.initialize()
 
     def initialize(self) -> bool:
@@ -55,7 +56,7 @@ class Photo(Frame):
             _, _, self.name = self.photopath.rpartition("\\")
 
             self.label = Label(parental_widget=self, master=self.item,
-                               text=self.name, font=self.base_font)
+                               text=self.name, font=self.font)
             self.label.item.grid(row=1, column=0, pady=2, sticky="nsew")
             self.add_widget(self.label)
 

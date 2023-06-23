@@ -37,7 +37,8 @@ class TextField(Frame, Editable):
 
         self.enter_pressed_function = enter_pressed_function
 
-        self.base_font = FontFabric.get_base_font()
+        self.ff = FontFabric()
+        self.font = self.ff.get_base_font()
         self.initialize()
 
     @property
@@ -64,18 +65,18 @@ class TextField(Frame, Editable):
 
             self.title_label = Label(parental_widget=self, master=self.item,
                                      text=self.title_text,
-                                     font=FontFabric.get_changed_font(weight='bold'))
+                                     font=self.ff.get_changed_font(weight='bold'))
             self.title_label.item.grid(row=0, column=0, sticky="nsew")
             self.add_widget(self.title_label)
 
             self.text_label = Label(parental_widget=self, master=self.item,
-                                    text=self.initial_text, font=self.base_font)
+                                    text=self.initial_text, font=self.font)
             self.text_label.item.grid(row=1, column=0, sticky="nsew")
             self.add_widget(self.text_label)
 
             self.text_entry = Entry(parental_widget=self, master=self.item,
                                     placeholder_text=self.placeholder_text,
-                                    font=self.base_font)
+                                    font=self.font)
             self.text_entry.item.grid(row=1, column=0, sticky="nsew")
             self.text_entry.item.bind('<FocusIn>', lambda event: self.__focused_entry())
             self.text_entry.item.bind('<FocusOut>', lambda event: self.__unfocused_entry())
@@ -84,7 +85,7 @@ class TextField(Frame, Editable):
 
             if self.__with_button:
                 self.button = Button(parental_widget=self, master=self.item, width=40,
-                                     text="edit", font=self.base_font, command=self.edit)
+                                     text="edit", font=self.font, command=self.edit)
                 self.button.item.grid(row=0, column=1, rowspan=2, sticky="nsew")
                 self.add_widget(self.button)
 

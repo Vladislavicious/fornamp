@@ -46,7 +46,8 @@ class TextWithButton(Frame):
         self.text = text
         self.button_function = button_function
         self.button_text = button_text
-        self.base_font = FontFabric.get_base_font()
+        self.ff = FontFabric()
+        self.font = self.ff.get_base_font()
         self.initialize()
 
     @property
@@ -63,12 +64,12 @@ class TextWithButton(Frame):
             self.item.grid_rowconfigure(0, weight=1)
 
             self.label = Label(parental_widget=self, master=self.item,
-                               text=self.text, font=self.base_font)
+                               text=self.text, font=self.font)
             self.label.item.grid(row=0, column=0, pady=2, padx=1, sticky="nsew")
             self.add_widget(self.label)
 
             self.button = Button(parental_widget=self, master=self.item,
-                                 text=self.button_text, font=self.base_font,
+                                 text=self.button_text, font=self.font,
                                  width=100)
             if self.button_function is not None:
                 self.change_button_function(self.button_function)

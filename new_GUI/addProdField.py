@@ -43,7 +43,8 @@ class addProductField(Frame, Editable):
         self.removal_function = removal_function
         self.click_function = click_function
         self.step_frame = step_frame
-        self.base_font = FontFabric.get_base_font()
+        self.ff = FontFabric()
+        self.font = self.ff.get_base_font()
 
         self.step_fields = list()
 
@@ -54,13 +55,13 @@ class addProductField(Frame, Editable):
             self.item.grid_columnconfigure(0, weight=1)
 
             self.delete_button = Button(parental_widget=self, master=self.item, text="удалить",
-                                        command=self.__self_delete, font=self.base_font, width=40,
+                                        command=self.__self_delete, font=self.font, width=40,
                                         fg_color="#AA0A00", hover_color="#AA0AE0")
             self.delete_button.item.grid(row=0, column=0, padx=3, pady=3, sticky="nw")
             self.add_widget(self.delete_button)
 
             self.edit_button = Button(parental_widget=self, master=self.item, text="edit",
-                                      command=self.edit, font=self.base_font, width=40)
+                                      command=self.edit, font=self.font, width=40)
             self.edit_button.item.grid(row=0, column=0, padx=3, pady=3, sticky="ne")
             self.add_widget(self.edit_button)
 

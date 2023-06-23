@@ -23,7 +23,8 @@ class stepField(Frame, Editable):
         Editable.__init__(self, parental_widget)
 
         self.step = step
-        self.base_font = FontFabric.get_base_font()
+        self.ff = FontFabric()
+        self.font = self.ff.get_base_font()
 
         if self.step is not None:
             self.name_text = step.name

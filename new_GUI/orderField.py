@@ -38,7 +38,8 @@ class OrderField(Scroller, Editable):
                           fg_color=fg_color, border_color=border_color)
         Editable.__init__(self, parental_unit=None)
 
-        self.base_font = FontFabric.get_base_font()
+        self.ff = FontFabric()
+        self.font = self.ff.get_base_font()
         self.order = order
         # все характеристики order будут в виде строк
         if order is not None:
@@ -78,7 +79,7 @@ class OrderField(Scroller, Editable):
             self.__add_vidat_button()
 
             self.id_label = Label(self, self.item, text="id: " + self.id,
-                                  font=FontFabric.get_changed_font(weight='bold'))
+                                  font=self.ff.get_changed_font(weight='bold'))
             self.id_label.item.grid(row=0, column=0, pady=3, sticky="n")
             self.add_widget(self.id_label)
 
@@ -198,7 +199,7 @@ class OrderField(Scroller, Editable):
     def __add_vidat_button(self):
         if not self.vidan and self.isDone:
             self.vidat_button = Button(parental_widget=self, master=self.item, text="Выдать",
-                                       command=self.__vidat_order, font=self.base_font, width=40)
+                                       command=self.__vidat_order, font=self.font, width=40)
             self.vidat_button.item.grid(row=0, column=0, padx=3, pady=3, sticky="nw")
             self.add_widget(self.vidat_button)
         else:

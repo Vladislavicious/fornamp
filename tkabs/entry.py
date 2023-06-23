@@ -2,6 +2,7 @@ import tkinter
 from typing import Tuple
 from customtkinter import CTkEntry
 from customtkinter.windows.widgets.font import CTkFont
+from UIadjusters.fontFabric import FontFabric
 
 from uiabs.container import Container
 from uiabs.widget import Widget
@@ -19,15 +20,19 @@ class Entry(Widget):
                  placeholder_text_color: str | Tuple[str, str] | None = None,
                  textvariable: tkinter.Variable | None = None,
                  placeholder_text: str | None = None,
-                 font: tuple | CTkFont | None = None,
+                 font: CTkFont = None,
                  state: str = tkinter.NORMAL, **kwargs):
 
         super().__init__(parental_widget)
         if self.initialize():
+            self.ff = FontFabric()
+            self.font = font
+            if font is None:
+                self.font = self.ff.get_base_font()
             self.item = CTkEntry(master, width, height, corner_radius,
                                  border_width, bg_color, fg_color, border_color,
                                  text_color, placeholder_text_color, textvariable,
-                                 placeholder_text, font, state, **kwargs)
+                                 placeholder_text, self.font, state, **kwargs)
             self.name = "Entry " + placeholder_text
 
     @property

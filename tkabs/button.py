@@ -6,6 +6,7 @@ from typing import Any, Callable, Tuple
 from customtkinter import CTkButton
 from customtkinter.windows.widgets.font import CTkFont
 from customtkinter.windows.widgets.image import CTkImage
+from UIadjusters.fontFabric import FontFabric
 
 from uiabs.container import Container
 from uiabs.widget import Widget
@@ -38,7 +39,7 @@ class Button(Widget):
                  background_corner_colors: Tuple[str | Tuple[str, str]] | None = None,
                  round_width_to_even_numbers: bool = True,
                  round_height_to_even_numbers: bool = True,
-                 text: str = "CTkButton", font: tuple | CTkFont | None = None,
+                 text: str = "CTkButton", font: CTkFont = None,
                  textvariable: tkinter.Variable | None = None,
                  image: CTkImage | Any | None = None, state: str = "normal",
                  hover: bool = True, command: Callable[[], None] | None = None,
@@ -46,11 +47,15 @@ class Button(Widget):
 
         super().__init__(parental_widget)
         if self.initialize():
+            self.ff = FontFabric()
+            self.font = font
+            if font is None:
+                self.font = self.ff.get_base_font()
             self.item = CTkButton(master, width, height, corner_radius, border_width,
                                   border_spacing, bg_color, fg_color, hover_color,
                                   border_color, text_color, text_color_disabled,
                                   background_corner_colors, round_width_to_even_numbers,
-                                  round_height_to_even_numbers, text, font, textvariable,
+                                  round_height_to_even_numbers, text, self.font, textvariable,
                                   image, state, hover, command, compound, anchor, **kwargs)
             self.name = "Кнопка " + text
 

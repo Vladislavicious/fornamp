@@ -45,7 +45,7 @@ class MenuItem(Frame):
 
         self.__item_name = item_name
         self.function = item_function
-        self.base_font = font
+        self.font = font
         self.initialize()
 
     @property
@@ -62,7 +62,7 @@ class MenuItem(Frame):
             self.item.grid_columnconfigure(0, weight=1)
 
             self.name_label = Label(parental_widget=self, master=self.item,
-                                    text=self.item_name, font=self.base_font)
+                                    text=self.item_name, font=self.font)
             self.name_label.item.grid(row=0, column=0, sticky="ew")
             self.add_widget(self.name_label)
 
@@ -92,7 +92,8 @@ class Menu(Frame):
                          overwrite_preferred_drawing_method, **kwargs)
 
         self.__menu_opened = False
-        self.base_font = FontFabric.get_changed_font(size=20, weight='bold')
+        self.ff = FontFabric()
+        self.font = self.ff.get_changed_font(size=20, weight='bold')
         self.app = App()
         self.option_dict = menu_options
         self.menu_items = list()
@@ -118,7 +119,7 @@ class Menu(Frame):
 
             self.open_menu = MenuItem(parental_widget=self, master=self.item,
                                       item_name="Menu", item_function=self.press,
-                                      font=self.base_font)
+                                      font=self.font)
             self.open_menu.item.grid(row=0, column=0, pady=2, sticky="ew")
             self.add_widget(self.open_menu)
 
@@ -127,7 +128,7 @@ class Menu(Frame):
 
                 menu_item = MenuItem(parental_widget=self, master=self.item,
                                      item_name=option_name, item_function=function,
-                                     font=self.base_font)
+                                     font=self.font)
                 menu_item.item.grid(pady=2, sticky="ew")
                 self.add_widget(menu_item)
                 self.menu_items.append(menu_item)

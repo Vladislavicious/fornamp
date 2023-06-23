@@ -38,7 +38,8 @@ class Runner(Frame, Editable):
         if steps_count <= 0:
             steps_count = to_value + 1
 
-        self.base_font = FontFabric.get_base_font()
+        self.ff = FontFabric()
+        self.font = self.ff.get_base_font()
         self.steps_count = steps_count
         self.from_value_text = str(from_value)
         self.to_value_text = str(to_value)
@@ -69,7 +70,7 @@ class Runner(Frame, Editable):
             self.item.grid_propagate(False)
 
             self.runner_title = Label(parental_widget=self, master=self.item,
-                                      text=self.runner_title_text, font=FontFabric.get_bold_font())
+                                      text=self.runner_title_text, font=self.ff.get_bold_font())
             self.runner_title.item.grid(row=0, columnspan=3, padx=2)
             self.add_widget(self.runner_title)
 

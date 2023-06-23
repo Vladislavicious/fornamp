@@ -31,17 +31,20 @@ class Label(Widget):
                  bg_color: str | Tuple[str, str] = "transparent",
                  fg_color: str | Tuple[str, str] | None = None,
                  text_color: str | Tuple[str, str] | None = None,
-                 text: str = "Метка", font: tuple | CTkFont | None = None,
+                 text: str = "Метка", font: CTkFont = None,
                  image: CTkImage | None = None, compound: str = "center",
                  anchor: str = "center", wraplength: int = 0, **kwargs):
 
         logger.debug(f"initial width: {width}")
         super().__init__(parental_widget)
         if self.initialize():
+            self.ff = FontFabric()
             self.font = font
+            if font is None:
+                self.font = self.ff.get_base_font()
             self.item = CTkLabel(master, width, height, corner_radius,
                                  bg_color, fg_color, text_color, text,
-                                 font, image, compound, anchor, wraplength, **kwargs)
+                                 self.font, image, compound, anchor, wraplength, **kwargs)
             self.name = "Метка " + text
             logger.debug(f"{self.name} инициализирована")
 
@@ -90,7 +93,7 @@ class Label(Widget):
 
         label_width = self.item.winfo_width()
         if label_width > 1:
-            mean_width = FontFabric.calculate_mean_width(self.font)
+            mean_width = self.ff.calculate_mean_width(self.font)
             if label_width > text_length * mean_width:
                 return False
 

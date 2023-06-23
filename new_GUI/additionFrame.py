@@ -47,7 +47,9 @@ class additionFrame(Frame):
                          overwrite_preferred_drawing_method, **kwargs)
         self.back_function = go_to_main_function
         self.add_order_preview_func = add_order_preview_func
-        self.base_font = FontFabric.get_base_font()
+
+        self.ff = FontFabric()
+        self.font = self.ff.get_base_font()
         self.app = App()
 
         self.__product_fields = list()
@@ -74,7 +76,7 @@ class additionFrame(Frame):
             self.item.grid_columnconfigure(2, weight=3)
 
             self.back_button = Button(parental_widget=self, master=self.item,
-                                      text="Back", font=self.base_font,
+                                      text="Back", font=self.font,
                                       command=self.back_function)
             self.back_button.item.grid(row=0, column=0, pady=2, sticky="w")
             self.add_widget(self.back_button)

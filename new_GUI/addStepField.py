@@ -22,7 +22,8 @@ class addStepField(Frame, Editable):
         Editable.__init__(self, parental_widget)
 
         self.step = step
-        self.base_font = FontFabric.get_base_font()
+        self.ff = FontFabric()
+        self.font = self.ff.get_base_font()
 
         if self.step is not None:
             self.name_text = step.name
@@ -39,7 +40,7 @@ class addStepField(Frame, Editable):
             self.item.grid_columnconfigure(0, weight=1)
 
             self.delete_button = Button(parental_widget=self, master=self.item, text="удалить",
-                                        command=self.__self_delete, font=self.base_font, width=40,
+                                        command=self.__self_delete, font=self.font, width=40,
                                         fg_color="#AA0A00", hover_color="#AA0AE0")
             self.delete_button.item.grid(row=0, column=0, padx=3, pady=3, sticky="nw")
             self.add_widget(self.delete_button)

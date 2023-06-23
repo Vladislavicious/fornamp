@@ -36,7 +36,8 @@ class AddOrderField(Frame, Editable):
                        fg_color=fg_color, border_color=border_color)
         Editable.__init__(self, parental_unit=None)
 
-        self.base_font = FontFabric.get_base_font()
+        self.ff = FontFabric()
+        self.font = self.ff.get_base_font()
         self.order = None
 
         self.id = str(Order.generate_id())
@@ -58,13 +59,13 @@ class AddOrderField(Frame, Editable):
             self.item.grid_propagate(False)
 
             self.confirm_button = Button(parental_widget=self, master=self.item, text="conf",
-                                         command=self.confirm, font=self.base_font, width=40)
+                                         command=self.confirm, font=self.font, width=40)
             self.confirm_button.item.grid(row=0, column=0, padx=3, pady=3, sticky="ne")
             self.confirm_button.item.grid_remove()
             self.add_widget(self.confirm_button)
 
             self.id_label = Label(self, self.item, text="id: " + self.id,
-                                  font=FontFabric.get_changed_font(weight='bold'))
+                                  font=self.ff.get_changed_font(weight='bold'))
             self.id_label.item.grid(row=0, column=0, pady=3, sticky="n")
             self.add_widget(self.id_label)
 

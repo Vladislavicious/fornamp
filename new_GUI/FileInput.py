@@ -45,7 +45,8 @@ class FileInput(Frame):
                          background_corner_colors,
                          overwrite_preferred_drawing_method, **kwargs)
         self.purpose_name = purpose_name
-        self.base_font = FontFabric.get_base_font()
+        self.ff = FontFabric()
+        self.font = self.ff.get_base_font()
         self.initialize()
 
     @property
@@ -61,18 +62,18 @@ class FileInput(Frame):
             self.item.grid_rowconfigure(2, weight=1)
 
             self.label = Label(parental_widget=self, master=self.item,
-                               text=self.purpose_name, font=self.base_font)
+                               text=self.purpose_name, font=self.font)
             self.label.item.grid(row=0, column=0, columnspan=2, pady=2, padx=1, sticky="nsew")
             self.add_widget(self.label)
 
             self.add_button = Button(parental_widget=self, master=self.item,
-                                     text="Добавить", font=self.base_font,
+                                     text="Добавить", font=self.font,
                                      command=self.add_path)
             self.add_button.item.grid(row=1, column=1, pady=2, padx=1, sticky="e")
             self.add_widget(self.add_button)
 
             self.clear_button = Button(parental_widget=self, master=self.item,
-                                       text="Очистить", font=self.base_font,
+                                       text="Очистить", font=self.font,
                                        command=self.clear_paths)
             self.clear_button.item.grid(row=1, column=0, pady=2, padx=1, sticky="w")
             self.add_widget(self.clear_button)
