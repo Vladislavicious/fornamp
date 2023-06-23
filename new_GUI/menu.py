@@ -1,7 +1,7 @@
 import logging
 
 from os import path
-from typing import Dict, Tuple
+from typing import Dict
 from types import FunctionType
 from UIadjusters.fontFabric import FontFabric
 from ioconnection.App import App
@@ -28,20 +28,10 @@ logger.info(f"Testing the custom logger for module {__name__}...")
 class MenuItem(Frame):
     def __init__(self, parental_widget: Container, master: any,
                  item_name: str, item_function, font,
-                 width: int = 50, height: int = 25,
-                 corner_radius: int | str | None = None,
-                 border_width: int | str | None = None,
-                 bg_color: str | Tuple[str, str] = "transparent",
-                 fg_color: str | Tuple[str, str] | None = None,
-                 border_color: str | Tuple[str, str] | None = None,
-                 background_corner_colors: Tuple[str | Tuple[str, str]] | None = None,
-                 overwrite_preferred_drawing_method: str | None = None, **kwargs):
+                 width: int = 50, height: int = 25, **kwargs):
 
         super().__init__(parental_widget, master, width,
-                         height, corner_radius, border_width,
-                         bg_color, fg_color, border_color,
-                         background_corner_colors,
-                         overwrite_preferred_drawing_method, **kwargs)
+                         height, **kwargs)
 
         self.__item_name = item_name
         self.function = item_function
@@ -76,23 +66,13 @@ class Menu(Frame):
     def __init__(self, parental_widget: Container, master: any,
                  open_menu_function, close_menu_function,
                  menu_options: Dict[str, FunctionType] = dict(),
-                 width: int = 50, height: int = 25,
-                 corner_radius: int | str | None = None,
-                 border_width: int | str | None = None,
-                 bg_color: str | Tuple[str, str] = "transparent",
-                 fg_color: str | Tuple[str, str] | None = None,
-                 border_color: str | Tuple[str, str] | None = None,
-                 background_corner_colors: Tuple[str | Tuple[str, str]] | None = None,
-                 overwrite_preferred_drawing_method: str | None = None, **kwargs):
+                 width: int = 50, height: int = 25, **kwargs):
 
         super().__init__(parental_widget, master, width,
-                         height, corner_radius, border_width,
-                         bg_color, fg_color, border_color,
-                         background_corner_colors,
-                         overwrite_preferred_drawing_method, **kwargs)
+                         height, **kwargs)
 
         self.__menu_opened = False
-        self.ff = FontFabric()
+        self.ff = FontFabric.get_instance()
         self.font = self.ff.get_changed_font(size=20, weight='bold')
         self.app = App()
         self.option_dict = menu_options

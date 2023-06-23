@@ -1,7 +1,4 @@
-"""Класс, представляющий собой лейбл с кнопкой, при нажатию на которую
-   лейбл скрывается, на его место ставится Entry и открывается возможность поменять содержимое Entry
-   на вход принимает Фрейм, в котором будет распологаться, а также функцию проверки"""
-from typing import Tuple
+
 from UIadjusters.fontFabric import FontFabric
 from tkabs.frame import Frame
 from tkabs.label import Label
@@ -10,20 +7,14 @@ from uiabs.container import Container
 
 class labeledText(Frame):
     def __init__(self, parental_widget: Container, master: any, title: str,
-                 initial_text: str = "", width: int = 250,
-                 border_width: int | str | None = 1,
-                 bg_color: str | Tuple[str, str] = "transparent",
-                 fg_color: str | Tuple[str, str] | None = None,
-                 border_color: str | Tuple[str, str] | None = None, **kwargs):
+                 initial_text: str = "", width: int = 250, **kwargs):
 
-        super().__init__(parental_widget, master, border_width=border_width,
-                         width=width, bg_color=bg_color, fg_color=fg_color,
-                         border_color=border_color, **kwargs)
+        super().__init__(parental_widget, master, width=width, **kwargs)
 
         self.initial_text = initial_text
         self.title_text = title
 
-        self.ff = FontFabric()
+        self.ff = FontFabric.get_instance()
         self.font = self.ff.get_base_font()
         self.initialize()
 

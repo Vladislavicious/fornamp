@@ -1,4 +1,5 @@
 import pickle
+from cryptography.fernet import InvalidToken
 from cryptography.fernet import Fernet
 
 
@@ -30,6 +31,9 @@ class User:
     @classmethod
     def deserialize(cls, data, key):
         f = Fernet(key)
-        decrypted_data = f.decrypt(data)
-        deserialized_data = pickle.loads(decrypted_data)
-        return cls(**deserialized_data)
+        try:
+            decrypted_data = f.decrypt(data)
+            deserialized_data = pickle.loads(decrypted_data)
+            return cls(**deserialized_data)
+        except InvalidToken:
+            return None

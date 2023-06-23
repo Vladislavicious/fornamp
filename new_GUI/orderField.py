@@ -1,5 +1,5 @@
 from datetime import date
-from typing import Tuple
+from UIadjusters.colorFabric import ColorFabric
 from ioconnection.App import App
 from BaH.order import Order
 from Caps.validator import Validator
@@ -26,19 +26,16 @@ class OrderField(Scroller, Editable):
     def __init__(self, parental_widget: Container, master: any, save_button: Button,
                  edit_button: Button, order: Order = None,
                  width: int = 250, height: int = 200,
-                 border_width: int | str | None = 2,
-                 bg_color: str | Tuple[str, str] = "transparent",
-                 fg_color: str | Tuple[str, str] | None = None,
-                 border_color: str | Tuple[str, str] | None = "#B22222",
                  change_preview_func=None):
 
+        self.cf = ColorFabric()
+        border_color = self.cf.undone
+
         Scroller.__init__(self, parental_widget=parental_widget, master=master,
-                          width=width, height=height,
-                          border_width=border_width, bg_color=bg_color,
-                          fg_color=fg_color, border_color=border_color)
+                          width=width, height=height, border_color=border_color)
         Editable.__init__(self, parental_unit=None)
 
-        self.ff = FontFabric()
+        self.ff = FontFabric.get_instance()
         self.font = self.ff.get_base_font()
         self.order = order
         # все характеристики order будут в виде строк
@@ -159,11 +156,11 @@ class OrderField(Scroller, Editable):
     def __configure_colors(self):
         if self.order is not None and self.order.CheckIfDone():
             if self.order.isVidan:
-                self.item.configure(border_color="#7FFF00")
+                self.item.configure(border_color=self.cf.vidan)
             else:
-                self.item.configure(border_color="#FFA500")
+                self.item.configure(border_color=self.cf.done)
         else:
-            self.item.configure(border_color="#B22222")
+            self.item.configure(border_color=self.cf.undone)
 
     def __assemble_order(self):
         customer = self.customer_field.get()

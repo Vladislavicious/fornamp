@@ -1,7 +1,7 @@
-from typing import Tuple
 from customtkinter import CTkToplevel
+from UIadjusters.colorFabric import ColorFabric
 
-from ioconnection.App import Singleton
+from ioconnection.Singletone import Singleton
 from tkabs.frame import Frame
 
 from uiabs.container import Container
@@ -11,8 +11,12 @@ class Dialog(CTkToplevel, Container, metaclass=Singleton):
     """Диалоговое окно, всегда одно на приложение, удаляется при закрытии приложения,
     в остальных случаях просто скрывается."""
     def __init__(self, parental_widget, master,
-                 fg_color: str | Tuple[str, str] | None = None,
+                 fg_color: str | None = None,
                  *args, **kwargs):
+
+        self.cf = ColorFabric.get_instance()
+        if fg_color is None:
+            fg_color = self.cf.foreground
         CTkToplevel.__init__(self, master, fg_color=fg_color, *args, **kwargs)
         Container.__init__(self, parental_widget)
 

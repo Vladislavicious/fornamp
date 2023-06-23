@@ -1,7 +1,6 @@
 import logging
 
 from os import path
-from typing import Tuple
 from ioconnection.App import App, Singleton
 from new_GUI.additionFrame import additionFrame
 from new_GUI.mainFrame import mainFrame
@@ -24,10 +23,9 @@ logger.info(f"Testing the custom logger for module {__name__}...")
 
 
 class MainWindow(TopLevel, metaclass=Singleton):
-    def __init__(self, *args, parental_widget, master,
-                 fg_color: str | Tuple[str, str] | None = None, **kwargs):
-        super().__init__(parental_widget=parental_widget, master=master,
-                         fg_color=fg_color, *args, **kwargs)
+    def __init__(self, *args, parental_widget, master, **kwargs):
+
+        super().__init__(parental_widget=parental_widget, master=master, *args, **kwargs)
         self.name = "MainWindow"
         self.app = App()
         self.current_order = None

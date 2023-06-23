@@ -1,6 +1,5 @@
 from datetime import date
 from datetime import timedelta
-from typing import Tuple
 from Caps.validator import Validator
 from BaH.order import Order
 from new_GUI.FileInput import FileInput
@@ -24,19 +23,13 @@ def get_date(date_string: str) -> date:
 
 class AddOrderField(Frame, Editable):
     def __init__(self, parental_widget: Container, master: any, save_button: Button,
-                 width: int = 250, height: int = 200,
-                 border_width: int | str | None = 2,
-                 bg_color: str | Tuple[str, str] = "transparent",
-                 fg_color: str | Tuple[str, str] | None = None,
-                 border_color: str | Tuple[str, str] | None = None):
+                 width: int = 250, height: int = 200):
 
         Frame.__init__(self, parental_widget=parental_widget, master=master,
-                       width=width, height=height,
-                       border_width=border_width, bg_color=bg_color,
-                       fg_color=fg_color, border_color=border_color)
+                       width=width, height=height)
         Editable.__init__(self, parental_unit=None)
 
-        self.ff = FontFabric()
+        self.ff = FontFabric.get_instance()
         self.font = self.ff.get_base_font()
         self.order = None
 

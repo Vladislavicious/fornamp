@@ -1,7 +1,6 @@
 import logging
 
 from os import path
-from typing import Tuple
 from UIadjusters.fontFabric import FontFabric
 from new_GUI.imageoncanvas import ImageOnCanvas
 from tkabs.dialog import Dialog
@@ -28,22 +27,17 @@ class Photo(Frame):
     def __init__(self, parental_widget: Container, master: any,
                  photopath: str,
                  width: int = 200, height: int = 200,
-                 corner_radius: int | str | None = None,
-                 border_width: int | str | None = None,
-                 bg_color: str | Tuple[str, str] = "transparent",
-                 fg_color: str | Tuple[str, str] | None = None,
-                 border_color: str | Tuple[str, str] | None = None,
-                 background_corner_colors: Tuple[str | Tuple[str, str]] | None = None,
-                 overwrite_preferred_drawing_method: str | None = None, **kwargs):
+                 border_width: int | None = None,
+                 bg_color: str | None = None,
+                 fg_color: str | None = None,
+                 border_color: str | None = None, **kwargs):
 
         super().__init__(parental_widget, master, width,
-                         height, corner_radius, border_width,
-                         bg_color, fg_color, border_color,
-                         background_corner_colors,
-                         overwrite_preferred_drawing_method, **kwargs)
+                         height, border_width, bg_color,
+                         fg_color, border_color, **kwargs)
         self.dialog = None
         self.photopath = photopath
-        self.ff = FontFabric()
+        self.ff = FontFabric.get_instance()
         self.font = self.ff.get_base_font()
         self.initialize()
 

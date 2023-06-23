@@ -1,11 +1,11 @@
 import logging
 
 from os import path
-from typing import Tuple
 from textwrap import wrap
 from customtkinter import CTkLabel, CTkFont
 
 from customtkinter.windows.widgets.image import CTkImage
+from UIadjusters.colorFabric import ColorFabric
 from UIadjusters.fontFabric import FontFabric
 from uiabs.container import Container
 from uiabs.widget import Widget
@@ -28,17 +28,25 @@ logger.info(f"Testing the custom logger for module {__name__}...")
 class Label(Widget):
     def __init__(self, parental_widget: Container, master: any, width: int = 0,
                  height: int = 28, corner_radius: int | None = None,
-                 bg_color: str | Tuple[str, str] = "transparent",
-                 fg_color: str | Tuple[str, str] | None = None,
-                 text_color: str | Tuple[str, str] | None = None,
+                 bg_color: str | None = None,
+                 fg_color: str | None = None,
+                 text_color: str | None = None,
                  text: str = "Метка", font: CTkFont = None,
                  image: CTkImage | None = None, compound: str = "center",
                  anchor: str = "center", wraplength: int = 0, **kwargs):
 
+        self.cf = ColorFabric()
+        if fg_color is None:
+            fg_color = self.cf.foreground
+        if bg_color is None:
+            bg_color = self.cf.background
+        if text_color is None:
+            text_color = self.cf.base_font
+
         logger.debug(f"initial width: {width}")
         super().__init__(parental_widget)
         if self.initialize():
-            self.ff = FontFabric()
+            self.ff = FontFabric.get_instance()
             self.font = font
             if font is None:
                 self.font = self.ff.get_base_font()

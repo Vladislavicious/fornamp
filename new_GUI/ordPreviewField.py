@@ -1,4 +1,5 @@
 from BaH.order import OrderPreview
+from UIadjusters.colorFabric import ColorFabric
 from tkabs.frame import Frame
 from tkabs.label import Label
 from UIadjusters.fontFabric import FontFabric
@@ -8,12 +9,15 @@ from uiabs.container import Container
 class OrderPreviewField(Frame):
     def __init__(self, parental_widget: Container, master: any,
                  order_preview: OrderPreview):
-        border_width = 2
-        border_color = "#B22222"
+
+        self.cf = ColorFabric()
+        border_color = self.cf.undone
+        border_width = self.cf.lines_width
+
         super().__init__(parental_widget, master, border_width=border_width,
                          border_color=border_color)
         self.order_preview = order_preview
-        self.ff = FontFabric()
+        self.ff = FontFabric.get_instance()
         self.font = self.ff.get_base_font()
 
         self.initialize()
@@ -35,11 +39,11 @@ class OrderPreviewField(Frame):
     def __configure_colors(self):
         if self.order_preview.isDone:
             if self.order_preview.isVidan:
-                self.item.configure(border_color="#7FFF00")
+                self.item.configure(border_color=self.cf.vidan)
             else:
-                self.item.configure(border_color="#FFA500")
+                self.item.configure(border_color=self.cf.done)
         else:
-            self.item.configure(border_color="#B22222")
+            self.item.configure(border_color=self.cf.undone)
 
     def change_order_preview(self, order_preview: OrderPreview):
         self.order_preview = order_preview

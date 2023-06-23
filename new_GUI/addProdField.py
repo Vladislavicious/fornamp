@@ -1,4 +1,3 @@
-from typing import Tuple
 from BaH.product import Product
 from BaH.step import Step
 from Caps.validator import Validator
@@ -16,14 +15,8 @@ from uiabs.widget import Widget
 class addProductField(Frame, Editable):
     def __init__(self, parental_widget: Container, master: any,
                  step_frame: Scroller, click_function,
-                 removal_function, product: Product = None,
-                 border_width: int | str | None = 2,
-                 bg_color: str | Tuple[str, str] = "transparent",
-                 fg_color: str | Tuple[str, str] | None = None,
-                 border_color: str | Tuple[str, str] | None = None):
-        Frame.__init__(self, parental_widget=parental_widget, master=master,
-                       border_width=border_width, bg_color=bg_color,
-                       fg_color=fg_color, border_color=border_color)
+                 removal_function, product: Product = None):
+        Frame.__init__(self, parental_widget=parental_widget, master=master)
         Editable.__init__(self, parental_unit=parental_widget)
         self.product = product
         # все характеристики product будут в виде строк
@@ -43,7 +36,7 @@ class addProductField(Frame, Editable):
         self.removal_function = removal_function
         self.click_function = click_function
         self.step_frame = step_frame
-        self.ff = FontFabric()
+        self.ff = FontFabric.get_instance()
         self.font = self.ff.get_base_font()
 
         self.step_fields = list()

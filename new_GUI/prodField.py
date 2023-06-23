@@ -1,6 +1,6 @@
-from typing import Tuple
 from BaH.product import Product
 from Caps.validator import Validator
+from UIadjusters.colorFabric import ColorFabric
 from ioconnection.App import App
 from new_GUI.stepField import stepField
 from new_GUI.textField import TextField
@@ -13,16 +13,19 @@ from uiabs.editable import Editable
 
 class ProductField(Frame, Editable):
     def __init__(self, parental_widget: Container, master: any,
-                 product: Product, border_width: int | str | None = 2,
-                 bg_color: str | Tuple[str, str] = "transparent",
-                 fg_color: str | Tuple[str, str] | None = None,
-                 border_color: str | Tuple[str, str] | None = "#B22222"):
+                 product: Product, border_width: int | None = None,
+                 bg_color: str | None = None,
+                 fg_color: str | None = None):
+
+        self.cf = ColorFabric()
+        border_color = self.cf.undone
+
         Frame.__init__(self, parental_widget=parental_widget, master=master,
                        border_width=border_width, bg_color=bg_color,
                        fg_color=fg_color, border_color=border_color)
         Editable.__init__(self, parental_unit=parental_widget)
         self.product = product
-        self.ff = FontFabric()
+        self.ff = FontFabric.get_instance()
         self.font = self.ff.get_base_font()
         # все характеристики product будут в виде строк
         if product is not None:
@@ -189,9 +192,9 @@ class ProductField(Frame, Editable):
 
         self.__parse_steps()
         if self.product.CheckIfDone():
-            self.item.configure(border_color="#7FFF00")
+            self.item.configure(border_color=self.cf.done)
         else:
-            self.item.configure(border_color="#B22222")
+            self.item.configure(border_color=self.cf.undone)
 
     def __parse_steps(self):
         if len(self.step_fields) != 0:

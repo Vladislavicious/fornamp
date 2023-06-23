@@ -17,10 +17,10 @@ class TextField(Frame, Editable):
                  validation_method, title: str,
                  placeholder_text: str = "", initial_text: str = "",
                  with_button: bool = False, width: int = 250,
-                 border_width: int | str | None = 1,
-                 bg_color: str | Tuple[str, str] = "transparent",
-                 fg_color: str | Tuple[str, str] | None = None,
-                 border_color: str | Tuple[str, str] | None = None,
+                 border_width: int | None = None,
+                 bg_color: str | None = None,
+                 fg_color: str | None = None,
+                 border_color: str | None = None,
                  enter_pressed_function=None, **kwargs):
 
         Frame.__init__(self, parental_widget, master, border_width=border_width,
@@ -37,7 +37,7 @@ class TextField(Frame, Editable):
 
         self.enter_pressed_function = enter_pressed_function
 
-        self.ff = FontFabric()
+        self.ff = FontFabric.get_instance()
         self.font = self.ff.get_base_font()
         self.initialize()
 

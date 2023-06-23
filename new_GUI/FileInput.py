@@ -1,7 +1,7 @@
 import logging
 
 from os import path
-from typing import List, Tuple
+from typing import List
 from tkinter import filedialog as fd
 from UIadjusters.fontFabric import FontFabric
 from new_GUI.textWithButton import TextWithButton
@@ -30,22 +30,12 @@ logger.info(f"Testing the custom logger for module {__name__}...")
 class FileInput(Frame):
     def __init__(self, parental_widget: Container, master: any,
                  purpose_name: str,
-                 width: int = 200, height: int = 200,
-                 corner_radius: int | str | None = None,
-                 border_width: int | str | None = None,
-                 bg_color: str | Tuple[str, str] = "transparent",
-                 fg_color: str | Tuple[str, str] | None = None,
-                 border_color: str | Tuple[str, str] | None = None,
-                 background_corner_colors: Tuple[str | Tuple[str, str]] | None = None,
-                 overwrite_preferred_drawing_method: str | None = None, **kwargs):
+                 width: int = 200, height: int = 200, **kwargs):
 
         super().__init__(parental_widget, master, width,
-                         height, corner_radius, border_width,
-                         bg_color, fg_color, border_color,
-                         background_corner_colors,
-                         overwrite_preferred_drawing_method, **kwargs)
+                         height, **kwargs)
         self.purpose_name = purpose_name
-        self.ff = FontFabric()
+        self.ff = FontFabric.get_instance()
         self.font = self.ff.get_base_font()
         self.initialize()
 

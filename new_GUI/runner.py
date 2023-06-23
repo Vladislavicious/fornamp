@@ -1,6 +1,3 @@
-"""Абстракция на ползунок со значениями 'от' и 'до'"""
-
-from typing import Tuple
 from new_GUI.labeledText import labeledText
 from new_GUI.textField import TextField
 from tkabs.label import Label
@@ -16,10 +13,10 @@ class Runner(Frame, Editable):
     def __init__(self, parental_widget: Container, master: any, runner_title: str,
                  from_value: int = 0, to_value: int = 1, steps_count: int = 0,
                  width: int = 100, height: int = 100,
-                 border_width: int | str | None = None,
-                 bg_color: str | Tuple[str, str] = "transparent",
-                 fg_color: str | Tuple[str, str] | None = None,
-                 border_color: str | Tuple[str, str] | None = None):
+                 border_width: int | None = None,
+                 bg_color: str | None = None,
+                 fg_color: str | None = None,
+                 border_color: str | None = None):
 
         Frame.__init__(self, parental_widget=parental_widget, master=master,
                        width=width, height=height,
@@ -38,7 +35,7 @@ class Runner(Frame, Editable):
         if steps_count <= 0:
             steps_count = to_value + 1
 
-        self.ff = FontFabric()
+        self.ff = FontFabric.get_instance()
         self.font = self.ff.get_base_font()
         self.steps_count = steps_count
         self.from_value_text = str(from_value)

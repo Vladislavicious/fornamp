@@ -1,4 +1,5 @@
 import re
+import os
 from typing import List, Tuple
 from typing import Dict
 
@@ -47,7 +48,7 @@ class UserHandler:
         return names
 
     def __ReadFromFile(self):
-
+        viable_key = True
         try:
             with open(self.filepath, "rb") as file:
                 text = file.read()
@@ -56,8 +57,16 @@ class UserHandler:
                 Users = list()
 
                 for code in text:
-                    Users.append(User.deserialize(code, self.key))
+                    user = User.deserialize(code, self.key)
+                    if user is None:
+                        print("Неподходящий ключ шифрования")
+                        viable_key = False
+                        Users.clear()
+                        break
+                    Users.append(user)
             self.users = Users
+            if not viable_key:
+                os.remove(self.filepath)
         except FileNotFoundError:
             print("Файл с аккаунтами ещё не создан")
 
@@ -196,7 +205,7 @@ class UserHandler:
         return errors
 
     def NewUser(self, login: str, password: str, email: str = "",
-                emailpassword: str = "", isLastUser=False,
+                emailpassword: str = "", isLastUser=True,
                 isAdministrator=False) -> List[Dict[int, str]]:
         """Интерфейс для регистрации нового пользователя
            Возвращает список словрей {int: str}, где int - аргумент, в котором была найдена ошибка

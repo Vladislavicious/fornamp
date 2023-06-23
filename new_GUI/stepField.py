@@ -1,4 +1,4 @@
-from typing import Tuple
+from UIadjusters.colorFabric import ColorFabric
 from ioconnection.App import App
 from BaH.step import Step
 from Caps.validator import Validator
@@ -12,10 +12,12 @@ from uiabs.editable import Editable
 
 class stepField(Frame, Editable):
     def __init__(self, parental_widget: Container, master: any, step: Step,
-                 border_width: int | str | None = 2,
-                 bg_color: str | Tuple[str, str] = "transparent",
-                 fg_color: str | Tuple[str, str] | None = None,
-                 border_color: str | Tuple[str, str] | None = "#B22222"):
+                 border_width: int | None = None,
+                 bg_color: str | None = None,
+                 fg_color: str | None = None):
+
+        self.cf = ColorFabric()
+        border_color = self.cf.undone
 
         Frame.__init__(self, parental_widget=parental_widget, master=master,
                        border_width=border_width, bg_color=bg_color,
@@ -23,7 +25,7 @@ class stepField(Frame, Editable):
         Editable.__init__(self, parental_widget)
 
         self.step = step
-        self.ff = FontFabric()
+        self.ff = FontFabric.get_instance()
         self.font = self.ff.get_base_font()
 
         if self.step is not None:
@@ -91,7 +93,7 @@ class stepField(Frame, Editable):
         return False
 
     def __configure_as_done(self):
-        self.item.configure(border_color="#7FFF00")
+        self.item.configure(border_color=self.cf.vidan)
         if self.runner is not None:
             self.runner.hide()
 

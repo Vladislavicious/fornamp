@@ -2,8 +2,8 @@
 import logging
 
 from os import path
-from typing import Tuple
 from customtkinter import CTkFrame
+from UIadjusters.colorFabric import ColorFabric
 
 from uiabs.container import Container
 
@@ -25,20 +25,29 @@ logger.info(f"Testing the custom logger for module {__name__}...")
 class Frame(Container):
     def __init__(self, parental_widget: Container, master: any,
                  width: int = 200, height: int = 200,
-                 corner_radius: int | str | None = None,
-                 border_width: int | str | None = None,
-                 bg_color: str | Tuple[str, str] = "transparent",
-                 fg_color: str | Tuple[str, str] | None = None,
-                 border_color: str | Tuple[str, str] | None = None,
-                 background_corner_colors: Tuple[str | Tuple[str, str]] | None = None,
+                 corner_radius: int | None = None,
+                 border_width: int | None = None,
+                 bg_color: str | None = None,
+                 fg_color: str | None = None,
+                 border_color: str | None = None,
                  overwrite_preferred_drawing_method: str | None = None, **kwargs):
+
+        self.cf = ColorFabric()
+        if border_width is None:
+            border_width = self.cf.lines_width
+        if fg_color is None:
+            fg_color = self.cf.foreground
+        if bg_color is None:
+            bg_color = self.cf.background
+        if border_color is None:
+            border_color = self.cf.border_color
 
         super().__init__(parental_widget)
         self.name = "Frame в " + parental_widget.name
 
         self.item = CTkFrame(master, width, height, corner_radius,
                              border_width, bg_color, fg_color, border_color,
-                             background_corner_colors, overwrite_preferred_drawing_method, **kwargs)
+                             overwrite_preferred_drawing_method, **kwargs)
         logger.debug(f"{self.name} инициализирован")
 
     @property

@@ -1,6 +1,7 @@
 """Абстракция понятия toplevel в tkinter'е"""
 from typing import Tuple
 from customtkinter import CTkToplevel
+from UIadjusters.colorFabric import ColorFabric
 
 
 from uiabs.container import Container
@@ -8,7 +9,10 @@ from uiabs.container import Container
 
 class TopLevel(CTkToplevel, Container):
     def __init__(self, *args, parental_widget, master,
-                 fg_color: str | Tuple[str, str] | None = None, **kwargs):
+                 fg_color: str | None = None, **kwargs):
+        self.cf = ColorFabric.get_instance()
+        if fg_color is None:
+            fg_color = self.cf.foreground
         CTkToplevel.__init__(self, master, fg_color=fg_color, *args, **kwargs)
         Container.__init__(self, parental_widget)
         self.name = "TopLevel"

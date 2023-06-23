@@ -1,4 +1,3 @@
-from typing import Tuple
 from BaH.step import Step
 from Caps.validator import Validator
 from new_GUI.textField import TextField
@@ -11,18 +10,13 @@ from uiabs.editable import Editable
 
 class addStepField(Frame, Editable):
     def __init__(self, parental_widget: Container, master: any,
-                 step: Step = None, border_width: int | str | None = 2,
-                 bg_color: str | Tuple[str, str] = "transparent",
-                 fg_color: str | Tuple[str, str] | None = None,
-                 border_color: str | Tuple[str, str] | None = None):
+                 step: Step = None):
 
-        Frame.__init__(self, parental_widget=parental_widget, master=master,
-                       border_width=border_width, bg_color=bg_color,
-                       fg_color=fg_color, border_color=border_color)
+        Frame.__init__(self, parental_widget=parental_widget, master=master)
         Editable.__init__(self, parental_widget)
 
         self.step = step
-        self.ff = FontFabric()
+        self.ff = FontFabric.get_instance()
         self.font = self.ff.get_base_font()
 
         if self.step is not None:

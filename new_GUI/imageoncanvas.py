@@ -1,4 +1,3 @@
-from typing import Tuple
 from tkabs.canvas import Canvas
 
 from tkabs.frame import Frame
@@ -9,20 +8,10 @@ from uiabs.container import Container
 class ImageOnCanvas(Frame):
     def __init__(self, parental_widget: Container, master: any,
                  image_path: str, image_function=None,
-                 width: int = 100, height: int = 100,
-                 corner_radius: int | str | None = None,
-                 border_width: int | str | None = None,
-                 bg_color: str | Tuple[str, str] = "transparent",
-                 fg_color: str | Tuple[str, str] | None = None,
-                 border_color: str | Tuple[str, str] | None = None,
-                 background_corner_colors: Tuple[str | Tuple[str, str]] | None = None,
-                 overwrite_preferred_drawing_method: str | None = None, **kwargs):
+                 width: int = 100, height: int = 100, **kwargs):
 
         super().__init__(parental_widget, master, width,
-                         height, corner_radius, border_width,
-                         bg_color, fg_color, border_color,
-                         background_corner_colors,
-                         overwrite_preferred_drawing_method, **kwargs)
+                         height, **kwargs)
 
         self.light_image_path = image_path
         self.image_function = image_function

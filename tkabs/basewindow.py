@@ -6,7 +6,10 @@ from typing import Tuple
 
 
 from customtkinter import CTk
-from ioconnection.App import Singleton
+from UIadjusters.colorFabric import ColorFabric
+from UIadjusters.fontFabric import FontFabric
+from ioconnection.App import App
+from ioconnection.Singletone import Singleton
 from tkabs.button import Button
 from tkabs.dialog import Dialog
 from uiabs.container import Container
@@ -49,6 +52,12 @@ class FornampWindow(CTk, Container, metaclass=Singleton):
             self.geometry("500x220+500+340")
             self.resizable(True, True)
             self.title("Fornamp")
+
+            self.app = App()
+            config_manager = self.app.file_manager.config_manager
+            self.ff = FontFabric(family=config_manager.font_struct.family,
+                                 size=config_manager.font_struct.size)
+            self.cf = ColorFabric.from_color_setting(config_manager.color_setting)
 
             self.dialog = Dialog(parental_widget=self, master=self)
             self.dialog.show()

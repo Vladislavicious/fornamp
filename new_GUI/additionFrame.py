@@ -1,7 +1,7 @@
 import logging
 
 from os import path
-from typing import List, Tuple
+from typing import List
 from BaH.product import Product
 from new_GUI.addProdField import addProductField
 from UIadjusters.fontFabric import FontFabric
@@ -31,24 +31,14 @@ logger.info(f"Testing the custom logger for module {__name__}...")
 class additionFrame(Frame):
     def __init__(self, parental_widget: Container, master: any,
                  go_to_main_function, add_order_preview_func,
-                 width: int = 200, height: int = 200,
-                 corner_radius: int | str | None = None,
-                 border_width: int | str | None = None,
-                 bg_color: str | Tuple[str, str] = "transparent",
-                 fg_color: str | Tuple[str, str] | None = None,
-                 border_color: str | Tuple[str, str] | None = None,
-                 background_corner_colors: Tuple[str | Tuple[str, str]] | None = None,
-                 overwrite_preferred_drawing_method: str | None = None, **kwargs):
+                 width: int = 200, height: int = 200, **kwargs):
 
         super().__init__(parental_widget, master, width,
-                         height, corner_radius, border_width,
-                         bg_color, fg_color, border_color,
-                         background_corner_colors,
-                         overwrite_preferred_drawing_method, **kwargs)
+                         height, **kwargs)
         self.back_function = go_to_main_function
         self.add_order_preview_func = add_order_preview_func
 
-        self.ff = FontFabric()
+        self.ff = FontFabric.get_instance()
         self.font = self.ff.get_base_font()
         self.app = App()
 

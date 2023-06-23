@@ -5,9 +5,13 @@ Config manager - класс, который отвечает за пользов
 import os
 import pickle
 from cryptography.fernet import Fernet
+from UIadjusters.fontFabric import FontStruct
+from UIadjusters.colorFabric import ColorSetting
+
+from ioconnection.Singletone import Singleton
 
 
-class ConfigManager():
+class ConfigManager(metaclass=Singleton):
     @classmethod
     def get_config(cls):
         dir_name = os.getenv('APPDATA') + "\\fornamp"
@@ -32,7 +36,11 @@ class ConfigManager():
         self.accounts_filepath = self.__config_dir_path + "\\accs.b"
         self.key = Fernet.generate_key()
 
-        self.font_family = "Century gothic"
+        self.font_struct = FontStruct(family="Century gothic", size=16)
+        self.color_setting = ColorSetting(undone="#B22222", done="#FFA500", vidan="#7FFF00", border_color=None,
+                                          bg="transparent", fg=None, buttons=None,
+                                          error_font=None, button_hover=None,
+                                          lines=None, base_font=None, lines_width=1)
 
     def save(self):
         with open(self.__config_dir_path + "\\.ordconfig", "wb") as file:

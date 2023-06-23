@@ -1,9 +1,8 @@
 import logging
 
 from os import path
-from typing import Literal, Tuple
 from customtkinter import CTkScrollableFrame
-from customtkinter.windows.widgets.font import CTkFont
+from UIadjusters.colorFabric import ColorFabric
 
 from uiabs.container import Container
 
@@ -25,27 +24,30 @@ logger.info(f"Testing the custom logger for module {__name__}...")
 class Scroller(Container):
     def __init__(self, parental_widget: Container, master: any, width: int = 200,
                  height: int = 200, corner_radius: int | str | None = None,
-                 border_width: int | str | None = None,
-                 bg_color: str | Tuple[str, str] = "transparent",
-                 fg_color: str | Tuple[str, str] | None = None,
-                 border_color: str | Tuple[str, str] | None = None,
-                 scrollbar_fg_color: str | Tuple[str, str] | None = None,
-                 scrollbar_button_color: str | Tuple[str, str] | None = None,
-                 scrollbar_button_hover_color: str | Tuple[str, str] | None = None,
-                 label_fg_color: str | Tuple[str, str] | None = None,
-                 label_text_color: str | Tuple[str, str] | None = None,
-                 label_text: str = "", label_font: tuple | CTkFont | None = None,
-                 label_anchor: str = "center",
-                 orientation: Literal['vertical', 'horizontal'] = "vertical"):
+                 border_width: int | None = None,
+                 bg_color: str | None = None,
+                 fg_color: str | None = None,
+                 border_color: str | None = None,
+                 scrollbar_fg_color: str | None = None,
+                 scrollbar_button_color: str | None = None,
+                 scrollbar_button_hover_color: str | None = None):
+
+        self.cf = ColorFabric()
+        if border_width is None:
+            border_width = self.cf.lines_width
+        if fg_color is None:
+            fg_color = self.cf.foreground
+        if bg_color is None:
+            bg_color = self.cf.background
+        if border_color is None:
+            border_color = self.cf.border_color
 
         super().__init__(parental_widget)
         self.name = f"Scroller в {parental_widget.name}"
         self.item = CTkScrollableFrame(master, width, height, corner_radius,
                                        border_width, bg_color, fg_color,
                                        border_color, scrollbar_fg_color,
-                                       scrollbar_button_color, scrollbar_button_hover_color,
-                                       label_fg_color, label_text_color, label_text,
-                                       label_font, label_anchor, orientation)
+                                       scrollbar_button_color, scrollbar_button_hover_color)
         logger.debug(f"{self.name} инициализирован")
 
     def destroy(self) -> bool:
