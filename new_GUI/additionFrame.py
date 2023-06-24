@@ -10,7 +10,7 @@ from new_GUI.addOrderField import AddOrderField
 from tkabs.scroller import Scroller
 from tkabs.button import Button
 from tkabs.frame import Frame
-from uiabs.Container_tk import Container_tk
+from uiabs.container_tk import Container_tk
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
@@ -115,17 +115,19 @@ class additionFrame(Frame):
             return True
         return False
 
-    def show(self) -> bool:
-        if super().show():
-            self.save_button.hide()
-            return True
-        return False
+    def draw(self):
+        self.save_button.item.grid_remove()
+        for container in self.get_class_instances(Container_tk):
+            container.show()
+
+    def erase(self):
+        pass
 
     def __create_order_addition(self):
         self.addOrder = AddOrderField(parental_widget=self.order_frame, master=self.order_frame.item,
                                       save_button=self.save_button)
         self.addOrder.item.grid(row=0, column=0, padx=1, pady=1, sticky="nsew")
-        self.add_widget(self.addOrder)
+        self.order_frame.add_widget(self.addOrder)
         self.addOrder.edit()
 
     def product_click(self, product: addProductField):

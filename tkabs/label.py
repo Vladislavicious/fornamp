@@ -7,7 +7,7 @@ from customtkinter import CTkLabel, CTkFont
 from customtkinter.windows.widgets.image import CTkImage
 from UIadjusters.colorFabric import ColorFabric
 from UIadjusters.fontFabric import FontFabric
-from uiabs.Container_tk import Container_tk
+from uiabs.container_tk import Container_tk
 from uiabs.widget_tk import Widget_tk
 
 logger = logging.getLogger(__name__)
@@ -64,20 +64,17 @@ class Label(Widget_tk):
         text = self.item.cget("text")
         return text.replace("\n", "")
 
-    def show(self) -> bool:
-        if super().show():
-            text = self.item.cget("text")
-            text_length = len(text)
-            if text_length > 25:
-                self.item.update()
+    def draw(self):
+        text = self.item.cget("text")
+        text_length = len(text)
+        if text_length > 25:
+            self.item.update()
 
-            self.__check_text_length()
+        self.__check_text_length()
 
-            self.item.grid()
+        super().draw()
 
-            logger.debug(f"second width: {self.item.winfo_width()}")
-            return True
-        return False
+        logger.debug(f"second width: {self.item.winfo_width()}")
 
     def __check_text_length(self):
         """Если длина строки больше, чем ей выделено места,

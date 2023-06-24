@@ -7,7 +7,7 @@ from tkabs.dialog import Dialog
 
 from tkabs.frame import Frame
 from tkabs.label import Label
-from uiabs.Container_tk import Container_tk
+from uiabs.container_tk import Container_tk
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 
@@ -83,4 +83,4 @@ class Photo(Frame):
 
     def draw(self):
         self.item.update_idletasks()
-        super().draw()
+        self.canvas.show()

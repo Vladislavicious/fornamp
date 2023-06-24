@@ -8,7 +8,7 @@ from tkabs.button import Button
 from tkabs.frame import Frame
 from tkabs.label import Label
 from UIadjusters.fontFabric import FontFabric
-from uiabs.Container_tk import Container_tk
+from uiabs.container_tk import Container_tk
 from uiabs.editable import Editable
 
 
@@ -153,3 +153,11 @@ class AddOrderField(Frame, Editable):
             self.save_button.item.configure(state="normal")
             self.save_button.show()
             return
+
+    def draw(self):
+        for field in self.get_class_instances(TextField):
+            field.show()
+        self.file_input.show()
+
+    def erase(self):
+        pass

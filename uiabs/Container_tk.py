@@ -5,7 +5,7 @@ from uiabs.widget_tk import Widget_tk
 class Container_tk(Widget_tk):
     def __init__(self, parental_widget) -> None:
         super().__init__(parental_widget)
-        self.name = "Container"
+        self.name = "Container tk"
         self.__widgets = set()  # является множеством, чтобы исключить нахождение нескольких одинаковых виджетов
 
     @property
@@ -34,17 +34,8 @@ class Container_tk(Widget_tk):
             return True
         return False
 
-    def hide(self) -> bool:
-        if super().hide():
-            self.__hide_all_widgets()
-            return True
-        return False
-
-    def show(self) -> bool:
-        if super().show():
-            self.__show_all_widgets()
-            return True
-        return False
+    def draw(self):
+        self.show_all_widgets()
 
     def remove_widget(self, widget: Widget_tk):
         self.__widgets.discard(widget)
@@ -71,11 +62,11 @@ class Container_tk(Widget_tk):
         for widget in self.widgets:
             widget.bind(sequence, function, bind_to_childs)
 
-    def __hide_all_widgets(self):
+    def hide_all_widgets(self):
         for widget in self.__widgets:
             widget.hide()
 
-    def __show_all_widgets(self):
+    def show_all_widgets(self):
         for widget in self.__widgets:
             widget.show()
 

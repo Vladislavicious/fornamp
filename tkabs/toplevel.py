@@ -1,7 +1,7 @@
 """Абстракция понятия toplevel в tkinter'е"""
 from customtkinter import CTkToplevel
 from UIadjusters.colorFabric import ColorFabric
-from uiabs.Container_tk import Container_tk
+from uiabs.container_tk import Container_tk
 
 
 class TopLevel(CTkToplevel, Container_tk):
@@ -15,9 +15,11 @@ class TopLevel(CTkToplevel, Container_tk):
         self.name = "TopLevel"
 
     def erase(self):
+        self.hide_all_widgets()
         self.withdraw()
 
     def draw(self):
+        self.show_all_widgets()
         self.deiconify()
 
     def inner_delete(self):

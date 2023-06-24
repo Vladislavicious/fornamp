@@ -4,7 +4,7 @@ from tkabs.label import Label
 from tkabs.slider import Slider
 from UIadjusters.fontFabric import FontFabric
 from tkabs.frame import Frame
-from uiabs.Container_tk import Container_tk
+from uiabs.container_tk import Container_tk
 from uiabs.editable import Editable
 from Caps.validator import Validator
 
@@ -115,3 +115,6 @@ class Runner(Frame, Editable):
             self.set_as_edited()
             self.slider.confirm()
             Editable.confirm(self)
+
+    def draw(self):
+        self.from_field.show()

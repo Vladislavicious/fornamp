@@ -3,7 +3,7 @@ from UIadjusters.colorFabric import ColorFabric
 from tkabs.frame import Frame
 from tkabs.label import Label
 from UIadjusters.fontFabric import FontFabric
-from uiabs.Container_tk import Container_tk
+from uiabs.container_tk import Container_tk
 
 
 class OrderPreviewField(Frame):
@@ -83,3 +83,6 @@ class OrderPreviewField(Frame):
 
             return True
         return False
+
+    def draw(self):
+        pass

@@ -3,7 +3,7 @@ from UIadjusters.colorFabric import ColorFabric
 
 from ioconnection.Singletone import Singleton
 from tkabs.frame import Frame
-from uiabs.Container_tk import Container_tk
+from uiabs.container_tk import Container_tk
 
 
 class Dialog(CTkToplevel, Container_tk, metaclass=Singleton):
@@ -44,6 +44,7 @@ class Dialog(CTkToplevel, Container_tk, metaclass=Singleton):
         return False
 
     def draw(self):
+        super().draw()
         self.deiconify()
 
     def erase(self):

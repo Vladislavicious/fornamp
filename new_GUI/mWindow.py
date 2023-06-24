@@ -64,9 +64,9 @@ class MainWindow(TopLevel, metaclass=Singleton):
             return True
         return False
 
-    def delete(self) -> bool:
+    def inner_delete(self):
         self.app.destroy()
-        super().delete()
+        super().inner_delete()
 
     def __create_addition_frame(self):
         if self.additionFrame is not None:

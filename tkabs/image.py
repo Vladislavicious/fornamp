@@ -26,7 +26,7 @@ class Image(Widget_tk):
         return True
 
     def draw(self):
-        return None
+        pass
 
     def erase(self):
-        return None
+        pass

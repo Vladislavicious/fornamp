@@ -7,7 +7,7 @@ from tkabs.button import Button
 from tkabs.frame import Frame
 from UIadjusters.fontFabric import FontFabric
 from tkabs.scroller import Scroller
-from uiabs.Container_tk import Container_tk
+from uiabs.container_tk import Container_tk
 from uiabs.editable import Editable
 from uiabs.widget_tk import Widget_tk
 
@@ -183,3 +183,10 @@ class addProductField(Frame, Editable):
         self.add_widget(step_field)
         step_field.edit()
         self.step_fields.append(step_field)
+
+    def draw(self):
+        for field in self.get_class_instances(TextField):
+            field.show()
+
+    def erase(self):
+        pass

@@ -2,7 +2,7 @@
 from UIadjusters.fontFabric import FontFabric
 from tkabs.frame import Frame
 from tkabs.label import Label
-from uiabs.Container_tk import Container_tk
+from uiabs.container_tk import Container_tk
 
 
 class labeledText(Frame):
@@ -49,3 +49,9 @@ class labeledText(Frame):
 
             return True
         return False
+
+    def draw(self):
+        pass
+
+    def erase(self):
+        pass

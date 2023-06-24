@@ -8,7 +8,7 @@ from ioconnection.App import App
 
 from tkabs.frame import Frame
 from tkabs.label import Label
-from uiabs.Container_tk import Container_tk
+from uiabs.container_tk import Container_tk
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
@@ -60,6 +60,9 @@ class MenuItem(Frame):
             self.item.bind('<Button-1>', command=lambda event: self.function())
             self.name_label.item.configure(cursor="hand2")
             self.name_label.item.bind('<Button-1>', command=lambda event: self.function())
+
+    def draw(self):
+        pass
 
 
 class Menu(Frame):
@@ -124,32 +127,26 @@ class Menu(Frame):
 
         if self.menu_opened is False:
             self.open_menu_function()
-            self.unfold()
             self.menu_opened = True
+            self.show()
         else:
-            self.close_menu_function()
-            self.menu_opened = False
-            self.fold()
+            self.hide()
 
-    def hide(self) -> bool:
-        if super().hide():
-            self.menu_opened = False
-            return True
-        return False
+    def erase(self):
+        self.close_menu_function()
+        self.menu_opened = False
+        self.__fold()
 
-    def show(self) -> bool:
-        if super().show():
-            if self.menu_opened:
-                self.unfold()
-            else:
-                self.fold()
-            return True
-        return False
+    def draw(self):
+        if self.menu_opened:
+            self.__unfold()
+        else:
+            self.__fold()
 
-    def unfold(self):
-        for item in self.menu_items:
-            item.show()
+    def __unfold(self):
+        for menu_item in self.menu_items:
+            menu_item.show()
 
-    def fold(self):
-        for item in self.menu_items:
-            item.hide()
+    def __fold(self):
+        for menu_item in self.menu_items:
+            menu_item.hide()

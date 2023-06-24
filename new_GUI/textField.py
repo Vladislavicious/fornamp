@@ -104,14 +104,16 @@ class TextField(Frame, Editable):
         self.text_entry.item.unbind('<Key>')
         self.confirm()
 
-    def show(self) -> bool:
-        if super().show():
-            if self.is_being_edited:
-                self.text_label.hide()
-            else:
-                self.text_entry.hide()
-            return True
-        return False
+    def draw(self):
+        if self.is_being_edited:
+            self.text_label.erase()
+            self.text_entry.show()
+        else:
+            self.text_entry.erase()
+            self.text_label.show()
+
+    def erase(self):
+        pass
 
     def edit(self):
         """редактирование поля"""

@@ -3,7 +3,7 @@ from customtkinter import CTkEntry
 from customtkinter.windows.widgets.font import CTkFont
 from UIadjusters.colorFabric import ColorFabric
 from UIadjusters.fontFabric import FontFabric
-from uiabs.Container_tk import Container_tk
+from uiabs.container_tk import Container_tk
 
 from uiabs.widget_tk import Widget_tk
 

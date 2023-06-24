@@ -12,7 +12,7 @@ from ioconnection.App import App
 from ioconnection.Singletone import Singleton
 from tkabs.button import Button
 from tkabs.dialog import Dialog
-from uiabs.Container_tk import Container_tk
+from uiabs.container_tk import Container_tk
 from new_GUI.mWindow import MainWindow
 
 logger = logging.getLogger(__name__)
@@ -88,6 +88,7 @@ class FornampWindow(CTk, Container_tk, metaclass=Singleton):
         return False
 
     def draw(self):
+        super().draw()
         self.deiconify()
 
     def erase(self):

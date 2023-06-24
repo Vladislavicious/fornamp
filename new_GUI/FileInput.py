@@ -10,7 +10,7 @@ from tkabs.button import Button
 from tkabs.frame import Frame
 from tkabs.label import Label
 from tkabs.scroller import Scroller
-from uiabs.Container_tk import Container_tk
+from uiabs.container_tk import Container_tk
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
@@ -106,3 +106,9 @@ class FileInput(Frame):
         for pathway in self.scroller.widgets:
             pathway.destroy()
         self.scroller.clear_widgets()
+
+    def draw(self):
+        pass
+
+    def erase(self):
+        pass

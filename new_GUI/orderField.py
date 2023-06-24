@@ -9,7 +9,7 @@ from tkabs.button import Button
 from tkabs.label import Label
 from UIadjusters.fontFabric import FontFabric
 from tkabs.scroller import Scroller
-from uiabs.Container_tk import Container_tk
+from uiabs.container_tk import Container_tk
 
 from uiabs.editable import Editable
 
@@ -208,3 +208,15 @@ class OrderField(Scroller, Editable):
         self.vidan = True
         self.vidat_button.hide()
         self.set_as_edited()
+
+    def draw(self):
+        if self.vidat_button is not None:
+            self.vidat_button.item.grid()
+        if self.is_being_edited:
+            self.save_button.item.grid_remove()
+
+        for container in self.get_class_instances(Container_tk):
+            container.show()
+
+    def erase(self):
+        pass

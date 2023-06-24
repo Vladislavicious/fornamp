@@ -3,7 +3,7 @@ import logging
 from os import path
 from customtkinter import CTkScrollableFrame
 from UIadjusters.colorFabric import ColorFabric
-from uiabs.Container_tk import Container_tk
+from uiabs.container_tk import Container_tk
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)

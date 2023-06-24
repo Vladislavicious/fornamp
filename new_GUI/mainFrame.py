@@ -14,7 +14,7 @@ from tkabs.button import Button
 
 from tkabs.frame import Frame
 from tkabs.label import Label
-from uiabs.Container_tk import Container_tk
+from uiabs.container_tk import Container_tk
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
@@ -43,6 +43,7 @@ class mainFrame(Frame):
         self.ff = FontFabric.get_instance()
         self.font = self.ff.get_base_font()
         self.app = App()
+        self.save_button = None
         self.initialize()
 
     @property
@@ -147,7 +148,6 @@ class mainFrame(Frame):
 
             self.show()
 
-            self.save_button = None
             self.edit_button = None
             self.delete_button = None
             return True
@@ -285,3 +285,11 @@ class mainFrame(Frame):
         self.right_title_frame.add_widget(self.delete_button)
 
         order_field.show()
+
+    def draw(self):
+        if self.save_button is not None:
+            self.save_button.item.grid_remove()
+
+        self.right_title_frame.show()
+        self.left_frame.show()
+        self.right_frame.show()

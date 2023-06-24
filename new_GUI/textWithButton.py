@@ -72,3 +72,9 @@ class TextWithButton(Frame):
 
             return True
         return False
+
+    def draw(self):
+        pass
+
+    def erase(self):
+        pass

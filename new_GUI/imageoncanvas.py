@@ -2,7 +2,7 @@ from tkabs.canvas import Canvas
 
 from tkabs.frame import Frame
 from tkabs.image import Image
-from uiabs.Container_tk import Container_tk
+from uiabs.container_tk import Container_tk
 
 
 class ImageOnCanvas(Frame):
@@ -44,8 +44,8 @@ class ImageOnCanvas(Frame):
         if self.image.resize(self.parental_widget.width, self.parental_widget.height):
             self.canvas.create_image(self.image)
 
-    def show(self) -> bool:
-        if super().show():
-            self.fit()
-            return True
-        return False
+    def draw(self):
+        self.fit()
+
+    def erase(self):
+        pass

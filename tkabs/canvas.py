@@ -1,6 +1,6 @@
 from tkinter import Canvas as cv
 from tkabs.image import Image
-from uiabs.Container_tk import Container_tk
+from uiabs.container_tk import Container_tk
 
 
 class Canvas(Container_tk):
