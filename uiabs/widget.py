@@ -24,8 +24,9 @@ class Widget():
         self.__is_initialized = True
         return True
 
-    def destroy(self) -> bool:
+    def delete(self) -> bool:
         """Если уже уничтожен, возвращает False"""
+        self.hide()
         if not self.is_initialized:
             return False
         self.__is_initialized = False
@@ -43,11 +44,9 @@ class Widget():
 
     def hide(self) -> bool:
         """Возвращает False, если виджет и так не показан"""
-        if not self.is_visible:
+        if not self.is_visible or not self.is_initialized:
             return False
 
-        if not self.is_initialized:
-            self.initialize()
         self.__is_visible = False
         return True
 

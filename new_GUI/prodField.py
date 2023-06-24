@@ -7,12 +7,12 @@ from new_GUI.textField import TextField
 from tkabs.button import Button
 from tkabs.frame import Frame
 from UIadjusters.fontFabric import FontFabric
-from uiabs.container import Container
+from uiabs.Container_tk import Container_tk
 from uiabs.editable import Editable
 
 
 class ProductField(Frame, Editable):
-    def __init__(self, parental_widget: Container, master: any,
+    def __init__(self, parental_widget: Container_tk, master: any,
                  product: Product, border_width: int | None = None,
                  bg_color: str | None = None,
                  fg_color: str | None = None):

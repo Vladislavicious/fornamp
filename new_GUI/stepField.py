@@ -6,12 +6,12 @@ from new_GUI.runner import Runner
 from new_GUI.textField import TextField
 from tkabs.frame import Frame
 from UIadjusters.fontFabric import FontFabric
-from uiabs.container import Container
+from uiabs.Container_tk import Container_tk
 from uiabs.editable import Editable
 
 
 class stepField(Frame, Editable):
-    def __init__(self, parental_widget: Container, master: any, step: Step,
+    def __init__(self, parental_widget: Container_tk, master: any, step: Step,
                  border_width: int | None = None,
                  bg_color: str | None = None,
                  fg_color: str | None = None):

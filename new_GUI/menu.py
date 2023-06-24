@@ -8,7 +8,7 @@ from ioconnection.App import App
 
 from tkabs.frame import Frame
 from tkabs.label import Label
-from uiabs.container import Container
+from uiabs.Container_tk import Container_tk
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
@@ -26,7 +26,7 @@ logger.info(f"Testing the custom logger for module {__name__}...")
 
 
 class MenuItem(Frame):
-    def __init__(self, parental_widget: Container, master: any,
+    def __init__(self, parental_widget: Container_tk, master: any,
                  item_name: str, item_function, font,
                  width: int = 50, height: int = 25, **kwargs):
 
@@ -63,7 +63,7 @@ class MenuItem(Frame):
 
 
 class Menu(Frame):
-    def __init__(self, parental_widget: Container, master: any,
+    def __init__(self, parental_widget: Container_tk, master: any,
                  open_menu_function, close_menu_function,
                  menu_options: Dict[str, FunctionType] = dict(),
                  width: int = 50, height: int = 25, **kwargs):

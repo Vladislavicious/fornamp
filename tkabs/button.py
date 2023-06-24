@@ -8,9 +8,9 @@ from customtkinter.windows.widgets.font import CTkFont
 from customtkinter.windows.widgets.image import CTkImage
 from UIadjusters.colorFabric import ColorFabric
 from UIadjusters.fontFabric import FontFabric
+from uiabs.Container_tk import Container_tk
 
-from uiabs.container import Container
-from uiabs.widget import Widget
+from uiabs.widget_tk import Widget_tk
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
@@ -27,8 +27,8 @@ logger.addHandler(handler)
 logger.info(f"Testing the custom logger for module {__name__}...")
 
 
-class Button(Widget):
-    def __init__(self, parental_widget: Container, master: any, width: int = 140,
+class Button(Widget_tk):
+    def __init__(self, parental_widget: Container_tk, master: any, width: int = 140,
                  height: int = 28, corner_radius: int | None = None,
                  border_width: int | None = None, border_spacing: int = 2,
                  bg_color: str | None = None,
@@ -73,22 +73,3 @@ class Button(Widget):
             self.name = "Кнопка " + text
 
             logger.debug(f"{self.name} инициализирована")
-
-    def destroy(self) -> bool:
-        if super().destroy():
-            self.item.destroy()
-            logger.debug(f"{self.name} уничтожена")
-            return True
-        return False
-
-    def hide(self) -> bool:
-        if super().hide():
-            self.item.grid_remove()
-            return True
-        return False
-
-    def show(self) -> bool:
-        if super().show():
-            self.item.grid()
-            return True
-        return False

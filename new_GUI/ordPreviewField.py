@@ -3,11 +3,11 @@ from UIadjusters.colorFabric import ColorFabric
 from tkabs.frame import Frame
 from tkabs.label import Label
 from UIadjusters.fontFabric import FontFabric
-from uiabs.container import Container
+from uiabs.Container_tk import Container_tk
 
 
 class OrderPreviewField(Frame):
-    def __init__(self, parental_widget: Container, master: any,
+    def __init__(self, parental_widget: Container_tk, master: any,
                  order_preview: OrderPreview):
 
         self.cf = ColorFabric()

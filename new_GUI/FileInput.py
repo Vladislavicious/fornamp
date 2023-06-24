@@ -10,7 +10,7 @@ from tkabs.button import Button
 from tkabs.frame import Frame
 from tkabs.label import Label
 from tkabs.scroller import Scroller
-from uiabs.container import Container
+from uiabs.Container_tk import Container_tk
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
@@ -28,7 +28,7 @@ logger.info(f"Testing the custom logger for module {__name__}...")
 
 
 class FileInput(Frame):
-    def __init__(self, parental_widget: Container, master: any,
+    def __init__(self, parental_widget: Container_tk, master: any,
                  purpose_name: str,
                  width: int = 200, height: int = 200, **kwargs):
 
@@ -100,7 +100,7 @@ class FileInput(Frame):
                                          text=filename, button_text="Удалить")
                 pathway.item.grid(padx=2, pady=2, sticky="ew")
                 self.scroller.add_widget(pathway)
-                pathway.change_button_function(lambda: self.scroller.delete_widget(pathway))
+                pathway.change_button_function(lambda pathway=pathway: self.scroller.delete_widget(pathway))
 
     def clear_paths(self):
         for pathway in self.scroller.widgets:

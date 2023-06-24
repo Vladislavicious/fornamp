@@ -2,11 +2,11 @@ from tkabs.canvas import Canvas
 
 from tkabs.frame import Frame
 from tkabs.image import Image
-from uiabs.container import Container
+from uiabs.Container_tk import Container_tk
 
 
 class ImageOnCanvas(Frame):
-    def __init__(self, parental_widget: Container, master: any,
+    def __init__(self, parental_widget: Container_tk, master: any,
                  image_path: str, image_function=None,
                  width: int = 100, height: int = 100, **kwargs):
 

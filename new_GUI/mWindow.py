@@ -40,7 +40,8 @@ class MainWindow(TopLevel, metaclass=Singleton):
         if super().initialize():
             logger.debug(f"Инициализирую {self.name}")
             self.title("Fornamp")
-            self.geometry("1000x600+250+100")
+            self.geometry("1080x720+250+100")
+            # self.state('zoomed')  # OS dependend stuff
             self.resizable(True, True)
             self.grid_rowconfigure(0, weight=1)
             self.grid_columnconfigure(0, weight=1)
@@ -63,13 +64,13 @@ class MainWindow(TopLevel, metaclass=Singleton):
             return True
         return False
 
-    def destroy(self) -> bool:
+    def delete(self) -> bool:
         self.app.destroy()
-        super().destroy()
+        super().delete()
 
     def __create_addition_frame(self):
         if self.additionFrame is not None:
-            self.additionFrame.destroy()
+            self.additionFrame.delete()
             self.additionFrame.item.destroy()
             del self.additionFrame
 

@@ -3,13 +3,13 @@ from customtkinter import CTkEntry
 from customtkinter.windows.widgets.font import CTkFont
 from UIadjusters.colorFabric import ColorFabric
 from UIadjusters.fontFabric import FontFabric
+from uiabs.Container_tk import Container_tk
 
-from uiabs.container import Container
-from uiabs.widget import Widget
+from uiabs.widget_tk import Widget_tk
 
 
-class Entry(Widget):
-    def __init__(self, parental_widget: Container, master: any,
+class Entry(Widget_tk):
+    def __init__(self, parental_widget: Container_tk, master: any,
                  width: int = 140, height: int = 28,
                  corner_radius: int | None = None,
                  border_width: int | None = None,
@@ -52,23 +52,6 @@ class Entry(Widget):
     @property
     def contained_text(self) -> str:
         return self.item.get()
-
-    def destroy(self) -> bool:
-        if super().destroy():
-            return True
-        return False
-
-    def hide(self) -> bool:
-        if super().hide():
-            self.item.grid_remove()
-            return True
-        return False
-
-    def show(self) -> bool:
-        if super().show():
-            self.item.grid()
-            return True
-        return False
 
     def place_text(self, string: str):
         text = self.contained_text

@@ -14,7 +14,7 @@ from tkabs.button import Button
 
 from tkabs.frame import Frame
 from tkabs.label import Label
-from uiabs.container import Container
+from uiabs.Container_tk import Container_tk
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
@@ -32,7 +32,7 @@ logger.info(f"Testing the custom logger for module {__name__}...")
 
 
 class mainFrame(Frame):
-    def __init__(self, parental_widget: Container, master: any,
+    def __init__(self, parental_widget: Container_tk, master: any,
                  width: int = 200, height: int = 200, **kwargs):
 
         super().__init__(parental_widget, master, width,
@@ -148,6 +148,7 @@ class mainFrame(Frame):
             self.show()
 
             self.save_button = None
+            self.edit_button = None
             self.delete_button = None
             return True
         return False
@@ -211,6 +212,11 @@ class mainFrame(Frame):
             del self.save_button
             self.save_button = None
 
+        if self.edit_button is not None:
+            self.right_title_frame.delete_widget(self.edit_button)
+            del self.edit_button
+            self.edit_button = None
+
         self.__initialize_open_order()
 
     def __delete_order(self, id: int, order_field: OrderField):
@@ -247,7 +253,7 @@ class mainFrame(Frame):
         self.edit_button = Button(parental_widget=self.right_title_frame, master=self.right_title_frame.item,
                                   text="Редактировать", font=self.font, width=40)
         self.edit_button.item.grid(row=0, column=2, padx=3, pady=3, sticky="e")
-        self.add_widget(self.edit_button)
+        self.right_title_frame.add_widget(self.edit_button)
 
         order_field = OrderField(parental_widget=self.order_frame, master=self.order_frame.item,
                                  order=order, change_preview_func=self.change_order_preview,

@@ -3,8 +3,7 @@ import logging
 from os import path
 from customtkinter import CTkScrollableFrame
 from UIadjusters.colorFabric import ColorFabric
-
-from uiabs.container import Container
+from uiabs.Container_tk import Container_tk
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
@@ -21,8 +20,8 @@ logger.addHandler(handler)
 logger.info(f"Testing the custom logger for module {__name__}...")
 
 
-class Scroller(Container):
-    def __init__(self, parental_widget: Container, master: any, width: int = 200,
+class Scroller(Container_tk):
+    def __init__(self, parental_widget: Container_tk, master: any, width: int = 200,
                  height: int = 200, corner_radius: int | str | None = None,
                  border_width: int | None = None,
                  bg_color: str | None = None,
@@ -49,21 +48,3 @@ class Scroller(Container):
                                        border_color, scrollbar_fg_color,
                                        scrollbar_button_color, scrollbar_button_hover_color)
         logger.debug(f"{self.name} инициализирован")
-
-    def destroy(self) -> bool:
-        if super().destroy():
-            logger.debug(f"{self.name} уничтожен")
-            return True
-        return False
-
-    def hide(self) -> bool:
-        if super().hide():
-            self.item.grid_remove()
-            return True
-        return False
-
-    def show(self) -> bool:
-        if super().show():
-            self.item.grid()
-            return True
-        return False

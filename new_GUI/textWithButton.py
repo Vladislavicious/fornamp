@@ -1,7 +1,6 @@
 import logging
 
 from os import path
-from typing import Tuple
 from types import FunctionType
 from UIadjusters.fontFabric import FontFabric
 from tkabs.button import Button
@@ -65,19 +64,11 @@ class TextWithButton(Frame):
 
             self.button = Button(parental_widget=self, master=self.item,
                                  text=self.button_text, font=self.font,
-                                 width=100)
+                                 width=60)
             if self.button_function is not None:
                 self.change_button_function(self.button_function)
             self.button.item.grid(row=0, column=1, pady=2, sticky="e")
             self.add_widget(self.button)
 
-            return True
-        return False
-
-    def destroy(self) -> bool:
-        if super().destroy():
-            self.label.item.destroy()
-            self.button.item.destroy()
-            self.item.destroy()
             return True
         return False

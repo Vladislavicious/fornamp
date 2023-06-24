@@ -7,7 +7,7 @@ from tkabs.dialog import Dialog
 
 from tkabs.frame import Frame
 from tkabs.label import Label
-from uiabs.container import Container
+from uiabs.Container_tk import Container_tk
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 
@@ -24,7 +24,7 @@ logger.info(f"Testing the custom logger for module {__name__}...")
 
 
 class Photo(Frame):
-    def __init__(self, parental_widget: Container, master: any,
+    def __init__(self, parental_widget: Container_tk, master: any,
                  photopath: str,
                  width: int = 200, height: int = 200,
                  border_width: int | None = None,
@@ -81,8 +81,6 @@ class Photo(Frame):
         self.dialog.show()
         frame.fit()
 
-    def show(self) -> bool:
+    def draw(self):
         self.item.update_idletasks()
-        if super().show():
-            return True
-        return False
+        super().draw()

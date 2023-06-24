@@ -4,12 +4,12 @@ from new_GUI.textField import TextField
 from tkabs.button import Button
 from tkabs.frame import Frame
 from UIadjusters.fontFabric import FontFabric
-from uiabs.container import Container
+from uiabs.Container_tk import Container_tk
 from uiabs.editable import Editable
 
 
 class addStepField(Frame, Editable):
-    def __init__(self, parental_widget: Container, master: any,
+    def __init__(self, parental_widget: Container_tk, master: any,
                  step: Step = None):
 
         Frame.__init__(self, parental_widget=parental_widget, master=master)

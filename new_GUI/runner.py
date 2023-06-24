@@ -4,13 +4,13 @@ from tkabs.label import Label
 from tkabs.slider import Slider
 from UIadjusters.fontFabric import FontFabric
 from tkabs.frame import Frame
-from uiabs.container import Container
+from uiabs.Container_tk import Container_tk
 from uiabs.editable import Editable
 from Caps.validator import Validator
 
 
 class Runner(Frame, Editable):
-    def __init__(self, parental_widget: Container, master: any, runner_title: str,
+    def __init__(self, parental_widget: Container_tk, master: any, runner_title: str,
                  from_value: int = 0, to_value: int = 1, steps_count: int = 0,
                  width: int = 100, height: int = 100,
                  border_width: int | None = None,

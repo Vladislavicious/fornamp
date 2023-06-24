@@ -9,9 +9,8 @@ from ioconnection.App import App
 from new_GUI.addOrderField import AddOrderField
 from tkabs.scroller import Scroller
 from tkabs.button import Button
-
 from tkabs.frame import Frame
-from uiabs.container import Container
+from uiabs.Container_tk import Container_tk
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
@@ -29,7 +28,7 @@ logger.info(f"Testing the custom logger for module {__name__}...")
 
 
 class additionFrame(Frame):
-    def __init__(self, parental_widget: Container, master: any,
+    def __init__(self, parental_widget: Container_tk, master: any,
                  go_to_main_function, add_order_preview_func,
                  width: int = 200, height: int = 200, **kwargs):
 

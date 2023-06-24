@@ -2,11 +2,11 @@
 from UIadjusters.fontFabric import FontFabric
 from tkabs.frame import Frame
 from tkabs.label import Label
-from uiabs.container import Container
+from uiabs.Container_tk import Container_tk
 
 
 class labeledText(Frame):
-    def __init__(self, parental_widget: Container, master: any, title: str,
+    def __init__(self, parental_widget: Container_tk, master: any, title: str,
                  initial_text: str = "", width: int = 250, **kwargs):
 
         super().__init__(parental_widget, master, width=width, **kwargs)
@@ -47,10 +47,5 @@ class labeledText(Frame):
             self.text_label.item.grid(row=1, column=0, sticky="nsew")
             self.add_widget(self.text_label)
 
-            return True
-        return False
-
-    def show(self) -> bool:
-        if super().show():
             return True
         return False

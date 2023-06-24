@@ -7,13 +7,13 @@ from tkabs.button import Button
 from tkabs.frame import Frame
 from UIadjusters.fontFabric import FontFabric
 from tkabs.scroller import Scroller
-from uiabs.container import Container
+from uiabs.Container_tk import Container_tk
 from uiabs.editable import Editable
-from uiabs.widget import Widget
+from uiabs.widget_tk import Widget_tk
 
 
 class addProductField(Frame, Editable):
-    def __init__(self, parental_widget: Container, master: any,
+    def __init__(self, parental_widget: Container_tk, master: any,
                  step_frame: Scroller, click_function,
                  removal_function, product: Product = None):
         Frame.__init__(self, parental_widget=parental_widget, master=master)
@@ -148,7 +148,7 @@ class addProductField(Frame, Editable):
         self.removal_function(self)
         self.parental_widget.delete_widget(self)
 
-    def delete_widget(self, widget: Widget):
+    def delete_widget(self, widget: Widget_tk):
         super().delete_widget(widget)
         self.step_fields.remove(widget)
 

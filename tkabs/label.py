@@ -7,8 +7,8 @@ from customtkinter import CTkLabel, CTkFont
 from customtkinter.windows.widgets.image import CTkImage
 from UIadjusters.colorFabric import ColorFabric
 from UIadjusters.fontFabric import FontFabric
-from uiabs.container import Container
-from uiabs.widget import Widget
+from uiabs.Container_tk import Container_tk
+from uiabs.widget_tk import Widget_tk
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
@@ -25,8 +25,8 @@ logger.addHandler(handler)
 logger.info(f"Testing the custom logger for module {__name__}...")
 
 
-class Label(Widget):
-    def __init__(self, parental_widget: Container, master: any, width: int = 0,
+class Label(Widget_tk):
+    def __init__(self, parental_widget: Container_tk, master: any, width: int = 0,
                  height: int = 28, corner_radius: int | None = None,
                  bg_color: str | None = None,
                  fg_color: str | None = None,
@@ -63,18 +63,6 @@ class Label(Widget):
     def contained_text(self) -> str:
         text = self.item.cget("text")
         return text.replace("\n", "")
-
-    def destroy(self) -> bool:
-        if super().destroy():
-            logger.debug(f"{self.name} уничтожена")
-            return True
-        return False
-
-    def hide(self) -> bool:
-        if super().hide():
-            self.item.grid_remove()
-            return True
-        return False
 
     def show(self) -> bool:
         if super().show():

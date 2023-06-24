@@ -9,7 +9,7 @@ from tkabs.button import Button
 from tkabs.label import Label
 from UIadjusters.fontFabric import FontFabric
 from tkabs.scroller import Scroller
-from uiabs.container import Container
+from uiabs.Container_tk import Container_tk
 
 from uiabs.editable import Editable
 
@@ -23,7 +23,7 @@ def get_date(date_string: str) -> date:
 
 
 class OrderField(Scroller, Editable):
-    def __init__(self, parental_widget: Container, master: any, save_button: Button,
+    def __init__(self, parental_widget: Container_tk, master: any, save_button: Button,
                  edit_button: Button, order: Order = None,
                  width: int = 250, height: int = 200,
                  change_preview_func=None):

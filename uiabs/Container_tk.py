@@ -1,8 +1,8 @@
-"""Абстрактный класс, содержащий логику отображения элементов, содержащих виджеты внутри себя"""
-from uiabs.widget import Widget
+
+from uiabs.widget_tk import Widget_tk
 
 
-class Container(Widget):
+class Container_tk(Widget_tk):
     def __init__(self, parental_widget) -> None:
         super().__init__(parental_widget)
         self.name = "Container"
@@ -31,7 +31,6 @@ class Container(Widget):
 
     def delete(self) -> bool:
         if super().delete():
-            self.__destroy_all_widgets()
             return True
         return False
 
@@ -47,14 +46,14 @@ class Container(Widget):
             return True
         return False
 
-    def remove_widget(self, widget: Widget):
+    def remove_widget(self, widget: Widget_tk):
         self.__widgets.discard(widget)
 
-    def delete_widget(self, widget: Widget):
+    def delete_widget(self, widget: Widget_tk):
         self.remove_widget(widget)
         widget.delete()
 
-    def add_widget(self, widget: Widget):
+    def add_widget(self, widget: Widget_tk):
         self.__widgets.add(widget)
         if self.is_visible:
             widget.show()
@@ -83,7 +82,3 @@ class Container(Widget):
     def __initialize_all_widgets(self):
         for widget in self.__widgets:
             widget.initialize()
-
-    def __destroy_all_widgets(self):
-        for widget in self.__widgets:
-            widget.delete()

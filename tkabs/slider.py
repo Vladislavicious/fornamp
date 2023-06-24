@@ -5,10 +5,11 @@ from UIadjusters.colorFabric import ColorFabric
 
 from uiabs.container import Container
 from uiabs.editable import Editable
+from uiabs.widget_tk import Widget_tk
 from uiabs.widget import Widget
 
 
-class Slider(Widget, Editable):
+class Slider(Widget_tk, Editable):
     def __init__(self, parental_widget: Container, master: any, width: int | None = 200,
                  height: int | None = 30, corner_radius: int | None = None,
                  bg_color: str | None = None,
@@ -29,7 +30,7 @@ class Slider(Widget, Editable):
             bg_color = self.cf.background
         if border_color is None:
             border_color = self.cf.border_color
-            if border_color is None: # специально для слайдера
+            if border_color is None:   # специально для слайдера
                 border_color = "transparent"
         if button_color is None:
             button_color = self.cf.buttons
@@ -59,20 +60,3 @@ class Slider(Widget, Editable):
 
     def set_value(self, value: int):
         self.item.set(value)
-
-    def destroy(self) -> bool:
-        if super().destroy():
-            return True
-        return False
-
-    def hide(self) -> bool:
-        if super().hide():
-            self.item.grid_remove()
-            return True
-        return False
-
-    def show(self) -> bool:
-        if super().show():
-            self.item.grid()
-            return True
-        return False

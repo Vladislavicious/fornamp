@@ -3,11 +3,10 @@ from UIadjusters.colorFabric import ColorFabric
 
 from ioconnection.Singletone import Singleton
 from tkabs.frame import Frame
+from uiabs.Container_tk import Container_tk
 
-from uiabs.container import Container
 
-
-class Dialog(CTkToplevel, Container, metaclass=Singleton):
+class Dialog(CTkToplevel, Container_tk, metaclass=Singleton):
     """Диалоговое окно, всегда одно на приложение, удаляется при закрытии приложения,
     в остальных случаях просто скрывается."""
     def __init__(self, parental_widget, master,
@@ -18,7 +17,7 @@ class Dialog(CTkToplevel, Container, metaclass=Singleton):
         if fg_color is None:
             fg_color = self.cf.foreground
         CTkToplevel.__init__(self, master, fg_color=fg_color, *args, **kwargs)
-        Container.__init__(self, parental_widget)
+        Container_tk.__init__(self, parental_widget)
 
         self.name = "Dialog"
         self.widget_frame = None
@@ -33,24 +32,25 @@ class Dialog(CTkToplevel, Container, metaclass=Singleton):
         return self.winfo_height()
 
     def hide(self):
-        if Container.hide(self):
-            self.withdraw()
+        if Container_tk.hide(self):
             return True
         return False
 
-    def show(self) -> bool:
-        if Container.show(self):
-            self.deiconify()
-            return True
-        return False
-
-    def destroy(self) -> bool:
-        if Container.destroy(self):
-            CTkToplevel.destroy(self)
+    def delete(self) -> bool:
+        if Container_tk.delete(self):
             if self.parental_widget is not None:
                 self.parental_widget.show()
             return True
         return False
+
+    def draw(self):
+        self.deiconify()
+
+    def erase(self):
+        self.withdraw()
+
+    def inner_delete(self):
+        CTkToplevel.destroy(self)
 
     def disappear(self):
         self.hide()
@@ -59,7 +59,7 @@ class Dialog(CTkToplevel, Container, metaclass=Singleton):
             self.widget_frame = None
 
     def initialize(self) -> bool:
-        if Container.initialize(self):
+        if Container_tk.initialize(self):
             self.resizable(False, False)
             self.geometry("500x220+200+200")
             self.attributes("-toolwindow", True)

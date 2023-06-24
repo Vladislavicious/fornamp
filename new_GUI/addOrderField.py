@@ -8,8 +8,7 @@ from tkabs.button import Button
 from tkabs.frame import Frame
 from tkabs.label import Label
 from UIadjusters.fontFabric import FontFabric
-from uiabs.container import Container
-
+from uiabs.Container_tk import Container_tk
 from uiabs.editable import Editable
 
 
@@ -22,7 +21,7 @@ def get_date(date_string: str) -> date:
 
 
 class AddOrderField(Frame, Editable):
-    def __init__(self, parental_widget: Container, master: any, save_button: Button,
+    def __init__(self, parental_widget: Container_tk, master: any, save_button: Button,
                  width: int = 250, height: int = 200):
 
         Frame.__init__(self, parental_widget=parental_widget, master=master,

@@ -2,10 +2,10 @@ from typing import Tuple
 from PIL import Image as Img
 from PIL import ImageTk
 
-from uiabs.widget import Widget
+from uiabs.widget_tk import Widget_tk
 
 
-class Image(Widget):
+class Image(Widget_tk):
     def __init__(self, parental_widget, image_path: str,
                  size: Tuple[int, int] = ...):
         super().__init__(parental_widget)
@@ -24,3 +24,9 @@ class Image(Widget):
 
         self.item = ImageTk.PhotoImage(self.scaled_photo)
         return True
+
+    def draw(self):
+        return None
+
+    def erase(self):
+        return None

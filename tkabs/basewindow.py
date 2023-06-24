@@ -12,7 +12,7 @@ from ioconnection.App import App
 from ioconnection.Singletone import Singleton
 from tkabs.button import Button
 from tkabs.dialog import Dialog
-from uiabs.container import Container
+from uiabs.Container_tk import Container_tk
 from new_GUI.mWindow import MainWindow
 
 logger = logging.getLogger(__name__)
@@ -39,15 +39,15 @@ def validate_string(string: str = "") -> Tuple[bool, str]:
     return True, ""
 
 
-class FornampWindow(CTk, Container, metaclass=Singleton):
+class FornampWindow(CTk, Container_tk, metaclass=Singleton):
     def __init__(self):
         CTk.__init__(self)
-        Container.__init__(self, None)
+        Container_tk.__init__(self, None)
         self.name = "FornampWindow"
         self.initialize()
 
     def initialize(self) -> bool:
-        if Container.initialize(self):
+        if Container_tk.initialize(self):
             logger.debug(f"Инициализирую {self.name}")
             self.geometry("500x220+500+340")
             self.resizable(True, True)
@@ -72,7 +72,7 @@ class FornampWindow(CTk, Container, metaclass=Singleton):
             self.main_open_button.item.grid(row=1, column=0, ipadx=6, ipady=6, padx=4, pady=4, sticky=tk.NSEW)
             self.add_widget(self.main_open_button)
 
-            self.protocol("WM_DELETE_WINDOW", lambda: self.destroy())
+            self.protocol("WM_DELETE_WINDOW", lambda: self.delete())
             self.update()
             self.update_idletasks()
             self.show()
@@ -81,24 +81,20 @@ class FornampWindow(CTk, Container, metaclass=Singleton):
             return True
         return False
 
-    def show(self) -> bool:
-        if Container.show(self):
-            self.deiconify()
-            return True
-        return False
-
-    def hide(self) -> bool:
-        if Container.hide(self):
-            self.withdraw()
-            return True
-        return False
-
-    def destroy(self):
-        if Container.destroy(self):
-            CTk.destroy(self)
+    def delete(self):
+        if Container_tk.delete(self):
             logger.debug("Закрываю Fornamp")
             return True
         return False
+
+    def draw(self):
+        self.deiconify()
+
+    def erase(self):
+        self.withdraw()
+
+    def inner_delete(self):
+        CTk.destroy(self)
 
     def press(self):
         logger.debug(f"press в {self.name}")
@@ -106,9 +102,3 @@ class FornampWindow(CTk, Container, metaclass=Singleton):
             self.main_window = MainWindow(parental_widget=self, master=self)
         self.main_window.show()
         self.hide()
-
-    def __new__(cls):
-        """Не позволяет сделать более одного экземпляра класса"""
-        if not hasattr(cls, 'instance'):
-            cls.instance = super(FornampWindow, cls).__new__(cls)
-        return cls.instance
